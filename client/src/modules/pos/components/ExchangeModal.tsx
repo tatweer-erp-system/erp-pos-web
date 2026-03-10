@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  Modal, Steps, Input, Button, Space, Alert, Descriptions, Tag,
+  Modal, Steps, Input, Button, Space, Alert, Tag,
   Divider, theme as antTheme, Checkbox, Select, InputNumber,
 } from "antd";
 import {
@@ -160,20 +160,58 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
     <Modal
       open={open}
       onCancel={handleClose}
-      title={
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <SwapOutlined style={{ color: token.colorPrimary, fontSize: 18 }} />
-          <span style={{ fontSize: 16, fontWeight: 700 }}>{t.processExchange}</span>
-        </div>
-      }
+      closeIcon={null}
       footer={null}
       width={560}
+      centered
+      title={null}
+      styles={{ body: { padding: 0 } }}
       destroyOnClose
     >
+      {/* Header */}
+      <div style={{
+        position: "relative",
+        background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
+        padding: "20px 24px 16px",
+        borderRadius: "8px 8px 0 0",
+        color: "#fff",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+      }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 10,
+          background: "rgba(255,255,255,0.2)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 18,
+        }}>
+          <SwapOutlined />
+        </div>
+        <div>
+          <div style={{ fontSize: 16, fontWeight: 800 }}>{t.processExchange}</div>
+          <div style={{ fontSize: 12, opacity: 0.85, marginTop: 2 }}>
+            Return items and select replacements
+          </div>
+        </div>
+        <button
+          onClick={handleClose}
+          style={{
+            position: "absolute", top: 14, insetInlineEnd: 14,
+            width: 28, height: 28, borderRadius: "50%",
+            background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.3)",
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#fff", fontSize: 13, lineHeight: 1, transition: "background 0.15s", padding: 0,
+          }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.35)"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.2)"; }}
+        >✕</button>
+      </div>
+
+      <div style={{ padding: "20px 24px 24px" }}>
       <Steps
         current={stepIndex}
         size="small"
-        style={{ marginBottom: 24 }}
+        style={{ marginBottom: 20 }}
         items={[
           { title: t.receiptNumber },
           { title: t.itemsToReturn },
@@ -212,10 +250,19 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
       {/* Step 2: Select items to return */}
       {step === "select" && foundOrder && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <Descriptions size="small" bordered column={1} style={{ borderRadius: 8, overflow: "hidden" }}>
-            <Descriptions.Item label="Order">{foundOrder.id}</Descriptions.Item>
-            <Descriptions.Item label="Date">{foundOrder.date}</Descriptions.Item>
-          </Descriptions>
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "10px 14px", borderRadius: 10,
+            background: "#6366F106", border: "1px solid #6366F120",
+          }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: token.colorText }}>{foundOrder.id}</div>
+              <div style={{ fontSize: 11, color: token.colorTextSecondary, marginTop: 1 }}>{foundOrder.date}</div>
+            </div>
+            <Tag color={foundOrder.paymentMethod === "cash" ? "green" : "blue"} style={{ borderRadius: 6, fontWeight: 700, fontSize: 11 }}>
+              {foundOrder.paymentMethod.toUpperCase()}
+            </Tag>
+          </div>
 
           <div>
             <div style={{ fontSize: 12, color: token.colorTextSecondary, marginBottom: 8, fontWeight: 600 }}>
@@ -463,6 +510,7 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
           </div>
         </div>
       )}
+      </div>
     </Modal>
   );
 }

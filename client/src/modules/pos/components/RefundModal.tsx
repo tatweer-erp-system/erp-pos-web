@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Modal, Steps, Input, Button, Radio, Select,
-  InputNumber, Alert, Descriptions, Tag, Divider,
+  InputNumber, Alert, Tag, Divider,
   theme as antTheme, Space, Checkbox,
 } from "antd";
 import {
@@ -140,20 +140,58 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
     <Modal
       open={open}
       onCancel={handleClose}
-      title={
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <RollbackOutlined style={{ color: token.colorError, fontSize: 18 }} />
-          <span style={{ fontSize: 16, fontWeight: 700 }}>{t.processRefund}</span>
-        </div>
-      }
+      closeIcon={null}
       footer={null}
       width={540}
+      centered
+      title={null}
+      styles={{ body: { padding: 0 } }}
       destroyOnClose
     >
+      {/* Header */}
+      <div style={{
+        position: "relative",
+        background: `linear-gradient(135deg, ${token.colorError}, ${token.colorError}cc)`,
+        padding: "20px 24px 16px",
+        borderRadius: "8px 8px 0 0",
+        color: "#fff",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+      }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 10,
+          background: "rgba(255,255,255,0.2)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 18,
+        }}>
+          <RollbackOutlined />
+        </div>
+        <div>
+          <div style={{ fontSize: 16, fontWeight: 800 }}>{t.processRefund}</div>
+          <div style={{ fontSize: 12, opacity: 0.85, marginTop: 2 }}>
+            {t.refundManagerRequired}
+          </div>
+        </div>
+        <button
+          onClick={handleClose}
+          style={{
+            position: "absolute", top: 14, insetInlineEnd: 14,
+            width: 28, height: 28, borderRadius: "50%",
+            background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.3)",
+            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#fff", fontSize: 13, lineHeight: 1, transition: "background 0.15s", padding: 0,
+          }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.35)"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.2)"; }}
+        >✕</button>
+      </div>
+
+      <div style={{ padding: "20px 24px 24px" }}>
       <Steps
         current={stepIndex}
         size="small"
-        style={{ marginBottom: 24 }}
+        style={{ marginBottom: 20 }}
         items={[
           { title: t.receiptNumber },
           { title: t.refund },
@@ -204,15 +242,19 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
       {step === "review" && foundOrder && (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {/* Order header */}
-          <Descriptions size="small" bordered column={2} style={{ borderRadius: 8, overflow: "hidden" }}>
-            <Descriptions.Item label="Order">{foundOrder.id}</Descriptions.Item>
-            <Descriptions.Item label="Date">{foundOrder.date}</Descriptions.Item>
-            <Descriptions.Item label="Payment" span={2}>
-              <Tag color={foundOrder.paymentMethod === "cash" ? "green" : "blue"}>
-                {foundOrder.paymentMethod.toUpperCase()}
-              </Tag>
-            </Descriptions.Item>
-          </Descriptions>
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "10px 14px", borderRadius: 10,
+            background: `${token.colorError}06`, border: `1px solid ${token.colorError}20`,
+          }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: token.colorText }}>{foundOrder.id}</div>
+              <div style={{ fontSize: 11, color: token.colorTextSecondary, marginTop: 1 }}>{foundOrder.date}</div>
+            </div>
+            <Tag color={foundOrder.paymentMethod === "cash" ? "green" : "blue"} style={{ borderRadius: 6, fontWeight: 700, fontSize: 11 }}>
+              {foundOrder.paymentMethod.toUpperCase()}
+            </Tag>
+          </div>
 
           <Divider style={{ margin: "4px 0" }} />
 
@@ -416,6 +458,7 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
           </div>
         </div>
       )}
+      </div>
     </Modal>
   );
 }

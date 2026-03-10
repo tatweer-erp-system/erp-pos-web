@@ -155,6 +155,11 @@
   }
 }
 
+/* ── Ant Design modal: background follows theme (white in light, card in dark) */
+.ant-modal .ant-modal-container {
+  background: var(--card) !important;
+}
+
 /* ── Direction change animation ──────────────────────────────────────────── */
 @keyframes dir-flip-in {
   0%   { opacity: 0; transform: scaleX(0.97) translateX(12px); }
