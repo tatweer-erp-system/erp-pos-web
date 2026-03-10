@@ -1,0 +1,358 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Poppins", sans-serif;
+  --font-display: "Poppins", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 5px;
+  --radius-xl: 6px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --primary: #3B82F6;
+  --primary-foreground: #FFFFFF;
+  --sidebar-primary: #3B82F6;
+  --sidebar-primary-foreground: #FFFFFF;
+  --chart-1: #3B82F6;
+  --chart-2: #2563EB;
+  --chart-3: #60A5FA;
+  --chart-4: #93C5FD;
+  --chart-5: #BFDBFE;
+  --radius: 0.5rem;
+  --background: #F8FAFC;
+  --foreground: #1E293B;
+  --card: #FFFFFF;
+  --card-foreground: #1E293B;
+  --popover: #FFFFFF;
+  --popover-foreground: #1E293B;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #1E293B;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent: #3B82F6;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #E2E8F0;
+  --input: #FFFFFF;
+  --ring: #3B82F6;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1E293B;
+  --sidebar-accent: #F1F5F9;
+  --sidebar-accent-foreground: #3B82F6;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #3B82F6;
+  --form-border: #E2E8F0;
+  --form-text: #1E293B;
+  --form-bg: #FFFFFF;
+}
+
+.dark {
+  --primary: #37D399;
+  --primary-foreground: #060D08;
+  --sidebar-primary: #37D399;
+  --sidebar-primary-foreground: #060D08;
+  --background: #060D08;
+  --foreground: #e8ede8;
+  --card: #2C2E2D;
+  --card-foreground: #e8ede8;
+  --popover: #2C2E2D;
+  --popover-foreground: #e8ede8;
+  --secondary: #2C2E2D;
+  --secondary-foreground: #e8ede8;
+  --muted: #0E120E;
+  --muted-foreground: #8a9a8a;
+  --accent: #37D399;
+  --accent-foreground: #060D08;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #1a201a;
+  --input: #0E120E;
+  --ring: #37D399;
+  --chart-1: #37D399;
+  --chart-2: #2a8a52;
+  --chart-3: #37D399;
+  --chart-4: #2a8a52;
+  --chart-5: #1a3a28;
+  --sidebar: #141714;
+  --sidebar-foreground: #e8ede8;
+  --sidebar-accent: #0E120E;
+  --sidebar-accent-foreground: #37D399;
+  --sidebar-border: #1a201a;
+  --sidebar-ring: #37D399;
+  --form-border: #1a201a;
+  --form-text: #e8ede8;
+  --form-bg: #0E120E;
+}
+
+@layer base {
+  *:not(.antd-scope *) {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans text-sm;
+    transition: all 0.5s ease-in-out;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold;
+  }
+  h1 {
+    @apply text-xl;
+  }
+  h2 {
+    @apply text-lg;
+  }
+  h3 {
+    @apply text-base;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+/* ── Direction change animation ──────────────────────────────────────────── */
+@keyframes dir-flip-in {
+  0%   { opacity: 0; transform: scaleX(0.97) translateX(12px); }
+  100% { opacity: 1; transform: scaleX(1)    translateX(0); }
+}
+
+.dir-animating {
+  animation: dir-flip-in 0.38s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Smooth all layout/border logical properties on the shell */
+.ltr, .rtl {
+  transition:
+    padding        0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    margin         0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius  0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer components {
+  /* Component styling */
+  .card-component {
+    margin-bottom: 1.5rem;
+    background-color: var(--card);
+    transition: all 0.5s ease-in-out;
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    color: inherit;
+  }
+
+  .dark .card-component {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: 0 4.4px 12px -1px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Apply to Card components (exclude antd components) */
+  [class*="card"]:not(.antd-scope *) {
+    margin-bottom: 1.5rem;
+    background-color: var(--card);
+    transition: all 0.5s ease-in-out;
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    color: inherit;
+  }
+
+  .dark [class*="card"]:not(.antd-scope *) {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: 0 4.4px 12px -1px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Apply to buttons */
+  button:not(:disabled) {
+    transition: all 0.5s ease-in-out;
+    border-radius: 5px;
+  }
+
+  /* Form Controls - Independent of theme (exclude antd components) */
+  :not(.antd-scope *) > input[type="text"],
+  :not(.antd-scope *) > input[type="email"],
+  :not(.antd-scope *) > input[type="password"],
+  :not(.antd-scope *) > input[type="number"],
+  :not(.antd-scope *) > input[type="date"],
+  :not(.antd-scope *) > input[type="time"],
+  :not(.antd-scope *) > input[type="search"],
+  :not(.antd-scope *) > input[type="url"],
+  :not(.antd-scope *) > input[type="tel"],
+  :not(.antd-scope *) > textarea,
+  :not(.antd-scope *) > select {
+    border-color: var(--form-border, #e9edf4);
+    color: var(--form-text, #202c4b);
+    background-color: var(--form-bg, #cccccc);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+    border-radius: 5px;
+    padding: 0.5rem 0.625rem;
+    height: 38px;
+    transition: all 0.5s;
+    border: 1px solid var(--form-border, #e9edf4);
+  }
+
+  :not(.antd-scope *) > textarea {
+    height: auto;
+    min-height: 100px;
+  }
+
+  :not(.antd-scope *) > input[type="text"]:focus,
+  :not(.antd-scope *) > input[type="email"]:focus,
+  :not(.antd-scope *) > input[type="password"]:focus,
+  :not(.antd-scope *) > input[type="number"]:focus,
+  :not(.antd-scope *) > input[type="date"]:focus,
+  :not(.antd-scope *) > input[type="time"]:focus,
+  :not(.antd-scope *) > input[type="search"]:focus,
+  :not(.antd-scope *) > input[type="url"]:focus,
+  :not(.antd-scope *) > input[type="tel"]:focus,
+  :not(.antd-scope *) > textarea:focus,
+  :not(.antd-scope *) > select:focus {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
+  }
+
+  .dark :not(.antd-scope *) > input[type="text"],
+  .dark :not(.antd-scope *) > input[type="email"],
+  .dark :not(.antd-scope *) > input[type="password"],
+  .dark :not(.antd-scope *) > input[type="number"],
+  .dark :not(.antd-scope *) > input[type="date"],
+  .dark :not(.antd-scope *) > input[type="time"],
+  .dark :not(.antd-scope *) > input[type="search"],
+  .dark :not(.antd-scope *) > input[type="url"],
+  .dark :not(.antd-scope *) > input[type="tel"],
+  .dark :not(.antd-scope *) > textarea,
+  .dark :not(.antd-scope *) > select {
+    background-color: var(--form-bg);
+    border-color: var(--form-border);
+    color: var(--form-text);
+  }
+
+  /* Apply to tables (exclude antd tables) */
+  table:not(.antd-scope *) {
+    background-color: var(--card);
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+
+  table:not(.antd-scope *) thead {
+    background-color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  table:not(.antd-scope *) th {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    border-bottom: 1px solid var(--border);
+  }
+
+  table:not(.antd-scope *) td {
+    color: var(--foreground);
+    border-bottom: 1px solid var(--border);
+  }
+
+  table:not(.antd-scope *) tbody tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  table:not(.antd-scope *) tbody tr:hover {
+    background-color: var(--muted);
+  }
+
+  .dark table:not(.antd-scope *) {
+    box-shadow: 0 4.4px 12px -1px rgba(0, 0, 0, 0.3);
+  }
+
+  /**
+   * Custom container utility that centers content and adds responsive padding.
+   *
+   * This overrides Tailwind's default container behavior to:
+   * - Auto-center content (mx-auto)
+   * - Add responsive horizontal padding
+   * - Set max-width for large screens
+   *
+   * Usage: <div className="container">...</div>
+   *
+   * For custom widths, use max-w-* utilities directly:
+   * <div className="max-w-6xl mx-auto px-4">...</div>
+   */
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem; /* 16px - mobile padding */
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem; /* 24px - tablet padding */
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem; /* 32px - desktop padding */
+      padding-right: 2rem;
+      max-width: 1280px; /* Standard content width */
+    }
+  }
+}
