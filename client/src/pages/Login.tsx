@@ -753,7 +753,6 @@ export default function Login() {
 
   const [email, setEmail]               = useState("");
   const [password, setPassword]         = useState("");
-  const [rememberMe, setRememberMe]     = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [eyePos, setEyePos]   = useState<EyePos>({ x: 0, y: 0 });
@@ -1087,18 +1086,8 @@ export default function Login() {
                 {errors.password && <ErrorMsg>{errors.password}</ErrorMsg>}
               </div>
 
-              {/* Remember me + Forgot password */}
-              <div className="flex items-center justify-between pt-0.5">
-                <label className="flex items-center gap-2 cursor-pointer group select-none">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 cursor-pointer"
-                    style={{ accentColor: primary }}
-                  />
-                  <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">تذكّرني</span>
-                </label>
+              {/* Forgot password */}
+              <div className="flex items-center justify-end pt-0.5">
                 <a
                   href="#"
                   className="text-sm font-medium transition-colors hover:opacity-80"
