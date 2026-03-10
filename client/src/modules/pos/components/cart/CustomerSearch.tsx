@@ -245,7 +245,7 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
                     </div>
 
                     {/* Tier + points */}
-                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    <div style={{ textAlign: "end", flexShrink: 0 }}>
                       <div style={{
                         fontSize: 10, fontWeight: 700,
                         color: tier.color,

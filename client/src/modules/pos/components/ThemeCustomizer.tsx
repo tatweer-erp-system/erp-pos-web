@@ -94,6 +94,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 export function ThemeCustomizer({ open, onClose }: ThemeCustomizerProps) {
   const { token } = antTheme.useToken();
   const {
+    language,
     theme, setMode,
     preset, setPreset,
     presets,
@@ -102,6 +103,7 @@ export function ThemeCustomizer({ open, onClose }: ThemeCustomizerProps) {
     posCardStyle, setPOSCardStyle,
     posGridCols, setPOSGridCols,
   } = useAppSettings();
+  const isRTL = language === "ar";
 
   const isDark = theme === "dark";
   const activeColor = accentColor || token.colorPrimary;
@@ -127,7 +129,7 @@ export function ThemeCustomizer({ open, onClose }: ThemeCustomizerProps) {
           <Button size="small" icon={<ReloadOutlined />} onClick={reset}>Reset</Button>
         </Tooltip>
       }
-      placement="right"
+      placement={isRTL ? "left" : "right"}
       width={300}
       styles={{
         body: {

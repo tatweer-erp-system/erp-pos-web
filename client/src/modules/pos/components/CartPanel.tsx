@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Select, InputNumber, Button, Empty, Badge, Divider, theme as antTheme, Popconfirm, Tooltip, Tag, Input } from "antd";
 import { ShoppingCartOutlined, ClearOutlined, PauseCircleOutlined, ReloadOutlined, WarningOutlined, SafetyOutlined, ScissorOutlined, FileTextOutlined, GiftOutlined } from "@ant-design/icons";
 import { CartItem } from "./CartItem";
@@ -69,9 +69,16 @@ export function CartPanel({ isMobile }: CartPanelProps) {
   const restaurantMode = useRestaurantMode();
   const isEmpty = cartItems.length === 0;
 
+  // Auto-scroll cart to bottom when items change
+  const cartListRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (cartListRef.current && cartItems.length > 0) {
+      cartListRef.current.scrollTop = cartListRef.current.scrollHeight;
+    }
+  }, [cartItems.length, itemCount]);
+
   const [requestingOverride, setRequestingOverride] = useState(false);
   const [splitBillOpen, setSplitBillOpen] = useState(false);
-  const [showNote, setShowNote] = useState(false);
   const [showTip, setShowTip] = useState(false);
   const [customTip, setCustomTip] = useState<number | null>(null);
 
@@ -113,10 +120,10 @@ export function CartPanel({ isMobile }: CartPanelProps) {
     <div style={{
       display: "flex",
       flexDirection: "column",
-      height: "100%",
+      flex: 1,
+      minHeight: 0,
       background: token.colorBgContainer,
-      borderRadius: 16,
-      border: `1px solid ${token.colorBorderSecondary}`,
+      borderRadius: 0,
       overflow: "hidden",
     }}>
 
@@ -197,7 +204,14 @@ export function CartPanel({ isMobile }: CartPanelProps) {
       </div>
 
       {/* Cart Items */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "8px 4px", display: "flex", flexDirection: "column", gap: 2 }}>
+      <div
+        ref={cartListRef}
+        style={{
+          flex: "1 1 0%",
+          overflow: "auto",
+          padding: 8,
+        }}
+      >
         {isEmpty ? (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -223,80 +237,29 @@ export function CartPanel({ isMobile }: CartPanelProps) {
       {!isEmpty && (
         <div style={{
           borderTop: `1px solid ${token.colorBorderSecondary}`,
-          padding: "12px 14px",
+          padding: "8px 12px",
           display: "flex",
           flexDirection: "column",
-          gap: 10,
+          gap: 6,
           flexShrink: 0,
+          overflowY: "auto",
+          maxHeight: "50%",
           background: token.colorFillAlter,
+          scrollbarWidth: "thin" as const,
         }}>
           <LoyaltyRedemption />
           <VoucherInput />
 
-          {/* Order Note */}
-          <div style={{
-            borderRadius: 10,
-            border: `1.5px solid ${orderNote ? token.colorPrimary + "50" : token.colorBorderSecondary}`,
-            background: orderNote ? `${token.colorPrimary}08` : token.colorBgContainer,
-            overflow: "hidden",
-            transition: "all 0.2s",
-          }}>
-            <button
-              onClick={() => setShowNote((v) => !v)}
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "8px 12px",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                color: orderNote ? token.colorPrimary : token.colorText,
-                fontWeight: 600,
-                fontSize: 12,
-              }}
-            >
-              <FileTextOutlined style={{ fontSize: 13, color: orderNote ? token.colorPrimary : token.colorTextSecondary }} />
-              <span style={{ flex: 1, textAlign: "start" }}>
-                {orderNote ? t.orderNote : t.addOrderNote}
-              </span>
-              {orderNote && !showNote && (
-                <span style={{
-                  fontSize: 11,
-                  color: token.colorTextSecondary,
-                  fontStyle: "italic",
-                  fontWeight: 400,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  maxWidth: 140,
-                }}>
-                  {orderNote}
-                </span>
-              )}
-              <span style={{
-                fontSize: 10,
-                color: token.colorTextTertiary,
-                transform: showNote ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.2s",
-              }}>
-                ▾
-              </span>
-            </button>
-            {showNote && (
-              <div style={{ padding: "0 12px 10px" }}>
-                <Input.TextArea
-                  rows={2}
-                  value={orderNote}
-                  onChange={(e) => setOrderNote(e.target.value)}
-                  placeholder={t.orderNotePlaceholder}
-                  style={{ borderRadius: 8, fontSize: 12 }}
-                  autoFocus
-                />
-              </div>
-            )}
-          </div>
+          {/* Order Note — always-visible input */}
+          <Input
+            prefix={<FileTextOutlined style={{ color: orderNote ? token.colorPrimary : token.colorTextPlaceholder, fontSize: 12 }} />}
+            placeholder={t.orderNotePlaceholder}
+            value={orderNote}
+            onChange={(e) => setOrderNote(e.target.value)}
+            allowClear
+            size="small"
+            style={{ borderRadius: 8, fontSize: 12 }}
+          />
 
           {/* Manual discount */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -463,15 +426,15 @@ export function CartPanel({ isMobile }: CartPanelProps) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: "10px 14px",
-            borderRadius: 12,
+            padding: "6px 10px",
+            borderRadius: 8,
             background: `linear-gradient(135deg, ${token.colorPrimary}12, ${token.colorPrimary}20)`,
             border: `1.5px solid ${token.colorPrimary}30`,
           }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: token.colorText }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: token.colorText }}>
               {giftCardDiscount > 0 ? t.amountDue : t.grandTotal}
             </span>
-            <span style={{ fontSize: 22, fontWeight: 900, color: token.colorPrimary }}>
+            <span style={{ fontSize: 18, fontWeight: 900, color: token.colorPrimary }}>
               ${finalTotal().toFixed(2)}
             </span>
           </div>
@@ -495,18 +458,17 @@ export function CartPanel({ isMobile }: CartPanelProps) {
 
           <Button
             type="primary"
-            size="large"
             loading={isCharging}
             onClick={charge}
             style={{
               width: "100%",
-              height: 52,
-              borderRadius: 12,
-              fontSize: 16,
+              height: 40,
+              borderRadius: 10,
+              fontSize: 14,
               fontWeight: 800,
               background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryHover})`,
               border: "none",
-              boxShadow: `0 6px 20px ${token.colorPrimary}40`,
+              boxShadow: `0 4px 14px ${token.colorPrimary}40`,
               letterSpacing: "0.02em",
             }}
           >

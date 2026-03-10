@@ -122,7 +122,7 @@ export function ReceiptModal({ open, order, onClose }: ReceiptModalProps) {
                 <div style={{ fontSize: 12, fontWeight: 600, color: token.colorText }}>{attachedCustomer.name}</div>
                 <div style={{ fontSize: 10, color: token.colorTextSecondary }}>
                   {attachedCustomer.phone}
-                  {tier && <span style={{ marginLeft: 6, color: tier.color, fontWeight: 700 }}>· {tier.name}</span>}
+                  {tier && <span style={{ marginInlineStart: 6, color: tier.color, fontWeight: 700 }}>· {tier.name}</span>}
                 </div>
               </div>
             </div>
@@ -146,8 +146,8 @@ export function ReceiptModal({ open, order, onClose }: ReceiptModalProps) {
                   {item.product.name}
                 </span>
                 <span style={{ fontSize: 12, color: token.colorTextSecondary, textAlign: "center" }}>{item.quantity}</span>
-                <span style={{ fontSize: 12, color: token.colorTextSecondary, textAlign: "right" }}>${item.product.price.toFixed(2)}</span>
-                <span style={{ fontSize: 12, fontWeight: 600, textAlign: "right" }}>${(item.product.price * item.quantity).toFixed(2)}</span>
+                <span style={{ fontSize: 12, color: token.colorTextSecondary, textAlign: "end" }}>${item.product.price.toFixed(2)}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, textAlign: "end" }}>${(item.product.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}
           </div>
@@ -261,7 +261,7 @@ export function ReceiptModal({ open, order, onClose }: ReceiptModalProps) {
                     <GiftOutlined style={{ color: "#A855F7", fontSize: 13 }} />
                     <span style={{ fontSize: 11, color: token.colorTextSecondary }}>{t.giftCard}</span>
                   </div>
-                  <div style={{ textAlign: "right" }}>
+                  <div style={{ textAlign: "end" }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: "#A855F7" }}>{gc.code}</div>
                     <div style={{ fontSize: 10, color: token.colorTextSecondary }}>−${gc.amountUsed.toFixed(2)}</div>
                   </div>

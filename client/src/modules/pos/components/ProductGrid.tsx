@@ -17,7 +17,7 @@ export function ProductGrid({ onAdd, isMobile }: ProductGridProps) {
   const { token } = antTheme.useToken();
   const { language, posCardStyle, posGridCols } = useAppSettings();
   const t = usePOSTranslations(language);
-  const isList = posCardStyle === "list";
+  const isList = isMobile || posCardStyle === "list";
   const {
     products,
     isLoading,

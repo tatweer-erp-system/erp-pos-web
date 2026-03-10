@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { theme as antTheme, Grid, Badge, Drawer, Button, Tooltip, message } from "antd";
+import { theme as antTheme, Grid, Badge, Drawer, Button, Tooltip, Dropdown, message } from "antd";
 import {
   LogoutOutlined,
   ShoppingCartOutlined,
@@ -19,6 +19,7 @@ import {
   BgColorsOutlined,
   FullscreenOutlined,
   FullscreenExitOutlined,
+  MoreOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "wouter";
 import { AntProvider } from "@/lib/antd-provider";
@@ -244,9 +245,9 @@ function POSLayout() {
       <div style={{
         display: "flex",
         alignItems: "center",
-        gap: 12,
-        padding: "0 16px",
-        height: 54,
+        gap: isMobile ? 6 : 12,
+        padding: isMobile ? "0 8px" : "0 16px",
+        height: isMobile ? 44 : 54,
         background: token.colorBgContainer,
         borderBottom: `1px solid ${token.colorBorderSecondary}`,
         flexShrink: 0,
@@ -258,32 +259,37 @@ function POSLayout() {
             icon={<LogoutOutlined />}
             onClick={() => { logout(); window.location.href = "/login"; }}
             danger
-            style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+            size={isMobile ? "small" : "middle"}
+            style={{ borderRadius: isMobile ? 6 : 10, height: isMobile ? 28 : 36, width: isMobile ? 28 : 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
           />
         </Tooltip>
 
         {/* Logo + title */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 6 : 8 }}>
           <div style={{
-            width: 30, height: 30, borderRadius: 8,
+            width: isMobile ? 26 : 30, height: isMobile ? 26 : 30, borderRadius: isMobile ? 6 : 8,
             background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimary}cc)`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            color: "#fff", fontWeight: 900, fontSize: 13, flexShrink: 0,
+            color: "#fff", fontWeight: 900, fontSize: isMobile ? 11 : 13, flexShrink: 0,
           }}>
             T
           </div>
-          <div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: token.colorText, lineHeight: 1.2 }}>{t.pointOfSale}</div>
-            <div style={{ fontSize: 10, color: token.colorTextSecondary, lineHeight: 1.2 }}>{currentBranch.name}</div>
-          </div>
-          <span style={{
-            fontSize: 9, fontWeight: 800, letterSpacing: "0.06em",
-            background: token.colorPrimaryBg, color: token.colorPrimary,
-            borderRadius: 5, padding: "2px 6px", textTransform: "uppercase",
-            border: `1px solid ${token.colorPrimary}30`,
-          }}>
-            POS
-          </span>
+          {!isMobile && (
+            <>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: token.colorText, lineHeight: 1.2 }}>{t.pointOfSale}</div>
+                <div style={{ fontSize: 10, color: token.colorTextSecondary, lineHeight: 1.2 }}>{currentBranch.name}</div>
+              </div>
+              <span style={{
+                fontSize: 9, fontWeight: 800, letterSpacing: "0.06em",
+                background: token.colorPrimaryBg, color: token.colorPrimary,
+                borderRadius: 5, padding: "2px 6px", textTransform: "uppercase",
+                border: `1px solid ${token.colorPrimary}30`,
+              }}>
+                POS
+              </span>
+            </>
+          )}
         </div>
 
         {/* Restaurant: attached table badge */}
@@ -490,61 +496,40 @@ function POSLayout() {
           {/* Mobile action buttons */}
           {isMobile && (
             <>
-              <Tooltip title={t.refund}>
+              <Button
+                icon={<GlobalOutlined />}
+                onClick={() => setLanguage(isRTL ? "en" : "ar")}
+                size="small"
+                style={{ borderRadius: 8, height: 32, width: 32, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+              />
+              <Dropdown
+                trigger={["click"]}
+                placement="bottomRight"
+                menu={{
+                  items: [
+                    { key: "refund", icon: <RollbackOutlined style={{ color: "#EF4444" }} />, label: t.refund, onClick: () => setRefundOpen(true) },
+                    { key: "exchange", icon: <SwapOutlined style={{ color: "#6366F1" }} />, label: t.exchange, onClick: () => setExchangeOpen(true) },
+                    { type: "divider" as const },
+                    { key: "giftcard", icon: <GiftOutlined />, label: t.issueGiftCard, onClick: () => setIssueGCOpen(true) },
+                    { key: "balance", icon: <WalletOutlined />, label: t.checkBalance, onClick: () => setCheckBalanceOpen(true) },
+                    { type: "divider" as const },
+                    { key: "theme", icon: <BgColorsOutlined />, label: "Theme", onClick: () => setCustomizerOpen(true) },
+                  ],
+                }}
+              >
                 <Button
-                  icon={<RollbackOutlined />}
-                  onClick={() => setRefundOpen(true)}
-                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#EF4444", borderColor: "#EF444440" }}
+                  icon={<MoreOutlined />}
+                  size="small"
+                  style={{ borderRadius: 8, height: 32, width: 32, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
                 />
-              </Tooltip>
-              <Tooltip title={t.exchange}>
-                <Button
-                  icon={<SwapOutlined />}
-                  onClick={() => setExchangeOpen(true)}
-                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#6366F1", borderColor: "#6366F140" }}
-                />
-              </Tooltip>
-              <Tooltip title={t.issueGiftCard}>
-                <Button
-                  icon={<GiftOutlined />}
-                  onClick={() => setIssueGCOpen(true)}
-                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-                />
-              </Tooltip>
-              <Tooltip title={t.checkBalance}>
-                <Button
-                  icon={<WalletOutlined />}
-                  onClick={() => setCheckBalanceOpen(true)}
-                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-                />
-              </Tooltip>
-              <Tooltip title={isRTL ? "Switch to English" : "التبديل إلى العربية"}>
-                <Button
-                  icon={<GlobalOutlined />}
-                  onClick={() => setLanguage(isRTL ? "en" : "ar")}
-                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700 }}
-                />
-              </Tooltip>
-              <Tooltip title={isFullscreen ? t.exitFullscreen : t.fullscreen}>
-                <Button
-                  icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
-                  onClick={toggleFullscreen}
-                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-                />
-              </Tooltip>
-              <Tooltip title="Theme Customizer">
-                <Button
-                  icon={<BgColorsOutlined />}
-                  onClick={() => setCustomizerOpen(true)}
-                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-                />
-              </Tooltip>
-              <Badge count={itemCount} color={token.colorPrimary}>
+              </Dropdown>
+              <Badge count={itemCount} color={token.colorPrimary} size="small">
                 <Button
                   type="primary"
                   icon={<ShoppingCartOutlined />}
                   onClick={() => setCartDrawerOpen(true)}
-                  style={{ borderRadius: 10, height: 38 }}
+                  size="small"
+                  style={{ borderRadius: 8, height: 32 }}
                 >
                   {t.cart}
                 </Button>
@@ -554,38 +539,48 @@ function POSLayout() {
         </div>
       </div>
 
-      {/* ── Offline Banner ──────────────────────────────────────────────────── */}
-      <OfflineBanner />
-
-      {/* ── Order Tabs Bar ──────────────────────────────────────────────────── */}
-      <OrderTabsBar onMergeClick={() => setMergeOpen(true)} isMobile={isMobile} />
-
       {/* ── Main Content ────────────────────────────────────────────────────── */}
       <div style={{
         flex: 1,
+        minHeight: 0,
         overflow: "hidden",
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        gap: isMobile ? 0 : 12,
-        padding: isMobile ? 0 : 12,
       }}>
-        {/* Left — Product Grid (60%) */}
+        {/* Left — Order Tabs + Product Grid (60%) */}
         <div style={{
-          flex: isMobile ? "1" : "0 0 60%",
+          flex: isMobile ? "1" : "1 1 60%",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
-          background: token.colorBgContainer,
-          borderRadius: isMobile ? 0 : 16,
-          border: isMobile ? "none" : `1px solid ${token.colorBorderSecondary}`,
-          padding: isMobile ? "12px 12px 0" : "16px",
         }}>
-          <ProductGrid onAdd={addToCart} isMobile={isMobile} />
+          <OfflineBanner />
+          <OrderTabsBar onMergeClick={() => setMergeOpen(true)} isMobile={isMobile} />
+          <div style={{
+            flex: 1,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            background: token.colorBgContainer,
+            borderRadius: 0,
+            border: "none",
+            padding: isMobile ? "12px 12px 0" : "12px",
+          }}>
+            <ProductGrid onAdd={addToCart} isMobile={isMobile} />
+          </div>
         </div>
 
-        {/* Right — Cart Panel (40%) — desktop only */}
+        {/* Right — Cart Panel (40%) — full height from navbar to bottom */}
         {!isMobile && (
-          <div style={{ flex: "0 0 calc(40% - 12px)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          <div style={{
+            flex: "1 1 40%",
+            minWidth: 320,
+            minHeight: 0,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            borderInlineStart: `1px solid ${token.colorBorderSecondary}`,
+          }}>
             <CartPanel isMobile={false} />
           </div>
         )}

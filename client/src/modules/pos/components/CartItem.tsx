@@ -15,24 +15,15 @@ import { getLineTotal } from "../store/posStore";
 import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../i18n/translations";
 
-// Common predefined modifiers — cashier can tap to quickly fill the note
 const QUICK_MODIFIERS = [
-  "No onions",
-  "No ice",
-  "Extra sauce",
-  "Well done",
-  "Medium rare",
-  "Extra shot",
-  "Soy milk",
-  "Gluten-free",
+  "No onions", "No ice", "Extra sauce", "Well done",
+  "Medium rare", "Extra shot", "Soy milk", "Gluten-free",
 ];
 
-// If note contains any of these words it gets flagged as an allergy alert
 const ALLERGY_KEYWORDS = ["allergy", "allergen", "nut", "gluten", "dairy", "lactose", "vegan", "halal", "حساسية", "مكسرات", "جلوتين"];
 
 function hasAllergyFlag(note: string) {
-  const lower = note.toLowerCase();
-  return ALLERGY_KEYWORDS.some((kw) => lower.includes(kw));
+  return ALLERGY_KEYWORDS.some((kw) => note.toLowerCase().includes(kw));
 }
 
 interface CartItemProps {
@@ -62,11 +53,8 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
   const isAllergy = hasNote && hasAllergyFlag(item.note!);
 
   function applyDiscount() {
-    if (discValue > 0) {
-      onSetDiscount(item.product.id, { type: discType, value: discValue });
-    } else {
-      onSetDiscount(item.product.id, undefined);
-    }
+    if (discValue > 0) onSetDiscount(item.product.id, { type: discType, value: discValue });
+    else onSetDiscount(item.product.id, undefined);
     setShowDiscount(false);
   }
 
@@ -90,8 +78,7 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
 
   function applyModifier(mod: string) {
     const current = noteValue.trim();
-    const next = current ? `${current}, ${mod}` : mod;
-    setNoteValue(next);
+    setNoteValue(current ? `${current}, ${mod}` : mod);
   }
 
   return (
@@ -99,79 +86,63 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        borderRadius: 10,
+        borderRadius: 8,
         background: hovered ? token.colorFillAlter : "transparent",
-        border: `1px solid ${isAllergy ? "#F59E0B60" : hovered ? token.colorBorderSecondary : "transparent"}`,
-        transition: "all 0.15s",
+        transition: "background 0.15s",
         overflow: "hidden",
+        borderInlineStart: `3px solid ${isAllergy ? "#F59E0B" : item.product.color}`,
       }}
     >
-      <div style={{ padding: "8px 10px" }}>
-        {/* Top row: icon + name + line total */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {/* Product color dot */}
+      {/* Main row: name + right side */}
+      <div style={{ display: "flex", alignItems: "center", padding: "7px 8px 7px 10px", gap: 8 }}>
+        {/* Left: name + subtitle */}
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
-            width: 28, height: 28, borderRadius: 7,
-            background: `linear-gradient(135deg, ${item.product.color}, ${item.product.color}bb)`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: "#fff", fontSize: 11, fontWeight: 800, flexShrink: 0,
+            fontSize: 12.5, fontWeight: 600, color: token.colorText,
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
           }}>
-            {item.product.name.charAt(0)}
+            {item.product.name}
           </div>
-
-          {/* Name + unit price */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{
-              fontSize: 12, fontWeight: 600, color: token.colorText,
-              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.3,
-            }}>
-              {item.product.name}
-              {isAllergy && (
-                <span style={{ marginLeft: 5, fontSize: 10, color: "#D97706", fontWeight: 700 }}>
-                  {t.allergyFlag}
-                </span>
-              )}
-            </div>
-            <div style={{ fontSize: 11, color: token.colorTextSecondary, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              ${item.product.price.toFixed(2)} / {item.product.unit}
-              {hasNote && !isAllergy && (
-                <span style={{ marginLeft: 6, color: token.colorTextTertiary, fontStyle: "italic" }}>
-                  · {item.note}
-                </span>
-              )}
-            </div>
-            {hasNote && isAllergy && (
-              <div style={{ fontSize: 10, color: "#D97706", marginTop: 2, fontStyle: "italic", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {item.note}
-              </div>
-            )}
-          </div>
-
-          {/* Line total */}
-          <div style={{ textAlign: "right", flexShrink: 0 }}>
+          <div style={{
+            fontSize: 11, color: token.colorTextSecondary, marginTop: 1,
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            display: "flex", alignItems: "center", gap: 4,
+          }}>
             {hasDiscount ? (
               <>
-                <div style={{ fontSize: 10, color: token.colorTextTertiary, textDecoration: "line-through", lineHeight: 1.2 }}>
+                <span style={{ textDecoration: "line-through", fontSize: 10, color: token.colorTextQuaternary }}>
                   ${rawTotal.toFixed(2)}
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: token.colorSuccess }}>
+                </span>
+                <span style={{ fontWeight: 700, color: token.colorSuccess }}>
                   ${lineTotal.toFixed(2)}
-                </div>
+                </span>
               </>
             ) : (
-              <div style={{ fontSize: 13, fontWeight: 700, color: token.colorText }}>
+              <span style={{ fontWeight: 600 }}>
                 ${lineTotal.toFixed(2)}
-              </div>
+              </span>
+            )}
+            <span style={{ color: token.colorTextQuaternary }}>·</span>
+            <span>${item.product.price.toFixed(2)} × {item.quantity}</span>
+            {hasNote && (
+              <span style={{
+                marginInlineStart: 2,
+                color: isAllergy ? "#D97706" : token.colorTextTertiary,
+                fontStyle: "italic", fontSize: 10,
+              }}>
+                {isAllergy && <WarningOutlined style={{ marginInlineEnd: 2, fontSize: 9 }} />}
+                {item.note}
+              </span>
             )}
           </div>
         </div>
 
-        {/* Bottom row: qty controls + action buttons */}
-        <div style={{ display: "flex", alignItems: "center", marginTop: 6, paddingLeft: 36 }}>
-          {/* Quantity controls */}
+        {/* Right: actions always visible */}
+        <div style={{ display: "flex", alignItems: "center", gap: 3, flexShrink: 0 }}>
+          {/* Qty stepper */}
           <div style={{
-            display: "flex", alignItems: "center", gap: 0,
-            background: token.colorFillAlter,
+            display: "flex", alignItems: "center",
+            background: token.colorBgContainer,
             borderRadius: 6,
             border: `1px solid ${token.colorBorderSecondary}`,
             overflow: "hidden",
@@ -179,17 +150,16 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
             <button
               onClick={() => onQuantityChange(item.product.id, item.quantity - 1)}
               style={{
-                width: 26, height: 24, border: "none",
-                background: "transparent", cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                color: token.colorTextSecondary, fontSize: 10,
+                width: 22, height: 22, border: "none", background: "transparent",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                color: token.colorTextSecondary, fontSize: 9, padding: 0,
               }}
             >
               <MinusOutlined />
             </button>
             <span style={{
-              minWidth: 28, textAlign: "center", fontSize: 12, fontWeight: 700,
-              color: token.colorText, lineHeight: "24px",
+              minWidth: 20, textAlign: "center", fontSize: 11, fontWeight: 700,
+              color: token.colorText, lineHeight: "22px",
               borderInline: `1px solid ${token.colorBorderSecondary}`,
             }}>
               {item.quantity}
@@ -198,89 +168,77 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
               onClick={() => onQuantityChange(item.product.id, item.quantity + 1)}
               disabled={item.quantity >= item.product.stock}
               style={{
-                width: 26, height: 24, border: "none",
-                background: "transparent",
+                width: 22, height: 22, border: "none", background: "transparent",
                 cursor: item.quantity >= item.product.stock ? "default" : "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 color: item.quantity >= item.product.stock ? token.colorTextQuaternary : token.colorTextSecondary,
-                fontSize: 10,
+                fontSize: 9, padding: 0,
               }}
             >
               <PlusOutlined />
             </button>
           </div>
 
-          {/* Spacer */}
-          <div style={{ flex: 1 }} />
+          {/* Note */}
+          <Tooltip title={hasNote ? item.note : t.itemNote}>
+            <button
+              onClick={() => { setNoteValue(item.note ?? ""); setShowNote((v) => !v); setShowDiscount(false); }}
+              style={{
+                width: 24, height: 24, borderRadius: 6, border: "none",
+                background: hasNote ? `${token.colorPrimary}15` : "transparent",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                color: isAllergy ? "#D97706" : hasNote ? token.colorPrimary : token.colorTextSecondary,
+                fontSize: 12,
+              }}
+            >
+              <MessageOutlined />
+            </button>
+          </Tooltip>
 
-          {/* Action buttons */}
-          <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Tooltip title={hasNote ? item.note : t.itemNote}>
-              <button
-                onClick={() => { setNoteValue(item.note ?? ""); setShowNote((v) => !v); setShowDiscount(false); }}
-                style={{
-                  width: 24, height: 24, borderRadius: 6, border: "none",
-                  background: "transparent", cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  color: isAllergy ? "#D97706" : hasNote ? token.colorPrimary : token.colorTextTertiary,
-                  fontSize: 12,
-                  opacity: hovered || hasNote ? 1 : 0.4,
-                  transition: "opacity 0.15s",
-                }}
-              >
-                {hasNote && isAllergy ? <WarningOutlined /> : <MessageOutlined />}
-              </button>
-            </Tooltip>
-            <Tooltip title={hasDiscount ? t.removeDiscount : t.itemDiscount}>
-              <button
-                onClick={() => {
-                  if (hasDiscount && !showDiscount) { removeDiscount(); }
-                  else { setShowDiscount((v) => !v); setShowNote(false); }
-                }}
-                style={{
-                  width: 24, height: 24, borderRadius: 6, border: "none",
-                  background: "transparent", cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  color: hasDiscount ? token.colorSuccess : token.colorTextTertiary,
-                  fontSize: 12,
-                  opacity: hovered || hasDiscount ? 1 : 0.4,
-                  transition: "opacity 0.15s",
-                }}
-              >
-                <TagOutlined />
-              </button>
-            </Tooltip>
-            <Tooltip title={t.removeItem}>
-              <button
-                onClick={() => onRemove(item.product.id)}
-                style={{
-                  width: 24, height: 24, borderRadius: 6, border: "none",
-                  background: "transparent", cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  color: token.colorError,
-                  fontSize: 12,
-                  opacity: hovered ? 1 : 0.4,
-                  transition: "opacity 0.15s",
-                }}
-              >
-                <DeleteOutlined />
-              </button>
-            </Tooltip>
-          </div>
+          {/* Discount */}
+          <Tooltip title={hasDiscount ? t.removeDiscount : t.itemDiscount}>
+            <button
+              onClick={() => {
+                if (hasDiscount && !showDiscount) removeDiscount();
+                else { setShowDiscount((v) => !v); setShowNote(false); }
+              }}
+              style={{
+                width: 24, height: 24, borderRadius: 6, border: "none",
+                background: hasDiscount ? `${token.colorSuccess}15` : "transparent",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                color: hasDiscount ? token.colorSuccess : token.colorTextSecondary,
+                fontSize: 12,
+              }}
+            >
+              <TagOutlined />
+            </button>
+          </Tooltip>
+
+          {/* Delete */}
+          <Tooltip title={t.removeItem}>
+            <button
+              onClick={() => onRemove(item.product.id)}
+              style={{
+                width: 24, height: 24, borderRadius: 6, border: "none",
+                background: "transparent", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: token.colorError, fontSize: 12,
+              }}
+            >
+              <DeleteOutlined />
+            </button>
+          </Tooltip>
         </div>
       </div>
 
       {/* Item note editor */}
       {showNote && (
         <div style={{
-          padding: "8px 12px 10px",
+          padding: "6px 10px 8px",
           borderTop: `1px dashed ${token.colorBorderSecondary}`,
           background: token.colorFillQuaternary,
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
+          display: "flex", flexDirection: "column", gap: 6,
         }}>
-          {/* Quick modifier chips */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
             {QUICK_MODIFIERS.map((mod) => (
               <Tag
@@ -290,16 +248,13 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
                   cursor: "pointer", borderRadius: 12, fontSize: 10,
                   padding: "1px 8px", lineHeight: "18px",
                   borderColor: token.colorBorderSecondary,
-                  color: token.colorTextSecondary,
-                  userSelect: "none",
+                  color: token.colorTextSecondary, userSelect: "none",
                 }}
               >
                 {mod}
               </Tag>
             ))}
           </div>
-
-          {/* Free-text input */}
           <div style={{ display: "flex", gap: 6 }}>
             <Input
               size="small"
@@ -311,30 +266,11 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
               style={{ borderRadius: 6, fontSize: 12, flex: 1 }}
               prefix={<MessageOutlined style={{ color: token.colorTextTertiary, fontSize: 11 }} />}
             />
-            <Button
-              size="small"
-              type="primary"
-              icon={<CheckOutlined />}
-              onClick={saveNote}
-              style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-            />
-            {hasNote && (
-              <Button
-                size="small"
-                danger
-                icon={<CloseOutlined />}
-                onClick={clearNote}
-                style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-              />
-            )}
-            {!hasNote && (
-              <Button
-                size="small"
-                icon={<CloseOutlined />}
-                onClick={() => setShowNote(false)}
-                style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-              />
-            )}
+            <Button size="small" type="primary" icon={<CheckOutlined />} onClick={saveNote}
+              style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }} />
+            <Button size="small" danger={hasNote} icon={<CloseOutlined />}
+              onClick={hasNote ? clearNote : () => setShowNote(false)}
+              style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }} />
           </div>
         </div>
       )}
@@ -343,43 +279,22 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
       {showDiscount && (
         <div style={{
           display: "flex", alignItems: "center", gap: 6,
-          padding: "6px 12px 10px",
+          padding: "6px 10px 8px",
           borderTop: `1px dashed ${token.colorBorderSecondary}`,
           background: token.colorFillQuaternary,
         }}>
           <TagOutlined style={{ color: token.colorTextSecondary, fontSize: 12 }} />
-          <Select
-            size="small"
-            value={discType}
-            onChange={setDiscType}
+          <Select size="small" value={discType} onChange={setDiscType}
             options={[{ label: "%", value: "percent" }, { label: "$", value: "fixed" }]}
-            style={{ width: 60 }}
-          />
-          <InputNumber
-            size="small"
-            min={0}
-            max={discType === "percent" ? 100 : rawTotal}
-            precision={discType === "percent" ? 0 : 2}
-            value={discValue}
-            onChange={(v) => setDiscValue(v ?? 0)}
-            placeholder="0"
-            style={{ flex: 1, borderRadius: 6 }}
-            onPressEnter={applyDiscount}
-            autoFocus
-          />
-          <Button
-            size="small"
-            type="primary"
-            icon={<CheckOutlined />}
-            onClick={applyDiscount}
-            style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-          />
-          <Button
-            size="small"
-            icon={<CloseOutlined />}
-            onClick={() => setShowDiscount(false)}
-            style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-          />
+            style={{ width: 60 }} />
+          <InputNumber size="small" min={0} max={discType === "percent" ? 100 : rawTotal}
+            precision={discType === "percent" ? 0 : 2} value={discValue}
+            onChange={(v) => setDiscValue(v ?? 0)} placeholder="0"
+            style={{ flex: 1, borderRadius: 6 }} onPressEnter={applyDiscount} autoFocus />
+          <Button size="small" type="primary" icon={<CheckOutlined />} onClick={applyDiscount}
+            style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }} />
+          <Button size="small" icon={<CloseOutlined />} onClick={() => setShowDiscount(false)}
+            style={{ borderRadius: 6, height: 28, width: 28, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }} />
         </div>
       )}
     </div>

@@ -43,10 +43,10 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
     : 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
 
       {/* Method selector */}
-      <div style={{ display: "flex", gap: 6 }}>
+      <div style={{ display: "flex", gap: 4 }}>
         {PAYMENT_METHODS.map(({ value, label, icon }) => {
           const active = paymentMethod === value;
           return (
@@ -56,12 +56,11 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
               style={{
                 flex: 1,
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 3,
-                padding: "8px 4px",
-                borderRadius: 10,
+                gap: 5,
+                padding: "5px 4px",
+                borderRadius: 8,
                 border: `1.5px solid ${active ? token.colorPrimary : token.colorBorderSecondary}`,
                 background: active ? token.colorPrimaryBg : "transparent",
                 color: active ? token.colorPrimary : token.colorTextSecondary,
@@ -69,10 +68,10 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
                 transition: "all 0.18s",
                 fontSize: 11,
                 fontWeight: active ? 700 : 500,
-                minHeight: 52,
+                height: 34,
               }}
             >
-              <span style={{ fontSize: 15 }}>{icon}</span>
+              <span style={{ fontSize: 13 }}>{icon}</span>
               <span>{label}</span>
             </button>
           );
@@ -81,36 +80,34 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
 
       {/* Cash fields */}
       {paymentMethod === "cash" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 12, color: token.colorTextSecondary, width: 90, flexShrink: 0 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ fontSize: 11, color: token.colorTextSecondary, width: 80, flexShrink: 0 }}>
               {t.amountGiven}
             </span>
             <InputNumber
-              style={{ flex: 1, borderRadius: 8 }}
+              style={{ flex: 1, borderRadius: 6 }}
               min={0}
               precision={2}
               value={cashGiven || undefined}
               onChange={(v) => setCashGiven(v ?? 0)}
               prefix="$"
               placeholder="0.00"
-              size="middle"
+              size="small"
             />
           </div>
           {cashGiven > 0 && (
             <div style={{
               display: "flex",
               justifyContent: "space-between",
-              padding: "8px 12px",
-              borderRadius: 8,
-              background: change >= 0
-                ? "#10B98112"
-                : "#EF444412",
+              padding: "4px 10px",
+              borderRadius: 6,
+              background: change >= 0 ? "#10B98112" : "#EF444412",
               border: `1px solid ${change >= 0 ? "#10B98130" : "#EF444430"}`,
             }}>
-              <span style={{ fontSize: 12, color: token.colorTextSecondary }}>{t.change}</span>
+              <span style={{ fontSize: 11, color: token.colorTextSecondary }}>{t.change}</span>
               <span style={{
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 800,
                 color: change >= 0 ? "#10B981" : "#EF4444",
               }}>
@@ -123,15 +120,16 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
 
       {/* Card fields */}
       {paymentMethod === "card" && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 12, color: token.colorTextSecondary, width: 90, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ fontSize: 11, color: token.colorTextSecondary, width: 80, flexShrink: 0 }}>
             {t.refTxnId}
           </span>
           <Input
-            style={{ flex: 1, borderRadius: 8 }}
+            style={{ flex: 1, borderRadius: 6 }}
             value={cardRef}
             onChange={(e) => setCardRef(e.target.value)}
             placeholder="Transaction ID"
+            size="small"
           />
         </div>
       )}

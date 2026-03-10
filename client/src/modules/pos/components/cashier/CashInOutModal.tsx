@@ -185,7 +185,7 @@ export function CashInOutModal({ type, open, onClose }: Props) {
                 ${(isIn ? currentTotal + amount : currentTotal - amount).toFixed(2)}
               </strong>
               {!isIn && currentTotal - amount < 0 && (
-                <Tag color="error" style={{ fontSize: 10, borderRadius: 4, marginLeft: 4 }}>
+                <Tag color="error" style={{ fontSize: 10, borderRadius: 4, marginInlineStart: 4 }}>
                   Negative balance
                 </Tag>
               )}

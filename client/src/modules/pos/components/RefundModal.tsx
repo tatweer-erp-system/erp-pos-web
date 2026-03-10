@@ -311,7 +311,7 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
                         style={{ width: 26, height: 26, padding: 0, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center" }}
                       />
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: token.colorError, minWidth: 58, textAlign: "right" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: token.colorError, minWidth: 58, textAlign: "end" }}>
                       ${(item.price * selQty).toFixed(2)}
                     </div>
                   </div>
