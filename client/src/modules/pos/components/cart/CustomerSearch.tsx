@@ -6,11 +6,12 @@ import {
   MailOutlined,
   PlusOutlined,
   SearchOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { searchCustomers, createCustomer } from "../../services/customerService";
 import { usePOSStore } from "../../store/posStore";
 import type { Customer } from "../../data/mockCustomers";
-import { getTier } from "../../data/mockCustomers";
+import { getTier, WALK_IN_CUSTOMER } from "../../data/mockCustomers";
 import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../../i18n/translations";
 
@@ -22,7 +23,10 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
+  const attachedCustomer = usePOSStore((s) => s.attachedCustomer);
   const setAttachedCustomer = usePOSStore((s) => s.setAttachedCustomer);
+
+  const isWalkIn = attachedCustomer?.id === WALK_IN_CUSTOMER.id;
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Customer[]>([]);
@@ -89,34 +93,78 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  function handleWalkIn() {
+    setAttachedCustomer(WALK_IN_CUSTOMER);
+    message.success(t.walkInCustomer);
+  }
+
   return (
     <>
       <div ref={containerRef} style={{ position: "relative" }}>
-        <Input
-          placeholder={t.searchCustomerPlaceholder}
-          prefix={
-            isSearching
-              ? <Spin size="small" />
-              : <UserOutlined style={{ color: token.colorTextPlaceholder }} />
-          }
-          suffix={
-            <Tooltip title={t.quickAddCustomer}>
+        <div style={{ display: "flex", gap: 6 }}>
+          <Input
+            placeholder={t.searchCustomerPlaceholder}
+            prefix={
+              isSearching
+                ? <Spin size="small" />
+                : <UserOutlined style={{ color: token.colorTextPlaceholder }} />
+            }
+            suffix={
+              <Tooltip title={t.quickAddCustomer}>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<PlusOutlined />}
+                  onClick={() => setAddModalOpen(true)}
+                  style={{ height: 24, width: 24, padding: 0 }}
+                />
+              </Tooltip>
+            }
+            value={query}
+            onChange={handleChange}
+            onFocus={() => query && setShowDropdown(true)}
+            style={{ borderRadius: 10, height: 40, flex: 1 }}
+            allowClear
+            onClear={() => { setQuery(""); setResults([]); setShowDropdown(false); }}
+          />
+          {isWalkIn ? (
+            <Button
+              onClick={() => setAttachedCustomer(null)}
+              icon={<UserOutlined />}
+              style={{
+                borderRadius: 10,
+                height: 40,
+                fontSize: 11,
+                fontWeight: 600,
+                flexShrink: 0,
+                background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryHover})`,
+                borderColor: token.colorPrimary,
+                color: "#fff",
+              }}
+            >
+              {!isMobile && t.walkInCustomer}
+              <CloseOutlined style={{ fontSize: 9, marginInlineStart: 4 }} />
+            </Button>
+          ) : !attachedCustomer ? (
+            <Tooltip title={t.walkInCustomer}>
               <Button
-                type="text"
-                size="small"
-                icon={<PlusOutlined />}
-                onClick={() => setAddModalOpen(true)}
-                style={{ height: 24, width: 24, padding: 0 }}
-              />
+                onClick={handleWalkIn}
+                icon={<UserOutlined />}
+                style={{
+                  borderRadius: 10,
+                  height: 40,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  flexShrink: 0,
+                  borderColor: token.colorPrimary + "40",
+                  color: token.colorPrimary,
+                }}
+              >
+                {!isMobile && t.walkInCustomer}
+              </Button>
             </Tooltip>
-          }
-          value={query}
-          onChange={handleChange}
-          onFocus={() => query && setShowDropdown(true)}
-          style={{ borderRadius: 10, height: 40 }}
-          allowClear
-          onClear={() => { setQuery(""); setResults([]); setShowDropdown(false); }}
-        />
+          ) : null}
+        </div>
 
         {/* Results dropdown */}
         {showDropdown && (

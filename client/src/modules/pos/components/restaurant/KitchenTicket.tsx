@@ -21,11 +21,15 @@ export function KitchenTicket({ items, orderNumber, compact = false }: KitchenTi
   const cashierSession = usePOSStore((s) => s.cashierSession);
   const attachedTable  = usePOSStore((s) => s.attachedTable);
   const guestCount     = usePOSStore((s) => s.guestCount);
+  const orderType      = usePOSStore((s) => s.orderType);
 
   const [sending, setSending] = useState(false);
 
+  const orderTypeLabel = { "dine-in": t.dineIn, "takeaway": t.takeaway, "delivery": t.delivery }[orderType];
+
   const ticketData = {
     orderNumber: orderNumber ?? `ORD-${Date.now().toString().slice(-5)}`,
+    orderType:   orderTypeLabel,
     tableName:   attachedTable?.name,
     guestCount,
     timestamp:   new Date().toISOString(),

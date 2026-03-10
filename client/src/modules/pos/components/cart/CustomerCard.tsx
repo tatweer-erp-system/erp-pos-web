@@ -1,7 +1,7 @@
 import { Button, Tag, Tooltip, theme as antTheme } from "antd";
 import { CloseOutlined, PhoneOutlined, StarOutlined, TrophyOutlined } from "@ant-design/icons";
 import { usePOSStore } from "../../store/posStore";
-import { getTier } from "../../data/mockCustomers";
+import { getTier, WALK_IN_CUSTOMER } from "../../data/mockCustomers";
 import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../../i18n/translations";
 
@@ -13,7 +13,8 @@ export function CustomerCard() {
   const setAttachedCustomer = usePOSStore((s) => s.setAttachedCustomer);
   const pointsEarned = usePOSStore((s) => s.pointsEarned);
 
-  if (!attachedCustomer) return null;
+  // Walk-in customer is shown inline in the CustomerSearch button
+  if (!attachedCustomer || attachedCustomer.id === WALK_IN_CUSTOMER.id) return null;
 
   const tier = getTier(attachedCustomer.loyaltyPoints);
   const willEarn = pointsEarned();
@@ -71,10 +72,12 @@ export function CustomerCard() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 3, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 11, color: token.colorTextSecondary, display: "flex", alignItems: "center", gap: 3 }}>
-            <PhoneOutlined style={{ fontSize: 9 }} />
-            {attachedCustomer.phone}
-          </span>
+          {attachedCustomer.phone && (
+            <span style={{ fontSize: 11, color: token.colorTextSecondary, display: "flex", alignItems: "center", gap: 3 }}>
+              <PhoneOutlined style={{ fontSize: 9 }} />
+              {attachedCustomer.phone}
+            </span>
+          )}
           <span style={{ fontSize: 11, color: token.colorTextSecondary, display: "flex", alignItems: "center", gap: 3 }}>
             <StarOutlined style={{ fontSize: 9, color: "#F59E0B" }} />
             <span style={{ fontWeight: 600 }}>{attachedCustomer.loyaltyPoints.toLocaleString()}</span> pts balance

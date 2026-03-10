@@ -2,12 +2,15 @@ import { theme as antTheme, Tag, Tooltip } from "antd";
 import { TeamOutlined, ClockCircleOutlined, DollarOutlined } from "@ant-design/icons";
 import type { RestaurantTable } from "../../data/mockRestaurant";
 import { getSection, formatSeatedDuration } from "../../data/mockRestaurant";
+import { TableActions } from "./TableActions";
 import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../../i18n/translations";
 
 interface TableCardProps {
   table: RestaurantTable;
   onClick: (table: RestaurantTable) => void;
+  onUpdated?: () => void;
+  availableTables?: RestaurantTable[];
 }
 
 const STATUS_CONFIG = {
@@ -16,7 +19,7 @@ const STATUS_CONFIG = {
   reserved:  { color: "#6366F1", bg: "#EEF2FF", border: "#6366F130", label: "reservedStatus"  },
 } as const;
 
-export function TableCard({ table, onClick }: TableCardProps) {
+export function TableCard({ table, onClick, onUpdated, availableTables }: TableCardProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
@@ -153,6 +156,15 @@ export function TableCard({ table, onClick }: TableCardProps) {
               </div>
             )}
           </div>
+        )}
+
+        {/* Table Actions */}
+        {onUpdated && (
+          <TableActions
+            table={table}
+            onUpdated={onUpdated}
+            availableTables={availableTables}
+          />
         )}
       </div>
     </Tooltip>

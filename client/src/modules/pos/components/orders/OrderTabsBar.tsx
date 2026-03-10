@@ -3,12 +3,25 @@ import { Button, Modal, Tooltip, theme as antTheme } from "antd";
 import {
   PlusOutlined,
   CloseOutlined,
-  ShoppingCartOutlined,
   MergeCellsOutlined,
+  CoffeeOutlined,
+  ShoppingOutlined,
+  CarOutlined,
 } from "@ant-design/icons";
-import { usePOSStore } from "../../store/posStore";
+import { usePOSStore, type OrderType } from "../../store/posStore";
 import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../../i18n/translations";
+
+const ORDER_TYPE_ICON: Record<OrderType, React.ReactNode> = {
+  "dine-in":  <CoffeeOutlined />,
+  "takeaway": <ShoppingOutlined />,
+  "delivery": <CarOutlined />,
+};
+const ORDER_TYPE_COLOR: Record<OrderType, string> = {
+  "dine-in":  "#3B82F6",
+  "takeaway": "#10B981",
+  "delivery": "#6366F1",
+};
 
 interface OrderTabsBarProps {
   onMergeClick: () => void;
@@ -53,8 +66,8 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
       <div style={{
         display: "flex",
         alignItems: "center",
-        gap: 4,
-        padding: "6px 12px",
+        gap: 6,
+        padding: "5px 12px",
         background: token.colorBgLayout,
         borderBottom: `1px solid ${token.colorBorderSecondary}`,
         overflowX: "auto",
@@ -70,6 +83,7 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
             0
           );
           const itemCount = order.cartItems.reduce((n, item) => n + item.quantity, 0);
+          const typeColor = ORDER_TYPE_COLOR[order.orderType];
 
           return (
             <div
@@ -78,44 +92,68 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 6,
-                padding: isMobile ? "5px 10px" : "6px 12px",
-                borderRadius: 8,
+                gap: 8,
+                padding: isMobile ? "6px 10px" : "7px 14px",
+                borderRadius: 10,
                 cursor: "pointer",
                 flexShrink: 0,
                 background: isActive
                   ? token.colorBgContainer
                   : "transparent",
                 border: isActive
-                  ? `1.5px solid ${token.colorPrimary}40`
+                  ? `1.5px solid ${typeColor}50`
                   : `1.5px solid transparent`,
-                boxShadow: isActive ? `0 1px 6px ${token.colorPrimary}18` : "none",
-                transition: "all 0.15s",
+                boxShadow: isActive ? `0 2px 8px ${typeColor}15` : "none",
+                transition: "all 0.18s",
                 position: "relative",
               }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLElement).style.background = `${token.colorFillAlter}`;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLElement).style.background = "transparent";
+                }
+              }}
             >
-              {/* Active indicator line */}
+              {/* Active bottom accent */}
               {isActive && (
                 <div style={{
                   position: "absolute",
                   bottom: -1,
-                  left: 8,
-                  right: 8,
-                  height: 2,
+                  left: 10,
+                  right: 10,
+                  height: 2.5,
                   borderRadius: "2px 2px 0 0",
-                  background: token.colorPrimary,
+                  background: `linear-gradient(90deg, ${typeColor}, ${typeColor}80)`,
                 }} />
               )}
 
-              {/* Cart icon */}
-              <ShoppingCartOutlined style={{
+              {/* Order type icon with colored dot */}
+              <div style={{
+                width: 26,
+                height: 26,
+                borderRadius: 8,
+                background: isActive ? `${typeColor}15` : token.colorFillAlter,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 fontSize: 12,
-                color: isActive ? token.colorPrimary : token.colorTextTertiary,
-              }} />
+                color: isActive ? typeColor : token.colorTextTertiary,
+                transition: "all 0.18s",
+                flexShrink: 0,
+              }}>
+                {ORDER_TYPE_ICON[order.orderType]}
+              </div>
 
-              {/* Label */}
+              {/* Label + total */}
               <div style={{ lineHeight: 1.2 }}>
                 <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
                   fontSize: 12,
                   fontWeight: isActive ? 700 : 500,
                   color: isActive ? token.colorText : token.colorTextSecondary,
@@ -124,13 +162,15 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
                   {t.order(i + 1)}
                   {itemCount > 0 && (
                     <span style={{
-                      marginInlineStart: 4,
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: isActive ? token.colorPrimary : token.colorTextTertiary,
-                      background: isActive ? `${token.colorPrimary}18` : token.colorFillAlter,
-                      borderRadius: 4,
-                      padding: "0 4px",
+                      fontSize: 9,
+                      fontWeight: 800,
+                      color: "#fff",
+                      background: isActive ? typeColor : token.colorTextTertiary,
+                      borderRadius: 10,
+                      padding: "1px 5px",
+                      minWidth: 16,
+                      textAlign: "center",
+                      lineHeight: "14px",
                     }}>
                       {itemCount}
                     </span>
@@ -139,8 +179,9 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
                 {!isMobile && (
                   <div style={{
                     fontSize: 11,
-                    color: isActive ? token.colorPrimary : token.colorTextTertiary,
+                    color: isActive ? typeColor : token.colorTextQuaternary,
                     fontWeight: isActive ? 600 : 400,
+                    marginTop: 1,
                   }}>
                     ${total.toFixed(2)}
                   </div>
@@ -152,26 +193,27 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
                 <div
                   onClick={(e) => handleCloseTab(i, e)}
                   style={{
-                    width: 16,
-                    height: 16,
-                    borderRadius: 4,
+                    width: 18,
+                    height: 18,
+                    borderRadius: 6,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: token.colorTextTertiary,
+                    color: token.colorTextQuaternary,
                     cursor: "pointer",
                     flexShrink: 0,
+                    transition: "all 0.12s",
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = token.colorFillSecondary;
+                    (e.currentTarget as HTMLElement).style.background = `${token.colorError}15`;
                     (e.currentTarget as HTMLElement).style.color = token.colorError;
                   }}
                   onMouseLeave={(e) => {
                     (e.currentTarget as HTMLElement).style.background = "transparent";
-                    (e.currentTarget as HTMLElement).style.color = token.colorTextTertiary;
+                    (e.currentTarget as HTMLElement).style.color = token.colorTextQuaternary;
                   }}
                 >
-                  <CloseOutlined style={{ fontSize: 9 }} />
+                  <CloseOutlined style={{ fontSize: 8 }} />
                 </div>
               )}
             </div>
@@ -187,15 +229,15 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
             onClick={addOrder}
             disabled={atMax}
             style={{
-              borderRadius: 8,
-              height: 32,
-              width: 32,
+              borderRadius: 10,
+              height: 34,
+              width: 34,
               padding: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
-              border: `1.5px dashed ${atMax ? token.colorBorderSecondary : token.colorPrimary}40`,
+              border: `1.5px dashed ${atMax ? token.colorBorderSecondary : token.colorPrimary}50`,
               color: atMax ? token.colorTextTertiary : token.colorPrimary,
             }}
           />
@@ -214,7 +256,7 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
               style={{
                 borderRadius: 8,
                 height: 28,
-                fontSize: 12,
+                fontSize: 11,
                 flexShrink: 0,
               }}
             >

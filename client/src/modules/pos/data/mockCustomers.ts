@@ -23,6 +23,18 @@ export interface Customer {
   transactionCount: number;
 }
 
+/** Default walk-in customer used when no specific customer is selected */
+export const WALK_IN_CUSTOMER: Customer = {
+  id: "walk-in",
+  name: "Walk-in Customer",
+  phone: "",
+  loyaltyPoints: 0,
+  tierId: "bronze",
+  joinDate: "",
+  totalSpent: 0,
+  transactionCount: 0,
+};
+
 export const LOYALTY_TIERS: LoyaltyTier[] = [
   {
     id: "bronze",

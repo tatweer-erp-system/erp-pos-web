@@ -8,6 +8,7 @@ import type { RestaurantTable } from "../data/mockRestaurant";
 
 export type PaymentMethod = "cash" | "card" | "split";
 export type DiscountType = "percent" | "fixed";
+export type OrderType = "dine-in" | "takeaway" | "delivery";
 
 export interface LineDiscount {
   type: DiscountType;
@@ -107,6 +108,8 @@ export interface POSSessionSettings {
 // ── Per-order state snapshot ──────────────────────────────────────────────────
 export interface OrderTab {
   id: string;
+  /** Order type: dine-in, takeaway, or delivery */
+  orderType: OrderType;
   cartItems: CartItem[];
   attachedCustomer: Customer | null;
   redeemPoints: number;
@@ -127,11 +130,18 @@ export interface OrderTab {
   attachedTable: RestaurantTable | null;
   /** Restaurant: number of guests at this table */
   guestCount: number;
+  /** Delivery: customer address */
+  deliveryAddress: string;
+  /** Delivery: delivery fee */
+  deliveryFee: number;
+  /** Delivery: estimated delivery time (e.g. "30", "45", "60" minutes) */
+  deliveryTime: string;
 }
 
 export function createEmptyOrder(id?: string): OrderTab {
   return {
     id: id ?? `order-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    orderType: "dine-in",
     cartItems: [],
     attachedCustomer: null,
     redeemPoints: 0,
@@ -148,6 +158,9 @@ export function createEmptyOrder(id?: string): OrderTab {
     tipAmount: 0,
     attachedTable: null,
     guestCount: 1,
+    deliveryAddress: "",
+    deliveryFee: 0,
+    deliveryTime: "",
   };
 }
 
@@ -156,6 +169,7 @@ export function createEmptyOrder(id?: string): OrderTab {
 /** Extract the flat-state fields for the active order from a full order tab */
 function flatFromOrder(order: OrderTab): Partial<POSState> {
   return {
+    orderType: order.orderType,
     cartItems: order.cartItems,
     attachedCustomer: order.attachedCustomer,
     redeemPoints: order.redeemPoints,
@@ -172,6 +186,9 @@ function flatFromOrder(order: OrderTab): Partial<POSState> {
     tipAmount: order.tipAmount,
     attachedTable: order.attachedTable,
     guestCount: order.guestCount,
+    deliveryAddress: order.deliveryAddress,
+    deliveryFee: order.deliveryFee,
+    deliveryTime: order.deliveryTime,
   };
 }
 
@@ -217,6 +234,10 @@ interface POSState {
   /** Restore orders from sessionStorage on mount */
   restoreOrders: (orders: OrderTab[], activeIndex: number) => void;
   setMaxOrders: (n: number) => void;
+
+  // ── Order type ──────────────────────────────────────────────────────────
+  orderType: OrderType;
+  setOrderType: (type: OrderType) => void;
 
   // ── Cart ──────────────────────────────────────────────────────────────────
   cartItems: CartItem[];
@@ -317,6 +338,14 @@ interface POSState {
   setFailedCount: (n: number) => void;
   isSyncing: boolean;
   setIsSyncing: (v: boolean) => void;
+
+  // ── Delivery ─────────────────────────────────────────────────────────────
+  deliveryAddress: string;
+  setDeliveryAddress: (addr: string) => void;
+  deliveryFee: number;
+  setDeliveryFee: (fee: number) => void;
+  deliveryTime: string;
+  setDeliveryTime: (time: string) => void;
 
   // ── Restaurant — attached table ───────────────────────────────────────────
   attachedTable: RestaurantTable | null;
@@ -468,6 +497,42 @@ export const usePOSStore = create<POSState>()((set, get) => ({
     set({ maxOrders: Math.min(10, Math.max(1, n)) });
   },
 
+  // ── Order type ──────────────────────────────────────────────────────────
+  orderType: INITIAL_ORDER.orderType,
+
+  setOrderType(type) {
+    set((state) => ({
+      orderType: type,
+      orders: syncOrder(state, state.activeOrderIndex, { orderType: type }),
+    }));
+  },
+
+  // ── Delivery ────────────────────────────────────────────────────────────
+  deliveryAddress: INITIAL_ORDER.deliveryAddress,
+  deliveryFee: INITIAL_ORDER.deliveryFee,
+  deliveryTime: INITIAL_ORDER.deliveryTime,
+
+  setDeliveryAddress(addr) {
+    set((state) => ({
+      deliveryAddress: addr,
+      orders: syncOrder(state, state.activeOrderIndex, { deliveryAddress: addr }),
+    }));
+  },
+
+  setDeliveryFee(fee) {
+    set((state) => ({
+      deliveryFee: fee,
+      orders: syncOrder(state, state.activeOrderIndex, { deliveryFee: fee }),
+    }));
+  },
+
+  setDeliveryTime(time) {
+    set((state) => ({
+      deliveryTime: time,
+      orders: syncOrder(state, state.activeOrderIndex, { deliveryTime: time }),
+    }));
+  },
+
   // ── Cart ──────────────────────────────────────────────────────────────────
   cartItems: INITIAL_ORDER.cartItems,
 
@@ -534,6 +599,7 @@ export const usePOSStore = create<POSState>()((set, get) => ({
       const idx = state.activeOrderIndex;
       const clearedOrder: OrderTab = { ...empty, id: state.orders[idx].id };
       return {
+        orderType: "dine-in",
         cartItems: [],
         attachedCustomer: null,
         redeemPoints: 0,
@@ -551,6 +617,9 @@ export const usePOSStore = create<POSState>()((set, get) => ({
         tipAmount: 0,
         attachedTable: null,
         guestCount: 1,
+        deliveryAddress: "",
+        deliveryFee: 0,
+        deliveryTime: "",
         orders: syncOrder(state, idx, clearedOrder),
       };
     });
@@ -1015,7 +1084,7 @@ export const usePOSStore = create<POSState>()((set, get) => ({
       get().discountAmount() -
       get().redemptionDiscount() -
       get().voucherDiscount();
-    return Math.max(0, taxBase) + get().taxAmount();
+    return Math.max(0, taxBase) + get().taxAmount() + get().deliveryFee;
   },
 
   giftCardDiscount() {

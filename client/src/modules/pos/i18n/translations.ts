@@ -18,6 +18,8 @@ interface POSTranslations {
   lockTerminal: string;
   cart: string;
   customerDisplay: string;
+  fullscreen: string;
+  exitFullscreen: string;
   // ProductGrid
   searchProducts: string;
   scanBarcode: string;
@@ -285,6 +287,28 @@ interface POSTranslations {
   courseStatusReady: string;
   courseStatusServed: string;
   fireAll: string;
+  // Order Type
+  dineIn: string;
+  takeaway: string;
+  delivery: string;
+  // Walk-in Customer
+  walkInCustomer: string;
+  // Table Actions
+  editGuests: string;
+  guestsUpdated: string;
+  tableReleased: string;
+  confirmReleaseTable: string;
+  reserveTable: string;
+  tableReserved: string;
+  cancelReservation: string;
+  reservationCancelled: string;
+  numberOfGuests: string;
+  // Delivery
+  deliveryAddress: string;
+  deliveryAddressPlaceholder: string;
+  deliveryFee: string;
+  estimatedTime: string;
+  minutes: string;
   // Misc
   confirm: string;
   save: string;
@@ -309,6 +333,8 @@ const en: POSTranslations = {
   lockTerminal: "Lock terminal",
   cart: "Cart",
   customerDisplay: "Customer Display",
+  fullscreen: "Fullscreen",
+  exitFullscreen: "Exit Fullscreen",
   // ProductGrid
   searchProducts: "Search products by name or barcode...",
   scanBarcode: "Scan barcode",
@@ -577,6 +603,28 @@ const en: POSTranslations = {
   courseStatusReady: "Ready",
   courseStatusServed: "Served",
   fireAll: "Fire All",
+  // Order Type
+  dineIn: "Dine-in",
+  takeaway: "Takeaway",
+  delivery: "Delivery",
+  // Walk-in Customer
+  walkInCustomer: "Walk-in Customer",
+  // Table Actions
+  editGuests: "Edit Guests",
+  guestsUpdated: "Guest count updated",
+  tableReleased: "Table released",
+  confirmReleaseTable: "Release this table and clear the order?",
+  reserveTable: "Reserve Table",
+  tableReserved: "Table reserved",
+  cancelReservation: "Cancel Reservation",
+  reservationCancelled: "Reservation cancelled",
+  numberOfGuests: "Number of guests",
+  // Delivery
+  deliveryAddress: "Delivery Address",
+  deliveryAddressPlaceholder: "Enter delivery address...",
+  deliveryFee: "Delivery Fee",
+  estimatedTime: "Est. Time",
+  minutes: "min",
   // Misc
   confirm: "Confirm",
   save: "Save",
@@ -601,6 +649,8 @@ const ar: POSTranslations = {
   lockTerminal: "قفل الشاشة",
   cart: "السلة",
   customerDisplay: "شاشة العميل",
+  fullscreen: "ملء الشاشة",
+  exitFullscreen: "الخروج من ملء الشاشة",
   // ProductGrid
   searchProducts: "ابحث عن المنتجات بالاسم أو الباركود...",
   scanBarcode: "امسح الباركود",
@@ -869,6 +919,28 @@ const ar: POSTranslations = {
   courseStatusReady: "جاهز",
   courseStatusServed: "قُدِّم",
   fireAll: "إرسال الكل",
+  // Order Type
+  dineIn: "محلي",
+  takeaway: "سفري",
+  delivery: "توصيل",
+  // Walk-in Customer
+  walkInCustomer: "عميل زائر",
+  // Table Actions
+  editGuests: "تعديل الضيوف",
+  guestsUpdated: "تم تحديث عدد الضيوف",
+  tableReleased: "تم تحرير الطاولة",
+  confirmReleaseTable: "تحرير الطاولة ومسح الطلب؟",
+  reserveTable: "حجز الطاولة",
+  tableReserved: "تم حجز الطاولة",
+  cancelReservation: "إلغاء الحجز",
+  reservationCancelled: "تم إلغاء الحجز",
+  numberOfGuests: "عدد الضيوف",
+  // Delivery
+  deliveryAddress: "عنوان التوصيل",
+  deliveryAddressPlaceholder: "أدخل عنوان التوصيل...",
+  deliveryFee: "رسوم التوصيل",
+  estimatedTime: "الوقت المتوقع",
+  minutes: "دقيقة",
   // Misc
   confirm: "تأكيد",
   save: "حفظ",

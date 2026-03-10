@@ -24,6 +24,10 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
   const [activeSection, setActiveSection] = useState<string>("all");
   const [search, setSearch] = useState("");
 
+  function refreshTables() {
+    getTables().then((rows) => setTables(rows));
+  }
+
   useEffect(() => {
     getTables().then((rows) => { setTables(rows); setLoading(false); });
   }, []);
@@ -177,7 +181,13 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
             gap: 12,
           }}>
             {filtered.map((table) => (
-              <TableCard key={table.id} table={table} onClick={handleTableClick} />
+              <TableCard
+                key={table.id}
+                table={table}
+                onClick={handleTableClick}
+                onUpdated={refreshTables}
+                availableTables={tables.filter((t) => t.status === "available" && t.id !== table.id)}
+              />
             ))}
           </div>
         )}

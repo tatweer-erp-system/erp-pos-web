@@ -106,145 +106,168 @@ export function CartItem({ item, onQuantityChange, onRemove, onSetDiscount, onSe
         overflow: "hidden",
       }}
     >
-      {/* Main row */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px" }}>
-        {/* Product color dot */}
-        <div style={{
-          width: 32, height: 32, borderRadius: 8,
-          background: `linear-gradient(135deg, ${item.product.color}, ${item.product.color}bb)`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: "#fff", fontSize: 12, fontWeight: 800, flexShrink: 0,
-        }}>
-          {item.product.name.charAt(0)}
-        </div>
-
-        {/* Name + price */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ padding: "8px 10px" }}>
+        {/* Top row: icon + name + line total */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {/* Product color dot */}
           <div style={{
-            fontSize: 12, fontWeight: 600, color: token.colorText,
-            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.3,
+            width: 28, height: 28, borderRadius: 7,
+            background: `linear-gradient(135deg, ${item.product.color}, ${item.product.color}bb)`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#fff", fontSize: 11, fontWeight: 800, flexShrink: 0,
           }}>
-            {item.product.name}
-            {isAllergy && (
-              <span style={{ marginLeft: 5, fontSize: 10, color: "#D97706", fontWeight: 700 }}>
-                {t.allergyFlag}
-              </span>
-            )}
+            {item.product.name.charAt(0)}
           </div>
-          <div style={{ fontSize: 11, color: token.colorTextSecondary, marginTop: 2 }}>
-            ${item.product.price.toFixed(2)} / {item.product.unit}
-            {hasNote && !isAllergy && (
-              <span style={{ marginLeft: 6, color: token.colorTextTertiary, fontStyle: "italic" }}>
-                · {item.note}
-              </span>
-            )}
-          </div>
-          {hasNote && isAllergy && (
-            <div style={{ fontSize: 10, color: "#D97706", marginTop: 2, fontStyle: "italic" }}>
-              {item.note}
+
+          {/* Name + unit price */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{
+              fontSize: 12, fontWeight: 600, color: token.colorText,
+              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.3,
+            }}>
+              {item.product.name}
+              {isAllergy && (
+                <span style={{ marginLeft: 5, fontSize: 10, color: "#D97706", fontWeight: 700 }}>
+                  {t.allergyFlag}
+                </span>
+              )}
             </div>
-          )}
-        </div>
-
-        {/* Quantity controls */}
-        <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-          <Button
-            size="small"
-            icon={<MinusOutlined />}
-            onClick={() => onQuantityChange(item.product.id, item.quantity - 1)}
-            style={{ width: 30, height: 30, minWidth: 30, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
-          />
-          <InputNumber
-            min={1}
-            max={item.product.stock}
-            value={item.quantity}
-            onChange={(v) => v !== null && onQuantityChange(item.product.id, v)}
-            controls={false}
-            style={{ width: isMobile ? 40 : 48, textAlign: "center", borderRadius: 8, fontSize: 13, fontWeight: 700 }}
-          />
-          <Button
-            size="small"
-            icon={<PlusOutlined />}
-            onClick={() => onQuantityChange(item.product.id, item.quantity + 1)}
-            disabled={item.quantity >= item.product.stock}
-            style={{ width: 30, height: 30, minWidth: 30, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}
-          />
-        </div>
-
-        {/* Line total */}
-        <div style={{ minWidth: isMobile ? 52 : 60, textAlign: "right", flexShrink: 0 }}>
-          {hasDiscount ? (
-            <>
-              <div style={{ fontSize: 11, color: token.colorTextTertiary, textDecoration: "line-through", lineHeight: 1.2 }}>
-                ${rawTotal.toFixed(2)}
+            <div style={{ fontSize: 11, color: token.colorTextSecondary, marginTop: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              ${item.product.price.toFixed(2)} / {item.product.unit}
+              {hasNote && !isAllergy && (
+                <span style={{ marginLeft: 6, color: token.colorTextTertiary, fontStyle: "italic" }}>
+                  · {item.note}
+                </span>
+              )}
+            </div>
+            {hasNote && isAllergy && (
+              <div style={{ fontSize: 10, color: "#D97706", marginTop: 2, fontStyle: "italic", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {item.note}
               </div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: token.colorSuccess }}>
+            )}
+          </div>
+
+          {/* Line total */}
+          <div style={{ textAlign: "right", flexShrink: 0 }}>
+            {hasDiscount ? (
+              <>
+                <div style={{ fontSize: 10, color: token.colorTextTertiary, textDecoration: "line-through", lineHeight: 1.2 }}>
+                  ${rawTotal.toFixed(2)}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: token.colorSuccess }}>
+                  ${lineTotal.toFixed(2)}
+                </div>
+              </>
+            ) : (
+              <div style={{ fontSize: 13, fontWeight: 700, color: token.colorText }}>
                 ${lineTotal.toFixed(2)}
               </div>
-            </>
-          ) : (
-            <div style={{ fontSize: 13, fontWeight: 700, color: token.colorText }}>
-              ${lineTotal.toFixed(2)}
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        {/* Note toggle */}
-        <Tooltip title={hasNote ? item.note : t.itemNote}>
-          <Button
-            type="text"
-            size="small"
-            icon={hasNote && isAllergy ? <WarningOutlined /> : <MessageOutlined />}
-            onClick={() => { setNoteValue(item.note ?? ""); setShowNote((v) => !v); setShowDiscount(false); }}
-            style={{
-              width: 30, height: 30, borderRadius: 8,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              padding: 0, flexShrink: 0,
-              color: isAllergy ? "#D97706" : hasNote ? token.colorPrimary : token.colorTextSecondary,
-              opacity: hovered || hasNote ? 1 : 0.4,
-              transition: "opacity 0.15s",
-            }}
-          />
-        </Tooltip>
+        {/* Bottom row: qty controls + action buttons */}
+        <div style={{ display: "flex", alignItems: "center", marginTop: 6, paddingLeft: 36 }}>
+          {/* Quantity controls */}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 0,
+            background: token.colorFillAlter,
+            borderRadius: 6,
+            border: `1px solid ${token.colorBorderSecondary}`,
+            overflow: "hidden",
+          }}>
+            <button
+              onClick={() => onQuantityChange(item.product.id, item.quantity - 1)}
+              style={{
+                width: 26, height: 24, border: "none",
+                background: "transparent", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: token.colorTextSecondary, fontSize: 10,
+              }}
+            >
+              <MinusOutlined />
+            </button>
+            <span style={{
+              minWidth: 28, textAlign: "center", fontSize: 12, fontWeight: 700,
+              color: token.colorText, lineHeight: "24px",
+              borderInline: `1px solid ${token.colorBorderSecondary}`,
+            }}>
+              {item.quantity}
+            </span>
+            <button
+              onClick={() => onQuantityChange(item.product.id, item.quantity + 1)}
+              disabled={item.quantity >= item.product.stock}
+              style={{
+                width: 26, height: 24, border: "none",
+                background: "transparent",
+                cursor: item.quantity >= item.product.stock ? "default" : "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: item.quantity >= item.product.stock ? token.colorTextQuaternary : token.colorTextSecondary,
+                fontSize: 10,
+              }}
+            >
+              <PlusOutlined />
+            </button>
+          </div>
 
-        {/* Discount toggle */}
-        <Tooltip title={hasDiscount ? t.removeDiscount : t.itemDiscount}>
-          <Button
-            type="text"
-            size="small"
-            icon={<TagOutlined />}
-            onClick={() => {
-              if (hasDiscount && !showDiscount) { removeDiscount(); }
-              else { setShowDiscount((v) => !v); setShowNote(false); }
-            }}
-            style={{
-              width: 30, height: 30, borderRadius: 8,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              padding: 0, flexShrink: 0,
-              color: hasDiscount ? token.colorSuccess : token.colorTextSecondary,
-              opacity: hovered || hasDiscount ? 1 : 0.4,
-              transition: "opacity 0.15s",
-            }}
-          />
-        </Tooltip>
+          {/* Spacer */}
+          <div style={{ flex: 1 }} />
 
-        {/* Remove */}
-        <Tooltip title={t.removeItem}>
-          <Button
-            type="text"
-            size="small"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => onRemove(item.product.id)}
-            style={{
-              width: 30, height: 30, borderRadius: 8,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              padding: 0, flexShrink: 0,
-              opacity: hovered ? 1 : 0.4,
-              transition: "opacity 0.15s",
-            }}
-          />
-        </Tooltip>
+          {/* Action buttons */}
+          <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Tooltip title={hasNote ? item.note : t.itemNote}>
+              <button
+                onClick={() => { setNoteValue(item.note ?? ""); setShowNote((v) => !v); setShowDiscount(false); }}
+                style={{
+                  width: 24, height: 24, borderRadius: 6, border: "none",
+                  background: "transparent", cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: isAllergy ? "#D97706" : hasNote ? token.colorPrimary : token.colorTextTertiary,
+                  fontSize: 12,
+                  opacity: hovered || hasNote ? 1 : 0.4,
+                  transition: "opacity 0.15s",
+                }}
+              >
+                {hasNote && isAllergy ? <WarningOutlined /> : <MessageOutlined />}
+              </button>
+            </Tooltip>
+            <Tooltip title={hasDiscount ? t.removeDiscount : t.itemDiscount}>
+              <button
+                onClick={() => {
+                  if (hasDiscount && !showDiscount) { removeDiscount(); }
+                  else { setShowDiscount((v) => !v); setShowNote(false); }
+                }}
+                style={{
+                  width: 24, height: 24, borderRadius: 6, border: "none",
+                  background: "transparent", cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: hasDiscount ? token.colorSuccess : token.colorTextTertiary,
+                  fontSize: 12,
+                  opacity: hovered || hasDiscount ? 1 : 0.4,
+                  transition: "opacity 0.15s",
+                }}
+              >
+                <TagOutlined />
+              </button>
+            </Tooltip>
+            <Tooltip title={t.removeItem}>
+              <button
+                onClick={() => onRemove(item.product.id)}
+                style={{
+                  width: 24, height: 24, borderRadius: 6, border: "none",
+                  background: "transparent", cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: token.colorError,
+                  fontSize: 12,
+                  opacity: hovered ? 1 : 0.4,
+                  transition: "opacity 0.15s",
+                }}
+              >
+                <DeleteOutlined />
+              </button>
+            </Tooltip>
+          </div>
+        </div>
       </div>
 
       {/* Item note editor */}

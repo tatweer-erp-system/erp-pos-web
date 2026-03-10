@@ -5,6 +5,7 @@ import { CartItem } from "./CartItem";
 import { PaymentSection } from "./PaymentSection";
 import { CustomerSearch } from "./cart/CustomerSearch";
 import { CustomerCard } from "./cart/CustomerCard";
+import { OrderTypeSelector } from "./orders/OrderTypeSelector";
 import { LoyaltyRedemption } from "./cart/LoyaltyRedemption";
 import { VoucherInput } from "./cart/VoucherInput";
 import { CourseManager } from "./restaurant/CourseManager";
@@ -61,6 +62,8 @@ export function CartPanel({ isMobile }: CartPanelProps) {
   const tipAmount               = usePOSStore((s) => s.tipAmount);
   const setTip                  = usePOSStore((s) => s.setTip);
   const finalTotal              = usePOSStore((s) => s.finalTotal);
+  const deliveryFee             = usePOSStore((s) => s.deliveryFee);
+  const orderType               = usePOSStore((s) => s.orderType);
   const { requestManagerOverride } = usePOSContext();
   const { charge, isCharging } = useCheckout();
   const restaurantMode = useRestaurantMode();
@@ -190,6 +193,7 @@ export function CartPanel({ isMobile }: CartPanelProps) {
         </div>
         <CustomerSearch isMobile={isMobile} />
         <CustomerCard />
+        <OrderTypeSelector />
       </div>
 
       {/* Cart Items */}
@@ -230,31 +234,67 @@ export function CartPanel({ isMobile }: CartPanelProps) {
           <VoucherInput />
 
           {/* Order Note */}
-          <div>
-            <Button
-              type="text"
-              size="small"
-              icon={<FileTextOutlined />}
+          <div style={{
+            borderRadius: 10,
+            border: `1.5px solid ${orderNote ? token.colorPrimary + "50" : token.colorBorderSecondary}`,
+            background: orderNote ? `${token.colorPrimary}08` : token.colorBgContainer,
+            overflow: "hidden",
+            transition: "all 0.2s",
+          }}>
+            <button
               onClick={() => setShowNote((v) => !v)}
               style={{
-                color: orderNote ? token.colorPrimary : token.colorTextSecondary,
-                fontWeight: orderNote ? 600 : 400,
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "8px 12px",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: orderNote ? token.colorPrimary : token.colorText,
+                fontWeight: 600,
                 fontSize: 12,
-                padding: "0 4px",
-                height: 26,
               }}
             >
-              {orderNote ? t.orderNote : t.addOrderNote}
-            </Button>
+              <FileTextOutlined style={{ fontSize: 13, color: orderNote ? token.colorPrimary : token.colorTextSecondary }} />
+              <span style={{ flex: 1, textAlign: "start" }}>
+                {orderNote ? t.orderNote : t.addOrderNote}
+              </span>
+              {orderNote && !showNote && (
+                <span style={{
+                  fontSize: 11,
+                  color: token.colorTextSecondary,
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  maxWidth: 140,
+                }}>
+                  {orderNote}
+                </span>
+              )}
+              <span style={{
+                fontSize: 10,
+                color: token.colorTextTertiary,
+                transform: showNote ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.2s",
+              }}>
+                ▾
+              </span>
+            </button>
             {showNote && (
-              <Input.TextArea
-                rows={2}
-                value={orderNote}
-                onChange={(e) => setOrderNote(e.target.value)}
-                placeholder={t.orderNotePlaceholder}
-                style={{ marginTop: 6, borderRadius: 8, fontSize: 12 }}
-                autoFocus
-              />
+              <div style={{ padding: "0 12px 10px" }}>
+                <Input.TextArea
+                  rows={2}
+                  value={orderNote}
+                  onChange={(e) => setOrderNote(e.target.value)}
+                  placeholder={t.orderNotePlaceholder}
+                  style={{ borderRadius: 8, fontSize: 12 }}
+                  autoFocus
+                />
+              </div>
             )}
           </div>
 
@@ -344,6 +384,12 @@ export function CartPanel({ isMobile }: CartPanelProps) {
               <span style={{ fontSize: 12, color: token.colorTextSecondary }}>{t.tax} ({(TAX_RATE * 100).toFixed(0)}%)</span>
               <span style={{ fontSize: 12, fontWeight: 500 }}>${taxAmount.toFixed(2)}</span>
             </div>
+            {orderType === "delivery" && deliveryFee > 0 && (
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 12, color: "#6366F1" }}>{t.deliveryFee}</span>
+                <span style={{ fontSize: 12, color: "#6366F1", fontWeight: 600 }}>+${deliveryFee.toFixed(2)}</span>
+              </div>
+            )}
             {giftCardDiscount > 0 && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span style={{ fontSize: 12, color: "#A855F7" }}>{t.giftCardLabel(appliedGiftCards.length)}</span>

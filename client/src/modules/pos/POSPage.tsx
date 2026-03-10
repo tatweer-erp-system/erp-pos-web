@@ -17,6 +17,8 @@ import {
   RollbackOutlined,
   GlobalOutlined,
   BgColorsOutlined,
+  FullscreenOutlined,
+  FullscreenExitOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "wouter";
 import { AntProvider } from "@/lib/antd-provider";
@@ -49,6 +51,7 @@ import { RefundModal } from "./components/RefundModal";
 import { ExchangeModal } from "./components/ExchangeModal";
 import { ThemeCustomizer } from "./components/ThemeCustomizer";
 import { releaseTable } from "./services/tableService";
+import { formatSeatedDuration } from "./data/mockRestaurant";
 
 const { useBreakpoint } = Grid;
 
@@ -83,6 +86,7 @@ function POSLayout() {
   const [refundOpen, setRefundOpen] = useState(false);
   const [exchangeOpen, setExchangeOpen] = useState(false);
   const [customizerOpen, setCustomizerOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
   const { addToCart, itemCount, cartItems, grandTotal } = useCart();
   const { receiptVisible, closeReceipt, completedOrder } = useCheckout();
   useOfflineSync();
@@ -102,6 +106,33 @@ function POSLayout() {
   const posSettings        = usePOSStore((s) => s.posSessionSettings);
   const attachedTable      = usePOSStore((s) => s.attachedTable);
   const setAttachedTable   = usePOSStore((s) => s.setAttachedTable);
+  const orderType          = usePOSStore((s) => s.orderType);
+  const isDineIn           = orderType === "dine-in";
+
+  // Table seated timer — update every 30s
+  const [seatedDuration, setSeatedDuration] = useState("");
+  useEffect(() => {
+    if (!attachedTable?.seatedAt) { setSeatedDuration(""); return; }
+    const update = () => setSeatedDuration(formatSeatedDuration(attachedTable.seatedAt!));
+    update();
+    const id = setInterval(update, 30000);
+    return () => clearInterval(id);
+  }, [attachedTable?.seatedAt]);
+
+  // Fullscreen toggle
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", onChange);
+    return () => document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  function toggleFullscreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen();
+    }
+  }
 
   async function handleReleaseTable() {
     if (!attachedTable) return;
@@ -256,7 +287,7 @@ function POSLayout() {
         </div>
 
         {/* Restaurant: attached table badge */}
-        {restaurantMode.isRestaurant && attachedTable && (
+        {restaurantMode.isRestaurant && isDineIn && attachedTable && (
           <div style={{
             display: "flex",
             alignItems: "center",
@@ -271,6 +302,15 @@ function POSLayout() {
           }}>
             <TableOutlined style={{ fontSize: 12 }} />
             {t.tableAttached(attachedTable.name)}
+            {seatedDuration && (
+              <>
+                <div style={{ width: 1, height: 12, background: "#F59E0B30" }} />
+                <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 11, fontWeight: 600, color: "#F59E0B" }}>
+                  <ClockCircleOutlined style={{ fontSize: 10 }} />
+                  {seatedDuration}
+                </span>
+              </>
+            )}
             <div style={{ width: 1, height: 12, background: "#F59E0B30" }} />
             <Tooltip title={t.releaseTable}>
               <button
@@ -287,7 +327,7 @@ function POSLayout() {
         )}
 
         {/* Restaurant: table map button */}
-        {restaurantMode.isRestaurant && restaurantMode.tableManagementEnabled && (
+        {restaurantMode.isRestaurant && isDineIn && restaurantMode.tableManagementEnabled && (
           <Tooltip title={t.tableMap}>
             <Button
               icon={<TableOutlined />}
@@ -298,7 +338,7 @@ function POSLayout() {
         )}
 
         {/* Restaurant: transfer table button */}
-        {restaurantMode.isRestaurant && attachedTable && (
+        {restaurantMode.isRestaurant && isDineIn && attachedTable && (
           <Tooltip title={t.transferTable}>
             <Button
               icon={<SwapOutlined />}
@@ -430,6 +470,13 @@ function POSLayout() {
                   {isRTL ? "EN" : "AR"}
                 </Button>
               </Tooltip>
+              <Tooltip title={isFullscreen ? t.exitFullscreen : t.fullscreen}>
+                <Button
+                  icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+                  onClick={toggleFullscreen}
+                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+                />
+              </Tooltip>
               <Tooltip title="Theme Customizer">
                 <Button
                   icon={<BgColorsOutlined />}
@@ -476,6 +523,13 @@ function POSLayout() {
                   icon={<GlobalOutlined />}
                   onClick={() => setLanguage(isRTL ? "en" : "ar")}
                   style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700 }}
+                />
+              </Tooltip>
+              <Tooltip title={isFullscreen ? t.exitFullscreen : t.fullscreen}>
+                <Button
+                  icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+                  onClick={toggleFullscreen}
+                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
                 />
               </Tooltip>
               <Tooltip title="Theme Customizer">
