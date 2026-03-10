@@ -9,7 +9,10 @@ import {
   Tag,
   message,
   theme as antTheme,
+  Grid,
 } from "antd";
+
+const { useBreakpoint } = Grid;
 import {
   GiftOutlined,
   PrinterOutlined,
@@ -29,6 +32,8 @@ interface Props {
 
 export function IssueGiftCardModal({ open, onClose }: Props) {
   const { token } = antTheme.useToken();
+  const screens = useBreakpoint();
+  const isMobile = !screens.sm;
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
   const isRTL = language === "ar";
@@ -80,19 +85,20 @@ export function IssueGiftCardModal({ open, onClose }: Props) {
       onCancel={handleClose}
       closeIcon={null}
       footer={null}
-      width={420}
+      width="min(420px, 95vw)"
       centered
       title={null}
-      style={{ padding: 0 }}
+      styles={{ body: { padding: 0 } }}
     >
       {/* Header */}
       <div style={{
         position: "relative",
         background: `linear-gradient(135deg, #A855F7, #A855F7cc)`,
-        padding: "20px 24px 16px",
+        padding: isMobile ? "16px 16px 14px" : "20px 24px 16px",
         textAlign: "center",
         color: "#fff",
         borderRadius: "8px 8px 0 0",
+        direction: isRTL ? "rtl" : "ltr",
       }}>
         <GiftOutlined style={{ fontSize: 28, marginBottom: 8 }} />
         <div style={{ fontSize: 16, fontWeight: 800 }}>{t.issueGiftCard}</div>
@@ -127,7 +133,7 @@ export function IssueGiftCardModal({ open, onClose }: Props) {
         </button>
       </div>
 
-      <div style={{ padding: "20px 24px 24px" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} style={{ padding: isMobile ? "16px 16px 20px" : "20px 24px 24px" }}>
         {issuedCard ? (
           /* ── Success view ── */
           <div style={{ textAlign: "center" }}>
@@ -148,7 +154,7 @@ export function IssueGiftCardModal({ open, onClose }: Props) {
               marginBottom: 16,
             }}>
               <div style={{ fontSize: 11, color: token.colorTextSecondary, marginBottom: 6 }}>GIFT CARD CODE</div>
-              <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: "0.1em", color: "#A855F7", marginBottom: 8 }}>
+              <div style={{ fontSize: isMobile ? 16 : 20, fontWeight: 900, letterSpacing: isMobile ? "0.05em" : "0.1em", color: "#A855F7", marginBottom: 8, wordBreak: "break-all" }}>
                 {issuedCard.code}
               </div>
               <div style={{ fontSize: 22, fontWeight: 800, color: token.colorText }}>
@@ -166,18 +172,18 @@ export function IssueGiftCardModal({ open, onClose }: Props) {
               )}
             </div>
 
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: isMobile ? "wrap" : "nowrap" }}>
               <Button
                 icon={<CopyOutlined />}
                 onClick={copyCode}
-                style={{ flex: 1, borderRadius: 8 }}
+                style={{ flex: 1, minWidth: 80, borderRadius: 8 }}
               >
                 Copy Code
               </Button>
               <Button
                 icon={<PrinterOutlined />}
                 onClick={() => window.print()}
-                style={{ flex: 1, borderRadius: 8 }}
+                style={{ flex: 1, minWidth: 80, borderRadius: 8 }}
               >
                 Print
               </Button>
@@ -185,7 +191,7 @@ export function IssueGiftCardModal({ open, onClose }: Props) {
                 type="primary"
                 onClick={handleClose}
                 style={{
-                  flex: 1, borderRadius: 8,
+                  flex: isMobile ? "1 1 100%" : 1, minWidth: 80, borderRadius: 8,
                   background: "#A855F7", borderColor: "#A855F7",
                 }}
               >
@@ -241,7 +247,7 @@ export function IssueGiftCardModal({ open, onClose }: Props) {
 
             {!attachedCustomer && (
               <Form.Item label="Recipient (optional)">
-                <CustomerSearch isMobile={false} />
+                <CustomerSearch isMobile={isMobile} />
               </Form.Item>
             )}
 

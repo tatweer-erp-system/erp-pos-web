@@ -62,6 +62,7 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
+  const isRTL = language === "ar";
 
   const [step,         setStep]         = useState<RefundStep>("lookup");
   const [receiptInput, setReceiptInput] = useState("");
@@ -142,7 +143,7 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
       onCancel={handleClose}
       closeIcon={null}
       footer={null}
-      width={540}
+      width="min(540px, 95vw)"
       centered
       title={null}
       styles={{ body: { padding: 0 } }}
@@ -158,6 +159,7 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
         display: "flex",
         alignItems: "center",
         gap: 12,
+        direction: isRTL ? "rtl" : "ltr",
       }}>
         <div style={{
           width: 40, height: 40, borderRadius: 10,
@@ -187,7 +189,7 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
         >✕</button>
       </div>
 
-      <div style={{ padding: "20px 24px 24px" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} style={{ padding: "20px 24px 24px" }}>
       <Steps
         current={stepIndex}
         size="small"
@@ -212,13 +214,11 @@ export function RefundModal({ open, onClose }: RefundModalProps) {
                 value={receiptInput}
                 onChange={(e) => { setReceiptInput(e.target.value); setNotFound(false); }}
                 onPressEnter={handleLookup}
-                style={{ borderRadius: "8px 0 0 8px" }}
               />
               <Button
                 type="primary"
                 icon={<SearchOutlined />}
                 onClick={handleLookup}
-                style={{ borderRadius: "0 8px 8px 0" }}
               >
                 {t.lookupReceipt}
               </Button>

@@ -69,10 +69,10 @@ export function CheckBalanceModal({ open, onClose }: Props) {
       onCancel={handleClose}
       closeIcon={null}
       footer={null}
-      width={380}
+      width="min(380px, 95vw)"
       centered
       title={null}
-      style={{ padding: 0 }}
+      styles={{ body: { padding: 0 } }}
     >
       {/* Header */}
       <div style={{
@@ -117,7 +117,7 @@ export function CheckBalanceModal({ open, onClose }: Props) {
         </button>
       </div>
 
-      <div style={{ padding: "20px 24px 24px" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} style={{ padding: "20px 24px 24px" }}>
 
         {/* Search input */}
         <div style={{ marginBottom: 16 }}>

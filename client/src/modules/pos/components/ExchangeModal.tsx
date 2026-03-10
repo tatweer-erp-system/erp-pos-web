@@ -69,6 +69,7 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
+  const isRTL = language === "ar";
 
   const [step, setStep] = useState<ExchangeStep>("lookup");
   const [receiptInput, setReceiptInput] = useState("");
@@ -162,7 +163,7 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
       onCancel={handleClose}
       closeIcon={null}
       footer={null}
-      width={560}
+      width="min(560px, 95vw)"
       centered
       title={null}
       styles={{ body: { padding: 0 } }}
@@ -178,6 +179,7 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
         display: "flex",
         alignItems: "center",
         gap: 12,
+        direction: isRTL ? "rtl" : "ltr",
       }}>
         <div style={{
           width: 40, height: 40, borderRadius: 10,
@@ -207,7 +209,7 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
         >✕</button>
       </div>
 
-      <div style={{ padding: "20px 24px 24px" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} style={{ padding: "20px 24px 24px" }}>
       <Steps
         current={stepIndex}
         size="small"
@@ -230,13 +232,11 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
               value={receiptInput}
               onChange={(e) => { setReceiptInput(e.target.value); setNotFound(false); }}
               onPressEnter={handleLookup}
-              style={{ borderRadius: "8px 0 0 8px" }}
             />
             <Button
               type="primary"
               icon={<SearchOutlined />}
               onClick={handleLookup}
-              style={{ borderRadius: "0 8px 8px 0" }}
             >
               {t.lookupReceipt}
             </Button>
@@ -310,7 +310,7 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
               disabled={returnedItemIds.size === 0}
               onClick={() => setStep("new-items")}
             >
-              {t.newItems} →
+              {isRTL ? `← ${t.newItems}` : `${t.newItems} →`}
             </Button>
           </div>
         </div>
@@ -343,7 +343,6 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
                 icon={<PlusOutlined />}
                 onClick={addNewItem}
                 disabled={!selectedProductId}
-                style={{ borderRadius: "0 8px 8px 0" }}
               >
                 {t.add}
               </Button>
@@ -381,7 +380,7 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
                       style={{ width: 26, height: 26, padding: 0, borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center" }}
                     />
                   </div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: token.colorSuccess, minWidth: 55, textAlign: "right" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: token.colorSuccess, minWidth: 55, textAlign: "end" }}>
                     ${(item.price * item.qty).toFixed(2)}
                   </div>
                 </div>
@@ -412,7 +411,7 @@ export function ExchangeModal({ open, onClose }: ExchangeModalProps) {
               border: `1.5px solid ${diff === 0 ? token.colorSuccess : diff > 0 ? token.colorError : token.colorWarning}30`,
             }}>
               <span style={{ fontSize: 14, fontWeight: 700 }}>{t.exchangeDifference}</span>
-              <div style={{ textAlign: "right" }}>
+              <div style={{ textAlign: "end" }}>
                 {diff === 0 && <Tag color="success">{t.evenExchange}</Tag>}
                 {diff > 0 && (
                   <div>

@@ -16,6 +16,7 @@ import {
   WarningOutlined,
 } from "@ant-design/icons";
 import { usePOSStore, TAX_RATE } from "../../store/posStore";
+import { useAppSettings } from "@/contexts/AppSettingsContext";
 
 interface MergeOrdersModalProps {
   open: boolean;
@@ -24,6 +25,9 @@ interface MergeOrdersModalProps {
 
 export function MergeOrdersModal({ open, onClose }: MergeOrdersModalProps) {
   const { token } = antTheme.useToken();
+
+  const { language } = useAppSettings();
+  const isRTL = language === "ar";
 
   const orders      = usePOSStore((s) => s.orders);
   const mergeOrders = usePOSStore((s) => s.mergeOrders);
@@ -122,10 +126,10 @@ export function MergeOrdersModal({ open, onClose }: MergeOrdersModalProps) {
       onCancel={onClose}
       closeIcon={null}
       footer={null}
-      width={480}
+      width="min(480px, 95vw)"
       centered
       title={null}
-      style={{ padding: 0 }}
+      styles={{ body: { padding: 0 } }}
     >
       {/* Header */}
       <div style={{
@@ -134,6 +138,7 @@ export function MergeOrdersModal({ open, onClose }: MergeOrdersModalProps) {
         padding: "20px 24px 16px",
         borderRadius: "8px 8px 0 0",
         color: "#fff",
+        direction: isRTL ? "rtl" : "ltr",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <MergeCellsOutlined style={{ fontSize: 22 }} />
@@ -172,7 +177,7 @@ export function MergeOrdersModal({ open, onClose }: MergeOrdersModalProps) {
         </button>
       </div>
 
-      <div style={{ padding: "20px 24px 24px" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} style={{ padding: "20px 24px 24px" }}>
 
         {/* Order selection */}
         <div style={{ marginBottom: 16 }}>

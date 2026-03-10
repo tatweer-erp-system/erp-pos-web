@@ -75,10 +75,10 @@ export function CashInOutModal({ type, open, onClose }: Props) {
       onCancel={onClose}
       closeIcon={null}
       footer={null}
-      width={420}
+      width="min(420px, 95vw)"
       centered
       title={null}
-      style={{ padding: 0 }}
+      styles={{ body: { padding: 0 } }}
     >
       {/* Header */}
       <div style={{
@@ -134,7 +134,7 @@ export function CashInOutModal({ type, open, onClose }: Props) {
         </button>
       </div>
 
-      <div style={{ padding: "20px 24px 24px" }}>
+      <div dir={isRTL ? "rtl" : "ltr"} style={{ padding: "20px 24px 24px" }}>
 
         {/* Current drawer balance */}
         <div style={{
