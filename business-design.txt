@@ -1,0 +1,559 @@
+================================================================================
+BUSINESS DESIGN DOCUMENT
+ERP POS Web — Point of Sale System
+================================================================================
+Version: 1.0
+Last Updated: 2026-03-10
+Branch: prod
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+1. SYSTEM OVERVIEW
+────────────────────────────────────────────────────────────────────────────────
+
+The ERP POS Web is a modern, web-based Point of Sale terminal designed for
+multi-branch retail and restaurant operations. It is part of a larger ERP
+ecosystem.
+
+The system targets:
+  - Small to medium retail shops
+  - Restaurants and cafés (with table management)
+  - Multi-branch businesses (different cities/countries)
+  - Businesses operating in Arabic and English markets
+
+Key design goals:
+  1. Works fully offline — cashiers can keep selling even without internet
+  2. Bilingual — full Arabic (RTL) and English (LTR) support
+  3. Multi-cashier — different PINs per cashier, session management
+  4. Role-based — manager overrides for sensitive operations
+  5. Modular — restaurant features are optional and toggled per terminal
+  6. Theme-aware — white/dark mode, 5 color schemes, configurable
+
+
+────────────────────────────────────────────────────────────────────────────────
+2. USER ROLES AND ACCESS
+────────────────────────────────────────────────────────────────────────────────
+
+The system has TWO layers of authentication:
+
+LAYER 1 — ERP Users (Login Page)
+These are back-office users who manage the system.
+
+  Role           | Access
+  ───────────────────────────────────────────────────────────────────────────
+  SuperAdmin     | Full system access, all settings
+  Admin          | Most settings, user management
+  Manager        | POS, reports, team management
+  Accountant     | Financial reports only (read-only)
+  Viewer         | Read-only access to dashboards
+  Cashier        | POS terminal only — no settings access
+
+LAYER 2 — Cashier PINs (POS Terminal)
+These are the people physically operating the terminal. They log in with a
+PIN (not a password) after the ERP user logs in.
+
+  Cashier Role   | Permissions
+  ───────────────────────────────────────────────────────────────────────────
+  Cashier        | Standard POS: scan, sell, accept payment
+  Senior Cashier | + Apply discounts up to threshold
+  Manager        | + High discounts, overrides, refunds, reports
+
+This separation means the same terminal can be used by multiple cashiers
+throughout the day without logging out of the ERP system each time.
+
+
+────────────────────────────────────────────────────────────────────────────────
+3. CORE POS WORKFLOW
+────────────────────────────────────────────────────────────────────────────────
+
+STANDARD TRANSACTION FLOW:
+
+  1. Cashier logs into terminal (PIN pad)
+  2. Enter opening float (cash in drawer at start of day)
+  3. Browse product grid or scan barcode
+  4. Products added to cart
+  5. (Optional) Attach customer for loyalty tracking
+  6. (Optional) Apply discount / voucher / gift card
+  7. Select payment method (cash / card / split)
+  8. Process payment and calculate change
+  9. Order submitted to backend
+  10. Receipt displayed / printed
+  11. Customer loyalty points updated
+
+MULTI-ORDER WORKFLOW:
+
+  A single terminal can have up to 10 concurrent open orders (tabs).
+  Use case: customer is deciding while another customer is being served.
+
+  - Open a new order tab from the tab bar
+  - Switch between orders freely
+  - Hold an order (saves to held list, clears current cart)
+  - Resume a held order (restores to cart)
+  - Merge two orders into one (e.g., family members who decide to pay together)
+
+REFUND WORKFLOW:
+
+  1. Look up original order by receipt number or recent orders list
+  2. Select items to refund (partial or full refund)
+  3. Choose refund method (original method or store credit)
+  4. Manager PIN required for refunds above a threshold
+  5. Refund recorded and inventory restored
+  6. If loyalty points were earned, they are deducted
+
+EXCHANGE WORKFLOW:
+
+  1. Identify returned items
+  2. Select replacement items (can be different products or quantities)
+  3. System calculates price difference (pay more or receive credit)
+  4. Process as a combined return + sale transaction
+
+
+────────────────────────────────────────────────────────────────────────────────
+4. PAYMENT METHODS
+────────────────────────────────────────────────────────────────────────────────
+
+CASH:
+  - Cashier enters amount given by customer
+  - System calculates and displays change
+  - Cash movements tracked in drawer log
+
+CARD:
+  - Enter card transaction reference number (from physical terminal)
+  - No change calculation needed
+  - Reference stored with order for reconciliation
+
+SPLIT PAYMENT:
+  - Customer pays part in cash, part by card
+  - Enter both amounts independently
+  - Total must equal order grand total
+  - System validates before allowing completion
+
+GIFT CARD REDEMPTION (any payment method):
+  - Enter gift card code to check balance
+  - Apply partial or full card balance to order
+  - Multiple gift cards can be applied to one order
+  - Remaining balance stays on card for future use
+
+VOUCHER / PROMO CODE:
+  - Enter voucher code
+  - System validates and shows discount type and amount
+  - Applied as a discount before tax calculation
+  - One voucher per order
+
+
+────────────────────────────────────────────────────────────────────────────────
+5. PRODUCT CATALOG
+────────────────────────────────────────────────────────────────────────────────
+
+Products are organized by categories. Current mock categories:
+  - Electronics
+  - Food & Beverage
+  - Office Supplies
+  - Clothing
+  - Personal Care
+
+Each product has:
+  - Name (displayed in product grid)
+  - Price (base price before discounts)
+  - Category (for grid filtering)
+  - Stock level (shows out-of-stock badge when 0)
+  - Barcode (for scanner lookup)
+  - Unit (each / kg / liter / box)
+  - Image URL
+
+STOCK STATES:
+  - In Stock: normal display, can be added to cart
+  - Low Stock (< threshold): warning badge, still purchasable
+  - Out of Stock: grayed out, cannot be added to cart
+
+PRODUCT SEARCH:
+  - Text search filters grid in real time
+  - Barcode scan jumps directly to product
+
+
+────────────────────────────────────────────────────────────────────────────────
+6. DISCOUNT SYSTEM
+────────────────────────────────────────────────────────────────────────────────
+
+DISCOUNT HIERARCHY (applied in this order):
+  1. Line-item discounts (per product in cart)
+  2. Order-level discount (applied to subtotal)
+  3. Voucher discount (applied after order discount)
+  4. Loyalty points redemption (applied after voucher)
+  5. Gift card credit (applied last)
+
+ORDER-LEVEL DISCOUNT:
+  - Type: Percentage (e.g., 10%) or Fixed amount (e.g., $15)
+  - Applied to the subtotal of all items
+  - Above a configurable threshold, requires manager override
+
+LINE-ITEM DISCOUNT:
+  - Applied to a specific item in the cart
+  - Reduces only that item's price
+
+MANAGER OVERRIDE:
+  - Required when discount exceeds the configured threshold
+  - Manager enters their PIN in the override modal
+  - Override is logged with manager name, timestamp, and amount
+  - Override log available in session reports
+
+TAX:
+  - Applied after all discounts
+  - Tax rate configured per branch/region
+  - Displayed as separate line on receipt
+
+
+────────────────────────────────────────────────────────────────────────────────
+7. GIFT CARD SYSTEM
+────────────────────────────────────────────────────────────────────────────────
+
+ISSUING A GIFT CARD:
+  - Accessed from the top bar "Gift Cards" menu
+  - Choose a denomination (preset amounts) or enter custom amount
+  - Optionally assign to a customer (by name or attached customer)
+  - Optionally set an expiry date
+  - System generates a unique code (e.g., GC-A1B2C3D4)
+  - Code can be printed or copied for the customer
+
+CHECKING BALANCE:
+  - Enter the gift card code
+  - System displays: remaining balance, original amount, expiry, status
+
+REDEEMING IN A TRANSACTION:
+  - Enter the code in the cart panel
+  - System checks balance and applies it to the order total
+  - If balance exceeds order total, the remainder stays on the card
+  - Multiple gift cards can be applied to one order
+
+GIFT CARD STATES:
+  - Active: has remaining balance, before expiry
+  - Redeemed: fully used (zero balance)
+  - Expired: past expiry date, cannot be used
+
+
+────────────────────────────────────────────────────────────────────────────────
+8. LOYALTY PROGRAM
+────────────────────────────────────────────────────────────────────────────────
+
+TIERS:
+  Tier        | Points Range  | Earn Rate      | Redeem Rate
+  ──────────────────────────────────────────────────────────────────────────
+  Bronze      | 0 – 500 pts   | 0.10 pts / $1  | $0.10 per point
+  Silver      | 501 – 2,000   | 0.15 pts / $1  | $0.12 per point
+  Gold        | 2,001 – 5,000 | 0.20 pts / $1  | $0.15 per point
+  Platinum    | 5,001+        | 0.25 pts / $1  | $0.20 per point
+
+EARNING POINTS:
+  - Points are earned on the final paid amount (after discounts)
+  - Points are NOT earned on the portion paid with gift cards
+  - Points are NOT earned on the portion paid with redeemed points
+  - Points are updated on the customer record after order completion
+
+REDEEMING POINTS:
+  - Customer chooses how many points to redeem
+  - Converted to dollar discount using tier's redeem rate
+  - Cannot redeem more than the order total
+  - Displayed as a line-item discount on the receipt
+
+CUSTOMER LOOKUP:
+  - Search by name or phone number
+  - Shows current points balance and tier
+  - Creates a new customer record if not found
+
+
+────────────────────────────────────────────────────────────────────────────────
+9. CASH DRAWER MANAGEMENT
+────────────────────────────────────────────────────────────────────────────────
+
+SESSION START:
+  - Cashier enters opening float (starting cash in drawer)
+  - Recorded as the baseline for the session
+
+CASH IN:
+  - Record when adding cash to the drawer (e.g., change given by manager, safe drop)
+  - Reason required (predefined list + "Other" with free text)
+  - Optional note
+
+CASH OUT:
+  - Record when removing cash from the drawer (e.g., petty cash, safe drop)
+  - Reason required
+  - Shows warning if resulting balance goes negative
+
+RUNNING BALANCE:
+  Opening Float + All Cash-In amounts − All Cash-Out amounts = Current Balance
+
+SESSION END REPORT:
+  - Lists all cash movements chronologically
+  - Shows expected balance vs. declared balance
+  - Cash movements report available from the Reports menu
+
+
+────────────────────────────────────────────────────────────────────────────────
+10. RESTAURANT MODE
+────────────────────────────────────────────────────────────────────────────────
+
+Restaurant mode adds a layer of table-based ordering on top of the standard POS.
+It is optional and toggled per terminal in settings.
+
+TABLE MANAGEMENT:
+  - Visual floor map organized by sections (Main Hall, Terrace, Bar, VIP)
+  - Tables show: number, status (available/occupied/reserved), guest count, total
+  - Open an order for a specific table
+  - Multiple orders can exist simultaneously for different tables
+
+GUEST COUNT:
+  - Set number of guests when occupying a table
+  - Used for covers reporting and average spend per guest calculations
+
+COURSE MANAGEMENT:
+  - Items in the cart are grouped by course:
+      1. Appetizer
+      2. Entrée (Main Course)
+      3. Dessert
+      4. Beverages
+  - Each item is assigned to a course
+  - "Fire" a course to send it to the kitchen at the right time
+
+KITCHEN TICKETS:
+  - When a course is fired, a kitchen ticket is generated
+  - Ticket shows: table number, items, special notes, time
+  - Kitchen can mark tickets as prepared
+
+SPLIT BILL:
+  - Split the table's total evenly between N people
+  - Or assign specific items to specific people
+  - Each person pays their portion independently
+
+
+────────────────────────────────────────────────────────────────────────────────
+11. OFFLINE MODE
+────────────────────────────────────────────────────────────────────────────────
+
+DESIGN PRINCIPLE: The POS must keep working even when the internet goes down.
+A cashier should never have to stop serving customers due to connectivity issues.
+
+OFFLINE CAPABILITY:
+  - Product catalog cached to the browser's IndexedDB storage
+  - Cache refreshed at a configurable interval (default: every 30 minutes)
+  - When offline is detected, a banner appears at the top
+
+OFFLINE TRANSACTIONS:
+  - Orders placed while offline are saved to IndexedDB queue
+  - Cashier receives confirmation that the order is queued
+  - Pending count displayed in the sync status indicator
+
+SYNC ON RECONNECT:
+  - When internet connection is restored, sync triggers automatically
+  - Each queued transaction is submitted to the backend in order
+  - Successful transactions removed from queue
+  - Failed transactions flagged with error details
+
+SYNC STATUS INDICATOR:
+  - Green dot: fully synced
+  - Orange dot with count: N transactions pending
+  - Red dot: sync failures detected
+  - Click to open detailed sync drawer
+
+ERROR HANDLING:
+  - Failed sync transactions can be retried manually
+  - Full error details available in SyncErrorsModal
+  - Critical failures alert management
+
+
+────────────────────────────────────────────────────────────────────────────────
+12. TERMINAL SECURITY
+────────────────────────────────────────────────────────────────────────────────
+
+CASHIER SESSION:
+  - Each cashier logs in with their PIN at the terminal
+  - PIN is 4-6 digits, validated against the cashier roster
+  - Session tracks: cashier name, login time, override actions
+
+AUTO-LOCK:
+  - Terminal locks after configurable inactivity period (default: 5 minutes)
+  - Lock screen shows cashier name and time locked
+  - Correct PIN required to unlock
+  - After N failed attempts, manager PIN required to unlock
+
+MANAGER OVERRIDE:
+  - Required for: high discounts, refunds, unlocking after too many failures
+  - Manager enters their PIN in the override modal
+  - All overrides logged: who approved, what action, when
+  - Override log visible in session reports
+
+PIN ATTEMPT LIMITS:
+  - Configurable maximum failed attempts (default: 3)
+  - After limit reached: terminal locked at manager level
+  - Manager must intervene to unlock
+
+
+────────────────────────────────────────────────────────────────────────────────
+13. REPORTS AVAILABLE
+────────────────────────────────────────────────────────────────────────────────
+
+All reports are session-scoped (show data for current terminal session).
+
+  Report                | What it shows
+  ────────────────────────────────────────────────────────────────────────────
+  Cash Movements        | All cash-in/out entries, running balance, cashier stamps
+  Hourly Sales          | Transactions and revenue broken down by hour
+  Payment Breakdown     | Revenue split: cash vs. card vs. split payments
+  Gift Cards            | Gift cards issued and redeemed this session
+  Vouchers              | Vouchers applied, discount amounts, order refs
+  Table Turnover        | Table occupancy, duration, revenue (restaurant mode)
+  Loyalty               | Points issued and redeemed (separate page)
+
+
+────────────────────────────────────────────────────────────────────────────────
+14. MULTI-BRANCH SUPPORT
+────────────────────────────────────────────────────────────────────────────────
+
+The system supports multiple branches of the same business:
+  - HQ (Head Office)
+  - Cairo
+  - Dubai
+  - London
+
+Branch selection affects:
+  - Tax rates (different per jurisdiction)
+  - Currency display and locale formatting
+  - Reporting scoping (per-branch reports)
+  - Cashier roster (each branch has its own cashiers)
+
+Branch is selected in the app settings and persists to localStorage.
+
+
+────────────────────────────────────────────────────────────────────────────────
+15. LOCALIZATION (i18n)
+────────────────────────────────────────────────────────────────────────────────
+
+LANGUAGES SUPPORTED:
+  - English (LTR — left-to-right layout)
+  - Arabic (RTL — right-to-left layout)
+
+RTL IMPLEMENTATION:
+  - Ant Design components: RTL handled automatically via ConfigProvider
+  - Custom HTML: dir="rtl" attribute on wrapper divs
+  - CSS positioning: insetInlineEnd instead of right/left
+  - Space.Compact: no hardcoded borderRadius (breaks in RTL)
+
+TEXT STRINGS:
+  - All UI strings centralized in modules/pos/i18n/translations.ts
+  - No hardcoded text in components
+  - Function usePOSTranslations(language) returns the correct object
+
+NOTE ON LOGIN PAGE:
+  - The login page has its own standalone color/design system
+  - It is NOT connected to the main app theme (AppSettingsContext)
+  - Text on login page is currently in Arabic only
+
+
+────────────────────────────────────────────────────────────────────────────────
+16. THEME & VISUAL DESIGN
+────────────────────────────────────────────────────────────────────────────────
+
+THEME ENGINE:
+  - Light / Dark mode toggle
+  - 5 color presets (Ocean/Forest/Sunset/Amethyst/Slate)
+  - Custom accent color picker
+  - Adjustable border radius (0–16px)
+  - All preferences persist to localStorage
+
+MODAL DESIGN LANGUAGE:
+  All modals follow a consistent pattern:
+  - Gradient colored header (color matches the action type)
+  - Icon + Title + Subtitle in header
+  - Circular close button in top corner (RTL-aware)
+  - White/dark body with padding
+  - Action buttons at bottom with primary CTA right-aligned
+
+COLOR CODING BY FEATURE:
+  Feature           | Color
+  ────────────────────────────────────────────────────
+  Gift Cards        | Purple  (#A855F7)
+  Cash In           | Green   (#10B981)
+  Cash Out          | Red     (#EF4444)
+  Refunds           | Red     (#EF4444)
+  Exchanges         | Blue    (#3B82F6)
+  Success States    | Green   (#10B981)
+
+RESPONSIVE DESIGN:
+  - All modals use width="min(420px, 95vw)" for mobile safety
+  - useBreakpoint() from Ant Design for JS-level breakpoints
+  - isMobile = !screens.sm (screens wider than 576px are not mobile)
+  - Mobile: reduced padding, wrapped buttons, smaller fonts
+
+CSS VARIABLES (index.css):
+  --card: #FFFFFF (light) / #2C2E2D (dark)
+  --background: page background
+  --foreground: text color
+  All Ant Design modal backgrounds use var(--card)
+
+
+────────────────────────────────────────────────────────────────────────────────
+17. TECHNICAL ARCHITECTURE
+────────────────────────────────────────────────────────────────────────────────
+
+FRONTEND ONLY (current state):
+  - All data is mocked in memory
+  - Services simulate network delays (100-600ms)
+  - Data resets on page refresh
+  - No backend API implemented yet
+
+PLANNED BACKEND INTEGRATION:
+  - Replace service files with real HTTP calls (Axios)
+  - API client configured in lib/api.ts
+  - Set VITE_API_URL in .env for the backend endpoint
+  - Use TanStack Query for caching and background refetch
+
+STATE MANAGEMENT:
+  - POS state: Zustand store (posStore.ts)
+  - Auth: React Context (AuthContext)
+  - Settings: React Context (AppSettingsContext)
+  - Server state (future): TanStack Query
+
+OFFLINE STORAGE:
+  - IndexedDB via idb library
+  - Stores: products cache, transaction queue, metadata
+  - Managed by offlineService.ts and syncService.ts
+
+ROUTING:
+  - Wouter (lightweight, no React Router dependency)
+  - Routes defined in App.tsx
+
+
+────────────────────────────────────────────────────────────────────────────────
+18. DEVELOPMENT NOTES & CONVENTIONS
+────────────────────────────────────────────────────────────────────────────────
+
+RUNNING LOCALLY:
+  PATH="$HOME/.nvm/versions/node/v23.7.0/bin:$PATH" pnpm dev --port 4201
+  App: http://localhost:4201/
+
+FILE NAMING:
+  - Components: PascalCase.tsx
+  - Hooks: useCamelCase.ts
+  - Services: camelCaseService.ts
+  - Types: camelCase.ts or PascalCase for type names
+
+IMPORT ALIAS:
+  @/ maps to client/src/
+  Example: import { useAuth } from "@/contexts/AuthContext";
+
+DO NOT:
+  - Hardcode text in components (use translations)
+  - Hardcode colors outside of feature-specific accents
+  - Use right/left CSS properties (use logical properties instead)
+  - Hardcode borderRadius inside Space.Compact children
+  - Commit .env files with real credentials
+
+ALWAYS:
+  - Pass language to usePOSTranslations()
+  - Add dir={isRTL ? "rtl" : "ltr"} to custom HTML wrappers
+  - Use min(Xpx, 95vw) for modal widths
+  - Select only needed slices from posStore to avoid re-renders
+
+================================================================================
+END OF BUSINESS DESIGN DOCUMENT
+================================================================================
