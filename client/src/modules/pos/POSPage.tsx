@@ -16,6 +16,7 @@ import {
   SendOutlined,
   RollbackOutlined,
   GlobalOutlined,
+  BgColorsOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "wouter";
 import { AntProvider } from "@/lib/antd-provider";
@@ -46,6 +47,7 @@ import { KitchenTicket } from "./components/restaurant/KitchenTicket";
 import { SplitBillModal } from "./components/restaurant/SplitBillModal";
 import { RefundModal } from "./components/RefundModal";
 import { ExchangeModal } from "./components/ExchangeModal";
+import { ThemeCustomizer } from "./components/ThemeCustomizer";
 import { releaseTable } from "./services/tableService";
 
 const { useBreakpoint } = Grid;
@@ -80,6 +82,7 @@ function POSLayout() {
   const [splitBillOpen, setSplitBillOpen] = useState(false);
   const [refundOpen, setRefundOpen] = useState(false);
   const [exchangeOpen, setExchangeOpen] = useState(false);
+  const [customizerOpen, setCustomizerOpen] = useState(false);
   const { addToCart, itemCount, cartItems, grandTotal } = useCart();
   const { receiptVisible, closeReceipt, completedOrder } = useCheckout();
   useOfflineSync();
@@ -427,6 +430,13 @@ function POSLayout() {
                   {isRTL ? "EN" : "AR"}
                 </Button>
               </Tooltip>
+              <Tooltip title="Theme Customizer">
+                <Button
+                  icon={<BgColorsOutlined />}
+                  onClick={() => setCustomizerOpen(true)}
+                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+                />
+              </Tooltip>
             </>
           )}
 
@@ -466,6 +476,13 @@ function POSLayout() {
                   icon={<GlobalOutlined />}
                   onClick={() => setLanguage(isRTL ? "en" : "ar")}
                   style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700 }}
+                />
+              </Tooltip>
+              <Tooltip title="Theme Customizer">
+                <Button
+                  icon={<BgColorsOutlined />}
+                  onClick={() => setCustomizerOpen(true)}
+                  style={{ borderRadius: 10, height: 36, width: 36, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
                 />
               </Tooltip>
               <Badge count={itemCount} color={token.colorPrimary}>
@@ -547,6 +564,7 @@ function POSLayout() {
       <ReceiptModal open={receiptVisible} order={completedOrder} onClose={closeReceipt} />
       <RefundModal open={refundOpen} onClose={() => setRefundOpen(false)} />
       <ExchangeModal open={exchangeOpen} onClose={() => setExchangeOpen(false)} />
+      <ThemeCustomizer open={customizerOpen} onClose={() => setCustomizerOpen(false)} />
       <IssueGiftCardModal open={issueGCOpen} onClose={() => setIssueGCOpen(false)} />
       <CheckBalanceModal open={checkBalanceOpen} onClose={() => setCheckBalanceOpen(false)} />
       <MergeOrdersModal open={mergeOpen} onClose={() => setMergeOpen(false)} />

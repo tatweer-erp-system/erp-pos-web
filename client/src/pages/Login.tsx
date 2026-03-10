@@ -589,6 +589,163 @@ function InputIcon({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ─── Design settings ──────────────────────────────────────────────────────────
+const COLOR_PRESETS = [
+  { id: "green",  name: "أخضر",   primary: "#006C35", dark: "#004d26", light: "#dcfce7" },
+  { id: "blue",   name: "أزرق",   primary: "#1a56db", dark: "#1240ab", light: "#dbeafe" },
+  { id: "violet", name: "بنفسجي", primary: "#7c3aed", dark: "#5b21b6", light: "#ede9fe" },
+  { id: "red",    name: "أحمر",   primary: "#dc2626", dark: "#b91c1c", light: "#fee2e2" },
+  { id: "slate",  name: "رمادي",  primary: "#374151", dark: "#1f2937", light: "#f1f5f9" },
+  { id: "amber",  name: "ذهبي",   primary: "#b45309", dark: "#92400e", light: "#fef3c7" },
+] as const;
+
+type ColorPreset   = (typeof COLOR_PRESETS)[number];
+type DesignVariant = 1 | 2 | 3;
+
+const DESIGN_OPTIONS: { id: DesignVariant; name: string; desc: string }[] = [
+  { id: 1, name: "كلاسيك",  desc: "لوحة التوضيح + النموذج" },
+  { id: 2, name: "مركزي",   desc: "بطاقة عائمة على خلفية فاتحة" },
+  { id: 3, name: "جريء",    desc: "خلفية ملونة كاملة" },
+];
+
+function SettingsDrawer({
+  open, onClose, color, onColorChange, design, onDesignChange,
+}: {
+  open: boolean;
+  onClose: () => void;
+  color: ColorPreset;
+  onColorChange: (c: ColorPreset) => void;
+  design: DesignVariant;
+  onDesignChange: (d: DesignVariant) => void;
+}) {
+  return (
+    <>
+      {open && (
+        <div className="fixed inset-0 z-[10000] bg-black/20 backdrop-blur-sm" onClick={onClose} />
+      )}
+      <div
+        className={`fixed top-0 right-0 h-full w-72 bg-white z-[10001] shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+        dir="rtl"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <h2 className="font-bold text-slate-800 text-sm">إعدادات الصفحة</h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-7">
+          {/* Colors */}
+          <section>
+            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-3">اللون الرئيسي</p>
+            <div className="grid grid-cols-3 gap-2.5">
+              {COLOR_PRESETS.map((c) => {
+                const active = color.id === c.id;
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => onColorChange(c)}
+                    className={`relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl border-2 transition-all duration-150 ${
+                      active ? "border-slate-800 shadow-sm scale-105" : "border-slate-100 hover:border-slate-200"
+                    }`}
+                  >
+                    <div className="w-8 h-8 rounded-full" style={{ background: c.primary }} />
+                    <span className="text-[10px] font-medium text-slate-600">{c.name}</span>
+                    {active && (
+                      <span className="absolute top-1.5 left-1.5 w-4 h-4 rounded-full flex items-center justify-center"
+                        style={{ background: c.primary }}>
+                        <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Designs */}
+          <section>
+            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-3">التصميم</p>
+            <div className="space-y-2">
+              {DESIGN_OPTIONS.map((opt) => {
+                const active = design === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => onDesignChange(opt.id)}
+                    className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-right ${
+                      active ? "border-slate-800 bg-slate-50" : "border-slate-100 hover:border-slate-200"
+                    }`}
+                  >
+                    {/* Mini preview */}
+                    <div className="w-14 h-9 rounded-lg overflow-hidden flex-shrink-0 border border-slate-200 flex">
+                      {opt.id === 1 && (
+                        <>
+                          <div className="w-6 h-full flex-shrink-0" style={{ background: color.primary }} />
+                          <div className="flex-1 bg-white flex items-center justify-center">
+                            <div className="space-y-0.5 w-5">
+                              <div className="h-0.5 bg-slate-200 rounded" />
+                              <div className="h-0.5 bg-slate-200 rounded w-3" />
+                              <div className="h-1.5 rounded mt-1" style={{ background: color.primary }} />
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      {opt.id === 2 && (
+                        <div className="w-full h-full flex items-center justify-center" style={{ background: color.light }}>
+                          <div className="w-8 h-6 bg-white rounded shadow-sm flex flex-col overflow-hidden">
+                            <div className="h-1.5 w-full" style={{ background: color.primary }} />
+                          </div>
+                        </div>
+                      )}
+                      {opt.id === 3 && (
+                        <div className="w-full h-full flex items-center justify-center" style={{ background: color.primary }}>
+                          <div className="w-8 h-6 bg-white/95 rounded shadow-sm flex flex-col overflow-hidden">
+                            <div className="h-1.5 w-full" style={{ background: color.dark }} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-semibold text-slate-700">{opt.name}</div>
+                      <div className="text-[10px] text-slate-400 leading-tight">{opt.desc}</div>
+                    </div>
+                    {active && (
+                      <span className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ background: color.primary }}>
+                        <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ─── Main Login Page ──────────────────────────────────────────────────────────
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -604,6 +761,25 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess]     = useState(false);
   const [showDemoUsers, setShowDemoUsers] = useState(false);
+
+  // Design settings
+  const [colorPreset, setColorPreset] = useState<ColorPreset>(() => {
+    const saved = localStorage.getItem("login-color-id");
+    return (COLOR_PRESETS as readonly ColorPreset[]).find((c) => c.id === saved) ?? COLOR_PRESETS[0];
+  });
+  const [design, setDesign] = useState<DesignVariant>(() =>
+    (Number(localStorage.getItem("login-design")) as DesignVariant) || 1
+  );
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  function handleColorChange(c: ColorPreset) {
+    setColorPreset(c);
+    localStorage.setItem("login-color-id", c.id);
+  }
+  function handleDesignChange(d: DesignVariant) {
+    setDesign(d);
+    localStorage.setItem("login-design", String(d));
+  }
 
   // Branch selection step
   const [step, setStep]               = useState<"form" | "branch">("form");
@@ -706,331 +882,362 @@ export default function Login() {
       "placeholder-slate-400 outline-none transition-all duration-200",
       hasError
         ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-200"
-        : "border-slate-200 bg-slate-50 focus:border-green-500 focus:ring-2 focus:ring-green-100 focus:bg-white",
+        : "border-slate-200 bg-slate-50 focus:ring-2 focus:ring-slate-200 focus:bg-white",
     ].join(" ");
 
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row overflow-hidden">
+  const { primary, dark, light } = colorPreset;
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* LEFT PANEL — Saudi accounting illustration (full height on desktop) */}
-      <div className="relative lg:w-[55%] h-52 lg:h-auto flex-shrink-0 overflow-hidden">
-        <div className="absolute inset-0">
-          <SaudiIllustration />
-        </div>
-        {/* Subtle right-edge fade on desktop so it blends into the white panel */}
-        <div className="hidden lg:block absolute inset-y-0 right-0 w-16 bg-gradient-to-r from-transparent to-white/10" />
+  // ── Shared: settings gear button + drawer ───────────────────────────────
+  const settingsUI = (
+    <>
+      <SettingsDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        color={colorPreset}
+        onColorChange={handleColorChange}
+        design={design}
+        onDesignChange={handleDesignChange}
+      />
+      <button
+        onClick={() => setDrawerOpen(true)}
+        className="fixed top-4 right-4 z-[9999] w-10 h-10 flex items-center justify-center rounded-xl shadow-lg hover:shadow-xl transition-all text-white"
+        style={{ background: `linear-gradient(135deg, ${primary}, ${dark})` }}
+        aria-label="إعدادات الصفحة"
+        title="إعدادات الصفحة"
+      >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </button>
+    </>
+  );
+
+  // ── Shared: the login card (character + card + demo section) ────────────
+  const formCard = (
+    <div className="w-full max-w-sm relative">
+      {/* Character */}
+      <div
+        ref={characterRef}
+        className="absolute top-0 left-1/2 -translate-x-1/2 z-10 w-32 h-40 select-none"
+        style={{ filter: `drop-shadow(0 6px 14px ${primary}40)` }}
+      >
+        <BusinessCharacter isPasswordFocused={isPasswordFocused} eyePos={eyePos} />
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* RIGHT PANEL — Login form */}
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-white to-slate-50 px-6 py-10 lg:py-0">
-        <div className="w-full max-w-sm relative">
-
-          {/* ── Character — floats above the card, centred on its top edge ── */}
-          <div
-            ref={characterRef}
-            className="absolute top-0 left-1/2 -translate-x-1/2 z-10 w-32 h-40 select-none"
-            style={{ filter: "drop-shadow(0 6px 14px rgba(0,108,53,0.2))" }}
-          >
-            <BusinessCharacter
-              isPasswordFocused={isPasswordFocused}
-              eyePos={eyePos}
-            />
-          </div>
-
-          {/* ── Card — mt-16 so the character's top half sits above the card ── */}
-          <div className="mt-16 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
-
-            {/* Header — pt-24 pushes the brand below the character overlap */}
-            <div className="bg-gradient-to-r from-[#006C35] to-[#00933f] px-8 pt-24 pb-5 text-center text-white">
-              <div className="flex items-center justify-center gap-2.5 mb-1">
-                {/* Saudi-style icon */}
-                <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5" fill="white" />
-                    <rect x="14" y="3" width="7" height="7" rx="1.5" fill="white" />
-                    <rect x="3" y="14" width="7" height="7" rx="1.5" fill="white" />
-                    <circle cx="17.5" cy="17.5" r="3.5" fill="white" />
-                  </svg>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold text-lg leading-tight tracking-wide">تطوير</div>
-                  <div className="text-green-200 text-[10px] tracking-widest font-medium uppercase">Tatweer ERP</div>
-                </div>
-              </div>
+      {/* Card */}
+      <div className="mt-16 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+        {/* Header */}
+        <div
+          className="px-8 pt-24 pb-5 text-center text-white"
+          style={{ background: `linear-gradient(to right, ${primary}, ${dark})` }}
+        >
+          <div className="flex items-center justify-center gap-2.5 mb-1">
+            <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" fill="white" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" fill="white" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" fill="white" />
+                <circle cx="17.5" cy="17.5" r="3.5" fill="white" />
+              </svg>
             </div>
+            <div className="text-right">
+              <div className="font-bold text-lg leading-tight tracking-wide">تطوير</div>
+              <div className="text-white/70 text-[10px] tracking-widest font-medium uppercase">Tatweer ERP</div>
+            </div>
+          </div>
+        </div>
 
-            {/* Form body */}
-            <div className="px-7 pt-5 pb-7">
-              <h1 className="text-lg font-bold text-slate-800 text-center mb-0.5">
-                مرحباً بك
-              </h1>
-              <p className="text-slate-500 text-xs text-center mb-5">
-                سجّل الدخول للمتابعة إلى لوحة التحكم
-              </p>
+        {/* Form body */}
+        <div className="px-7 pt-5 pb-7">
+          <h1 className="text-lg font-bold text-slate-800 text-center mb-0.5">مرحباً بك</h1>
+          <p className="text-slate-500 text-xs text-center mb-5">سجّل الدخول للمتابعة إلى لوحة التحكم</p>
 
-              {success ? (
-                <div className="flex flex-col items-center gap-3 py-6">
-                  <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+          {success ? (
+            <div className="flex flex-col items-center gap-3 py-6">
+              <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: light }}>
+                <svg className="w-8 h-8" style={{ color: primary }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="font-semibold text-sm" style={{ color: primary }}>تم تسجيل الدخول بنجاح!</p>
+              <p className="text-slate-400 text-xs">جارٍ التحويل إلى لوحة التحكم…</p>
+            </div>
+          ) : step === "branch" ? (
+            <div className="space-y-2.5">
+              <div className="text-center mb-4">
+                <h2 className="text-base font-bold text-slate-800">اختر الفرع</h2>
+                <p className="text-xs text-slate-500 mt-1">حدد الفرع الذي تريد الدخول إليه</p>
+              </div>
+              {loginBranches.map((branch) => (
+                <button
+                  key={branch.id}
+                  type="button"
+                  onClick={() => handleBranchSelect(branch)}
+                  className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all duration-150 text-left"
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = primary)}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "")}
+                >
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm"
+                    style={{ background: `linear-gradient(to bottom right, ${primary}, ${dark})` }}
+                  >
+                    {branch.initials}
+                  </div>
+                  <div className="flex-1 min-w-0 text-right">
+                    <div className="font-semibold text-sm text-slate-800">{branch.name}</div>
+                    <div className="text-xs text-slate-400">{branch.location}</div>
+                  </div>
+                  <svg className="w-4 h-4 text-slate-300 flex-shrink-0 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setStep("form")}
+                className="w-full text-center text-xs text-slate-400 hover:text-slate-600 transition-colors pt-2 flex items-center justify-center gap-1"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                رجوع
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="email">
+                  البريد الإلكتروني
+                </label>
+                <div className="relative">
+                  <InputIcon>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                  </div>
-                  <p className="text-green-700 font-semibold text-sm">تم تسجيل الدخول بنجاح!</p>
-                  <p className="text-slate-400 text-xs">جارٍ التحويل إلى لوحة التحكم…</p>
+                  </InputIcon>
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors((p) => ({ ...p, email: undefined }));
+                    }}
+                    placeholder="you@company.com"
+                    className={inputCls(!!errors.email)}
+                    dir="ltr"
+                  />
                 </div>
-              ) : step === "branch" ? (
-                /* ── Step 2: Branch selection ─────────────────────────────── */
-                <div className="space-y-2.5">
-                  <div className="text-center mb-4">
-                    <h2 className="text-base font-bold text-slate-800">اختر الفرع</h2>
-                    <p className="text-xs text-slate-500 mt-1">حدد الفرع الذي تريد الدخول إليه</p>
-                  </div>
+                {errors.email && <ErrorMsg>{errors.email}</ErrorMsg>}
+              </div>
 
-                  {loginBranches.map((branch) => (
-                    <button
-                      key={branch.id}
-                      type="button"
-                      onClick={() => handleBranchSelect(branch)}
-                      className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-slate-200
-                        hover:border-[#006C35] hover:bg-green-50 transition-all duration-150 text-left group"
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#006C35] to-[#00933f]
-                        flex items-center justify-center text-white font-bold text-sm flex-shrink-0
-                        shadow-sm group-hover:shadow-md transition-shadow">
-                        {branch.initials}
-                      </div>
-                      <div className="flex-1 min-w-0 text-right">
-                        <div className="font-semibold text-sm text-slate-800">{branch.name}</div>
-                        <div className="text-xs text-slate-400">{branch.location}</div>
-                      </div>
-                      <svg className="w-4 h-4 text-slate-300 group-hover:text-[#006C35] transition-colors flex-shrink-0 rotate-180"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </button>
-                  ))}
-
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="password">
+                  كلمة المرور
+                </label>
+                <div className="relative">
+                  <InputIcon>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </InputIcon>
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) setErrors((p) => ({ ...p, password: undefined }));
+                    }}
+                    onFocus={() => setIsPasswordFocused(true)}
+                    onBlur={()  => setIsPasswordFocused(false)}
+                    placeholder="••••••••"
+                    className={`${inputCls(!!errors.password)} pr-11`}
+                    dir="ltr"
+                  />
                   <button
                     type="button"
-                    onClick={() => setStep("form")}
-                    className="w-full text-center text-xs text-slate-400 hover:text-slate-600 transition-colors pt-2 flex items-center justify-center gap-1"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                    tabIndex={-1}
+                    aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                    رجوع
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} noValidate className="space-y-4">
-
-                  {/* Email */}
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="email">
-                      البريد الإلكتروني
-                    </label>
-                    <div className="relative">
-                      <InputIcon>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                      </InputIcon>
-                      <input
-                        id="email"
-                        type="email"
-                        autoComplete="email"
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          if (errors.email) setErrors((p) => ({ ...p, email: undefined }));
-                        }}
-                        placeholder="you@company.com"
-                        className={inputCls(!!errors.email)}
-                        dir="ltr"
-                      />
-                    </div>
-                    {errors.email && <ErrorMsg>{errors.email}</ErrorMsg>}
-                  </div>
-
-                  {/* Password */}
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="password">
-                      كلمة المرور
-                    </label>
-                    <div className="relative">
-                      <InputIcon>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                      </InputIcon>
-                      <input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => {
-                          setPassword(e.target.value);
-                          if (errors.password) setErrors((p) => ({ ...p, password: undefined }));
-                        }}
-                        onFocus={() => setIsPasswordFocused(true)}
-                        onBlur={()  => setIsPasswordFocused(false)}
-                        placeholder="••••••••"
-                        className={`${inputCls(!!errors.password)} pr-11`}
-                        dir="ltr"
-                      />
-                      {/* Show/hide toggle */}
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword((v) => !v)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                        tabIndex={-1}
-                        aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
-                      >
-                        {showPassword ? (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                              d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                          </svg>
-                        ) : (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                    {errors.password && <ErrorMsg>{errors.password}</ErrorMsg>}
-                  </div>
-
-                  {/* Remember me + Forgot password */}
-                  <div className="flex items-center justify-between pt-0.5">
-                    <label className="flex items-center gap-2 cursor-pointer group select-none">
-                      <input
-                        type="checkbox"
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                        className="w-4 h-4 rounded border-slate-300 accent-green-600 cursor-pointer"
-                      />
-                      <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
-                        تذكّرني
-                      </span>
-                    </label>
-                    <a
-                      href="#"
-                      className="text-sm text-[#006C35] hover:text-[#004d26] font-medium transition-colors"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      نسيت كلمة المرور؟
-                    </a>
-                  </div>
-
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full py-3 px-4 bg-gradient-to-r from-[#006C35] to-[#00933f]
-                      hover:from-[#004d26] hover:to-[#006C35]
-                      disabled:opacity-60 disabled:cursor-not-allowed
-                      text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg
-                      transition-all duration-200 flex items-center justify-center gap-2 mt-1"
-                  >
-                    {isLoading ? (
-                      <>
-                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                        جارٍ تسجيل الدخول…
-                      </>
+                    {showPassword ? (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                      </svg>
                     ) : (
-                      <>
-                        تسجيل الدخول
-                        <svg className="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
                     )}
                   </button>
-                </form>
-              )}
-            </div>
+                </div>
+                {errors.password && <ErrorMsg>{errors.password}</ErrorMsg>}
+              </div>
 
-            {/* Footer */}
-            <div className="px-7 py-3 bg-slate-50 border-t border-slate-100 text-center">
-              <p className="text-[10px] text-slate-400">
-                © {new Date().getFullYear()} تطوير ERP &nbsp;·&nbsp; نظام آمن للمؤسسات &nbsp;·&nbsp;
+              {/* Remember me + Forgot password */}
+              <div className="flex items-center justify-between pt-0.5">
+                <label className="flex items-center gap-2 cursor-pointer group select-none">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="w-4 h-4 rounded border-slate-300 cursor-pointer"
+                    style={{ accentColor: primary }}
+                  />
+                  <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">تذكّرني</span>
+                </label>
                 <a
                   href="#"
-                  className="hover:text-[#006C35] transition-colors"
+                  className="text-sm font-medium transition-colors hover:opacity-80"
+                  style={{ color: primary }}
                   onClick={(e) => e.preventDefault()}
                 >
-                  سياسة الخصوصية
+                  نسيت كلمة المرور؟
                 </a>
-              </p>
-            </div>
-          </div>
-
-          {/* Vision 2030 badge */}
-          <p className="text-center text-[10px] text-slate-400 mt-4 tracking-wide">
-            المملكة العربية السعودية &nbsp;·&nbsp; رؤية ٢٠٣٠
-          </p>
-
-          {/* ── Demo Quick Login ── */}
-          <div className="mt-4">
-            <button
-              type="button"
-              onClick={() => setShowDemoUsers((v) => !v)}
-              className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl border border-dashed border-slate-300 text-xs text-slate-400 hover:text-slate-600 hover:border-slate-400 transition-all"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Demo Users — Quick Login
-              <svg className={`w-3 h-3 transition-transform ${showDemoUsers ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            {showDemoUsers && (
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                {MOCK_USERS.map((u) => {
-                  const rd = ROLE_DISPLAY[u.role];
-                  const initials = u.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
-                  return (
-                    <button
-                      key={u.id}
-                      type="button"
-                      onClick={() => handleQuickLogin(u)}
-                      className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition-all text-left group"
-                    >
-                      <div
-                        className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                        style={{ background: rd.color }}
-                      >
-                        {initials}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-xs font-semibold text-slate-700 truncate leading-tight">{u.name}</div>
-                        <div
-                          className="text-[10px] font-medium mt-0.5 px-1.5 py-0.5 rounded-full inline-block leading-tight"
-                          style={{ color: rd.color, background: rd.bg }}
-                        >
-                          {rd.label}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
               </div>
-            )}
-          </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-3 px-4 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg hover:opacity-90 transition-all duration-200 flex items-center justify-center gap-2 mt-1"
+                style={{ background: `linear-gradient(to right, ${primary}, ${dark})` }}
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    جارٍ تسجيل الدخول…
+                  </>
+                ) : (
+                  <>
+                    تسجيل الدخول
+                    <svg className="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-7 py-3 bg-slate-50 border-t border-slate-100 text-center">
+          <p className="text-[10px] text-slate-400">
+            © {new Date().getFullYear()} تطوير ERP &nbsp;·&nbsp; نظام آمن للمؤسسات &nbsp;·&nbsp;
+            <a href="#" className="hover:text-slate-600 transition-colors" onClick={(e) => e.preventDefault()}>
+              سياسة الخصوصية
+            </a>
+          </p>
         </div>
       </div>
+
+      {/* Vision 2030 badge */}
+      <p className="text-center text-[10px] text-slate-400 mt-4 tracking-wide">
+        المملكة العربية السعودية &nbsp;·&nbsp; رؤية ٢٠٣٠
+      </p>
+
+      {/* Demo Quick Login */}
+      <div className="mt-4">
+        <button
+          type="button"
+          onClick={() => setShowDemoUsers((v) => !v)}
+          className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl border border-dashed border-slate-300 text-xs text-slate-400 hover:text-slate-600 hover:border-slate-400 transition-all"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Demo Users — Quick Login
+          <svg className={`w-3 h-3 transition-transform ${showDemoUsers ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {showDemoUsers && (
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {MOCK_USERS.map((u) => {
+              const rd = ROLE_DISPLAY[u.role];
+              const initials = u.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
+              return (
+                <button
+                  key={u.id}
+                  type="button"
+                  onClick={() => handleQuickLogin(u)}
+                  className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition-all text-left"
+                >
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                    style={{ background: rd.color }}
+                  >
+                    {initials}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-semibold text-slate-700 truncate leading-tight">{u.name}</div>
+                    <div
+                      className="text-[10px] font-medium mt-0.5 px-1.5 py-0.5 rounded-full inline-block leading-tight"
+                      style={{ color: rd.color, background: rd.bg }}
+                    >
+                      {rd.label}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // ── Design 1: Classic split (illustration + form) ────────────────────────
+  if (design === 1) return (
+    <div className="min-h-screen flex flex-col lg:flex-row overflow-hidden">
+      {settingsUI}
+      <div className="relative lg:w-[55%] h-52 lg:h-auto flex-shrink-0 overflow-hidden">
+        <div className="absolute inset-0"><SaudiIllustration /></div>
+        <div className="hidden lg:block absolute inset-y-0 right-0 w-16 bg-gradient-to-r from-transparent to-white/10" />
+      </div>
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-b from-white to-slate-50 px-6 py-10 lg:py-0">
+        {formCard}
+      </div>
+    </div>
+  );
+
+  // ── Design 2: Centered card on light gradient ────────────────────────────
+  if (design === 2) return (
+    <div
+      className="min-h-screen flex items-center justify-center px-6 py-10"
+      style={{ background: `linear-gradient(135deg, ${light} 0%, #ffffff 55%, ${light}99 100%)` }}
+    >
+      {settingsUI}
+      {formCard}
+    </div>
+  );
+
+  // ── Design 3: Bold colored background ───────────────────────────────────
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center px-6 py-10"
+      style={{ background: `linear-gradient(135deg, ${primary} 0%, ${dark} 100%)` }}
+    >
+      {settingsUI}
+      {formCard}
     </div>
   );
 }
