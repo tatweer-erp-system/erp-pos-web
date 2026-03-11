@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
-import { authService, type LoginBranch } from "@/services/auth.service";
-import { useAuthContext, MOCK_USERS, ROLE_DISPLAY } from "@/contexts/AuthContext";
-import { Role } from "@/types/auth";
+import { authService, type Branch } from "@/services/auth.service";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { Role, type LoginResponse } from "@/types/auth";
+import type { ApiError } from "@/types/api";
 
 interface EyePos { x: number; y: number }
 
@@ -749,7 +750,7 @@ function SettingsDrawer({
 // ─── Main Login Page ──────────────────────────────────────────────────────────
 export default function Login() {
   const [, setLocation] = useLocation();
-  const { login: authLogin } = useAuthContext();
+  const { login: authLogin, selectBranch } = useAuthContext();
 
   const [email, setEmail]               = useState("");
   const [password, setPassword]         = useState("");
@@ -759,7 +760,6 @@ export default function Login() {
   const [errors, setErrors]   = useState<{ email?: string; password?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess]     = useState(false);
-  const [showDemoUsers, setShowDemoUsers] = useState(false);
 
   // Design settings
   const [colorPreset, setColorPreset] = useState<ColorPreset>(() => {
@@ -782,9 +782,8 @@ export default function Login() {
 
   // Branch selection step
   const [step, setStep]               = useState<"form" | "branch">("form");
-  const [loginBranches, setLoginBranches] = useState<LoginBranch[]>([]);
-  const [pendingToken, setPendingToken]   = useState("");
-  const [pendingUser, setPendingUser]     = useState<typeof MOCK_USERS[0] | null>(null);
+  const [loginBranches, setLoginBranches] = useState<Branch[]>([]);
+  const [pendingLoginResponse, setPendingLoginResponse] = useState<LoginResponse | null>(null);
   const [redirectTo, setRedirectTo]       = useState("/");
 
   // Redirect to dashboard after successful login
@@ -836,42 +835,34 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      const { token, branches } = await authService.login(email, password);
-      const matchedUser = MOCK_USERS.find((u) => u.email === email) ?? MOCK_USERS.find((u) => u.role === Role.Admin)!;
+      const response = await authService.login(email, password);
 
-      if (branches.length === 1) {
+      if (response.branches.length === 1) {
         // Single branch — log in directly
-        authLogin(matchedUser);
-        localStorage.setItem("auth_token", token);
-        localStorage.setItem("app-branch", branches[0].id);
-        setRedirectTo(matchedUser.role === Role.Cashier ? "/pos" : "/");
+        authLogin(response);
+        selectBranch(response.branches[0]);
+        setRedirectTo(response.user.role === Role.Cashier ? "/pos" : "/");
         setSuccess(true);
       } else {
         // Multiple branches — let user choose
-        setPendingToken(token);
-        setPendingUser(matchedUser);
-        setLoginBranches(branches);
+        setPendingLoginResponse(response);
+        setLoginBranches(response.branches);
         setStep("branch");
       }
-    } catch {
-      setErrors({ email: "بيانات الاعتماد غير صحيحة. حاول مجدداً." });
+    } catch (err) {
+      const apiErr = err as ApiError;
+      setErrors({ email: apiErr.message || "بيانات الاعتماد غير صحيحة. حاول مجدداً." });
     } finally {
       setIsLoading(false);
     }
   }
 
-  function handleBranchSelect(branch: LoginBranch) {
-    const u = pendingUser ?? MOCK_USERS.find((u) => u.role === Role.Admin)!;
-    authLogin(u);
-    localStorage.setItem("auth_token", pendingToken);
-    localStorage.setItem("app-branch", branch.id);
-    setRedirectTo(u.role === Role.Cashier ? "/pos" : "/");
+  function handleBranchSelect(branch: Branch) {
+    if (!pendingLoginResponse) return;
+    authLogin(pendingLoginResponse);
+    selectBranch(branch);
+    setRedirectTo(pendingLoginResponse.user.role === Role.Cashier ? "/pos" : "/");
     setSuccess(true);
-  }
-
-  function handleQuickLogin(user: typeof MOCK_USERS[0]) {
-    authLogin(user);
-    setLocation(user.role === Role.Cashier ? "/pos" : "/");
   }
 
   // Shared input class builder
@@ -982,11 +973,11 @@ export default function Login() {
                     className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm"
                     style={{ background: `linear-gradient(to bottom right, ${primary}, ${dark})` }}
                   >
-                    {branch.initials}
+                    {branch.code}
                   </div>
                   <div className="flex-1 min-w-0 text-right">
                     <div className="font-semibold text-sm text-slate-800">{branch.name}</div>
-                    <div className="text-xs text-slate-400">{branch.location}</div>
+                    <div className="text-xs text-slate-400">{branch.code}</div>
                   </div>
                   <svg className="w-4 h-4 text-slate-300 flex-shrink-0 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -1142,55 +1133,6 @@ export default function Login() {
         المملكة العربية السعودية &nbsp;·&nbsp; رؤية ٢٠٣٠
       </p>
 
-      {/* Demo Quick Login */}
-      <div className="mt-4">
-        <button
-          type="button"
-          onClick={() => setShowDemoUsers((v) => !v)}
-          className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl border border-dashed border-slate-300 text-xs text-slate-400 hover:text-slate-600 hover:border-slate-400 transition-all"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          Demo Users — Quick Login
-          <svg className={`w-3 h-3 transition-transform ${showDemoUsers ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        {showDemoUsers && (
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            {MOCK_USERS.map((u) => {
-              const rd = ROLE_DISPLAY[u.role];
-              const initials = u.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
-              return (
-                <button
-                  key={u.id}
-                  type="button"
-                  onClick={() => handleQuickLogin(u)}
-                  className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm transition-all text-left"
-                >
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-                    style={{ background: rd.color }}
-                  >
-                    {initials}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-semibold text-slate-700 truncate leading-tight">{u.name}</div>
-                    <div
-                      className="text-[10px] font-medium mt-0.5 px-1.5 py-0.5 rounded-full inline-block leading-tight"
-                      style={{ color: rd.color, background: rd.bg }}
-                    >
-                      {rd.label}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
     </div>
   );
 

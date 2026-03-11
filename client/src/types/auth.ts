@@ -51,8 +51,37 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[] | ["*"]> = {
 
 export interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   role: Role;
-  avatarUrl?: string;
+  permissions: string[];
+  avatarUrl?: string | null;
+  preferredLang?: string;
+}
+
+export interface Tenant {
+  slug: string;
+  name: string;
+  logo?: string | null;
+}
+
+export interface Branch {
+  id: string;
+  name: string;
+  code: string;
+  isDefault: boolean;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+  tenant: Tenant;
+  branches: Branch[];
+}
+
+export interface RefreshResponse {
+  accessToken: string;
+  refreshToken: string;
 }

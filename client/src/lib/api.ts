@@ -1,5 +1,6 @@
-import axios, { AxiosError } from "axios";
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 import type { ApiError } from "@/types/api";
+import { getAccessToken, getRefreshToken, setTokens, clearTokens } from "@/lib/token";
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? "/api",
@@ -9,7 +10,7 @@ export const apiClient = axios.create({
 
 // ─── Request interceptor: attach Bearer token + X-Request-Id ─────────────────
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("auth_token");
+  const token = getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -17,16 +18,49 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// ─── Response interceptor: normalize errors + redirect on 401 ────────────────
+// ─── Response interceptor: silent refresh on 401 ─────────────────────────────
+let refreshPromise: Promise<string> | null = null;
+
+async function silentRefresh(): Promise<string> {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) throw new Error("No refresh token");
+
+  // Import dynamically to avoid circular dependency
+  const { authService } = await import("@/services/auth.service");
+  const result = await authService.refresh(refreshToken);
+  setTokens(result.accessToken, result.refreshToken);
+  return result.accessToken;
+}
+
 apiClient.interceptors.response.use(
   (response) => response,
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
     const status = error.response?.status ?? 0;
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-    if (status === 401) {
-      localStorage.removeItem("auth_token");
-      window.location.href = "/login";
-      return Promise.reject(error);
+    // 401 → attempt silent refresh (once)
+    if (status === 401 && originalRequest && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        // Coalesce concurrent 401s into a single refresh call
+        if (!refreshPromise) {
+          refreshPromise = silentRefresh().finally(() => {
+            refreshPromise = null;
+          });
+        }
+
+        const newToken = await refreshPromise;
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return apiClient(originalRequest);
+      } catch {
+        // Refresh failed → clear auth and redirect to login
+        clearTokens();
+        localStorage.removeItem("auth_user");
+        localStorage.removeItem("app-branch");
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
     }
 
     const data = error.response?.data as Record<string, unknown> | undefined;

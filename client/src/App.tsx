@@ -35,7 +35,7 @@ function Router() {
 
   // ── Login page ────────────────────────────────────────────────────────────
   if (location === "/login") {
-    if (user) return <Redirect to="/pos" />;
+    if (isAuthenticated) return <Redirect to="/pos" />;
     return <Login />;
   }
 

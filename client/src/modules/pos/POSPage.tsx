@@ -156,7 +156,7 @@ function POSLayout() {
     };
     setCashierSession({
       cashierId:   user.id,
-      cashierName: user.name,
+      cashierName: `${user.firstName} ${user.lastName}`,
       cashierRole: roleMap[user.role] ?? "cashier",
       loginTime:   new Date(),
       isLocked:    false,
