@@ -39,3 +39,6 @@ Thumbs.db
 
 # pnpm
 .pnpm-store/
+
+# Claude Code local settings (keep .claude/settings.json for team)
+.claude/settings.local.json
