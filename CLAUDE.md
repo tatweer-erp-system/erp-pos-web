@@ -8,6 +8,14 @@
 - **Type check:** `pnpm check` or `pnpm exec tsc --noEmit`
 - **Format:** `pnpm format`
 
+## Git Branching
+- **Main branch:** `prod` (protected — never push directly)
+- **Branch prefixes:** `feat/`, `fix/`, `hotfix/`, `chore/`, `refactor/`
+- Branch names: lowercase, kebab-case (e.g., `feat/split-payment`)
+- Always branch from `dev`, PR into `dev`
+- Hotfixes branch from `prod`, merge into both `prod` and `dev`
+- Delete branches after merge
+
 ## Tech Stack
 - React 19 + TypeScript 5.6 + Vite 7
 - UI: Ant Design 6 + shadcn/ui (Radix UI) + Tailwind CSS 4
