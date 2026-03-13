@@ -7,9 +7,9 @@ import { usePOSTranslations } from "../../i18n/translations";
 export function OfflineBanner() {
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
-  const isOnline       = usePOSStore((s) => s.isOnline);
-  const pendingCount   = usePOSStore((s) => s.pendingCount);
-  const isSyncing      = usePOSStore((s) => s.isSyncing);
+  const isOnline = usePOSStore(s => s.isOnline);
+  const pendingCount = usePOSStore(s => s.pendingCount);
+  const isSyncing = usePOSStore(s => s.isSyncing);
 
   if (isOnline && !isSyncing) return null;
 

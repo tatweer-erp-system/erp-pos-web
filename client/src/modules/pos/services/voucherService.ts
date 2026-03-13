@@ -19,7 +19,7 @@ export interface Voucher {
   discountType: "percent" | "fixed";
   discountValue: number;
   minOrderAmount: number;
-  usedBy?: string;      // customer name
+  usedBy?: string; // customer name
   usedDate?: string;
   orderRef?: string;
   issuedDate: string;
@@ -91,42 +91,73 @@ export const mockVoucherTypes: VoucherType[] = [
 
 let mockVouchers: Voucher[] = [
   {
-    id: "V001", code: "WELCOME",
-    typeId: "VT001", typeName: "Welcome Discount",
-    discountType: "fixed", discountValue: 5,
-    minOrderAmount: 0, issuedDate: "2026-01-01", status: "active",
+    id: "V001",
+    code: "WELCOME",
+    typeId: "VT001",
+    typeName: "Welcome Discount",
+    discountType: "fixed",
+    discountValue: 5,
+    minOrderAmount: 0,
+    issuedDate: "2026-01-01",
+    status: "active",
   },
   {
-    id: "V002", code: "SAVE10",
-    typeId: "VT002", typeName: "Summer Sale 10%",
-    discountType: "percent", discountValue: 10,
-    minOrderAmount: 0, issuedDate: "2026-02-01", status: "active",
+    id: "V002",
+    code: "SAVE10",
+    typeId: "VT002",
+    typeName: "Summer Sale 10%",
+    discountType: "percent",
+    discountValue: 10,
+    minOrderAmount: 0,
+    issuedDate: "2026-02-01",
+    status: "active",
   },
   {
-    id: "V003", code: "FLAT20",
-    typeId: "VT003", typeName: "Flat $20 Off",
-    discountType: "fixed", discountValue: 20,
-    minOrderAmount: 50, issuedDate: "2026-02-15", status: "active",
+    id: "V003",
+    code: "FLAT20",
+    typeId: "VT003",
+    typeName: "Flat $20 Off",
+    discountType: "fixed",
+    discountValue: 20,
+    minOrderAmount: 50,
+    issuedDate: "2026-02-15",
+    status: "active",
   },
   {
-    id: "V004", code: "SUMMER15",
-    typeId: "VT004", typeName: "Summer 15%",
-    discountType: "percent", discountValue: 15,
-    minOrderAmount: 100, issuedDate: "2026-03-01", status: "active",
+    id: "V004",
+    code: "SUMMER15",
+    typeId: "VT004",
+    typeName: "Summer 15%",
+    discountType: "percent",
+    discountValue: 15,
+    minOrderAmount: 100,
+    issuedDate: "2026-03-01",
+    status: "active",
   },
   {
-    id: "V005", code: "USED20OFF",
-    typeId: "VT003", typeName: "Flat $20 Off",
-    discountType: "fixed", discountValue: 20,
-    minOrderAmount: 50, issuedDate: "2026-01-10",
-    usedBy: "Sarah Johnson", usedDate: "2026-01-15", orderRef: "POS-123456",
+    id: "V005",
+    code: "USED20OFF",
+    typeId: "VT003",
+    typeName: "Flat $20 Off",
+    discountType: "fixed",
+    discountValue: 20,
+    minOrderAmount: 50,
+    issuedDate: "2026-01-10",
+    usedBy: "Sarah Johnson",
+    usedDate: "2026-01-15",
+    orderRef: "POS-123456",
     status: "used",
   },
   {
-    id: "V006", code: "EXPIRED10",
-    typeId: "VT002", typeName: "Summer Sale 10%",
-    discountType: "percent", discountValue: 10,
-    minOrderAmount: 0, issuedDate: "2025-12-01", expiryDate: "2025-12-31",
+    id: "V006",
+    code: "EXPIRED10",
+    typeId: "VT002",
+    typeName: "Summer Sale 10%",
+    discountType: "percent",
+    discountValue: 10,
+    minOrderAmount: 0,
+    issuedDate: "2025-12-01",
+    expiryDate: "2025-12-31",
     status: "expired",
   },
 ];
@@ -137,10 +168,10 @@ export async function validateVoucher(
   code: string,
   cartSubtotal: number
 ): Promise<VoucherValidationResult> {
-  await new Promise((r) => setTimeout(r, 300));
+  await new Promise(r => setTimeout(r, 300));
 
   const voucher = mockVouchers.find(
-    (v) => v.code.toUpperCase() === code.trim().toUpperCase()
+    v => v.code.toUpperCase() === code.trim().toUpperCase()
   );
 
   if (!voucher) {
@@ -172,8 +203,8 @@ export async function redeemVoucher(
   orderRef: string,
   usedBy?: string
 ): Promise<void> {
-  await new Promise((r) => setTimeout(r, 150));
-  mockVouchers = mockVouchers.map((v) =>
+  await new Promise(r => setTimeout(r, 150));
+  mockVouchers = mockVouchers.map(v =>
     v.code.toUpperCase() === code.toUpperCase()
       ? {
           ...v,
@@ -187,19 +218,19 @@ export async function redeemVoucher(
 }
 
 export async function getAllVouchers(): Promise<Voucher[]> {
-  await new Promise((r) => setTimeout(r, 200));
+  await new Promise(r => setTimeout(r, 200));
   return [...mockVouchers];
 }
 
 export async function getVoucherTypes(): Promise<VoucherType[]> {
-  await new Promise((r) => setTimeout(r, 150));
+  await new Promise(r => setTimeout(r, 150));
   return [...mockVoucherTypes];
 }
 
 export async function createVoucherType(
   payload: Omit<VoucherType, "id">
 ): Promise<VoucherType> {
-  await new Promise((r) => setTimeout(r, 250));
+  await new Promise(r => setTimeout(r, 250));
   const newType: VoucherType = {
     ...payload,
     id: `VT${String(mockVoucherTypes.length + 1).padStart(3, "0")}`,

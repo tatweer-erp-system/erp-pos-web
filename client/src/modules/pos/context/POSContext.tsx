@@ -1,12 +1,24 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { ManagerOverrideModal, type OverrideRequest } from "../components/auth/ManagerOverrideModal";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
+import {
+  ManagerOverrideModal,
+  type OverrideRequest,
+} from "../components/auth/ManagerOverrideModal";
 
 interface POSContextValue {
   /**
    * Request a manager override. Resolves to the manager's name on approval,
    * or null if denied / cancelled.
    */
-  requestManagerOverride: (reason: string, action: string) => Promise<string | null>;
+  requestManagerOverride: (
+    reason: string,
+    action: string
+  ) => Promise<string | null>;
 }
 
 const POSContext = createContext<POSContextValue>({
@@ -18,15 +30,16 @@ export function usePOSContext() {
 }
 
 export function POSContextProvider({ children }: { children: ReactNode }) {
-  const [overrideRequest, setOverrideRequest] = useState<OverrideRequest | null>(null);
+  const [overrideRequest, setOverrideRequest] =
+    useState<OverrideRequest | null>(null);
 
   const requestManagerOverride = useCallback(
     (reason: string, action: string): Promise<string | null> => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         setOverrideRequest({
           reason,
           action,
-          onApprove: (managerName) => {
+          onApprove: managerName => {
             setOverrideRequest(null);
             resolve(managerName);
           },

@@ -16,10 +16,27 @@ export function useCheckout() {
 
   async function charge() {
     const {
-      cartItems, paymentMethod, amountDue, grandTotal, subtotal, discountAmount, taxAmount,
-      discount, cashGiven, cardRef, splitCash, splitCard, splitCardRef,
-      setCompletedOrder, redeemPoints, pointsEarned, attachedCustomer,
-      appliedVoucher, appliedGiftCards, cashierSession, isOnline,
+      cartItems,
+      paymentMethod,
+      amountDue,
+      grandTotal,
+      subtotal,
+      discountAmount,
+      taxAmount,
+      discount,
+      cashGiven,
+      cardRef,
+      splitCash,
+      splitCard,
+      splitCardRef,
+      setCompletedOrder,
+      redeemPoints,
+      pointsEarned,
+      attachedCustomer,
+      appliedVoucher,
+      appliedGiftCards,
+      cashierSession,
+      isOnline,
       setPendingCount,
     } = store;
 
@@ -32,13 +49,17 @@ export function useCheckout() {
 
     // Validate payment
     if (paymentMethod === "cash" && cashGiven < due) {
-      message.error(`Cash given is less than the amount due ($${due.toFixed(2)})`);
+      message.error(
+        `Cash given is less than the amount due ($${due.toFixed(2)})`
+      );
       return;
     }
     if (paymentMethod === "split") {
       const splitTotal = splitCash + splitCard;
       if (Math.abs(splitTotal - due) > 0.01) {
-        message.error(`Split amounts must equal the amount due ($${due.toFixed(2)})`);
+        message.error(
+          `Split amounts must equal the amount due ($${due.toFixed(2)})`
+        );
         return;
       }
     }
@@ -46,7 +67,7 @@ export function useCheckout() {
     const earned = pointsEarned();
 
     const payload = {
-      items: cartItems.map((i) => ({
+      items: cartItems.map(i => ({
         productId: i.product.id,
         quantity: i.quantity,
         unitPrice: i.product.price,
@@ -58,14 +79,29 @@ export function useCheckout() {
       taxAmount: taxAmount(),
       grandTotal: grandTotal(),
       paymentMethod,
-      cashAmount: paymentMethod === "cash" ? cashGiven : paymentMethod === "split" ? splitCash : undefined,
-      cardAmount: paymentMethod === "card" ? due : paymentMethod === "split" ? splitCard : undefined,
-      cardRef: paymentMethod === "card" ? cardRef : paymentMethod === "split" ? splitCardRef : undefined,
+      cashAmount:
+        paymentMethod === "cash"
+          ? cashGiven
+          : paymentMethod === "split"
+            ? splitCash
+            : undefined,
+      cardAmount:
+        paymentMethod === "card"
+          ? due
+          : paymentMethod === "split"
+            ? splitCard
+            : undefined,
+      cardRef:
+        paymentMethod === "card"
+          ? cardRef
+          : paymentMethod === "split"
+            ? splitCardRef
+            : undefined,
       customerId: attachedCustomer?.id,
       pointsRedeemed: redeemPoints,
       pointsEarned: earned,
       voucherCode: appliedVoucher?.code,
-      giftCardCodes: appliedGiftCards.map((gc) => gc.code),
+      giftCardCodes: appliedGiftCards.map(gc => gc.code),
     };
 
     setIsCharging(true);
@@ -118,7 +154,11 @@ export function useCheckout() {
       }
 
       if (appliedVoucher) {
-        await redeemVoucher(appliedVoucher.code, result.orderNumber, attachedCustomer?.name);
+        await redeemVoucher(
+          appliedVoucher.code,
+          result.orderNumber,
+          attachedCustomer?.name
+        );
       }
 
       for (const gc of appliedGiftCards) {

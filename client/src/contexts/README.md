@@ -32,25 +32,25 @@ function MyComponent() {
 
 ### User Roles
 
-| Role | Description | Access Level |
-|------|-------------|--------------|
-| `SuperAdmin` | Full system access | All modules |
-| `Admin` | Administrative access | Most modules |
-| `Manager` | Branch management | POS + reports |
-| `Accountant` | Financial reporting | Reports only |
-| `Viewer` | Read-only access | View only |
-| `Cashier` | POS terminal only | POS module |
+| Role         | Description           | Access Level  |
+| ------------ | --------------------- | ------------- |
+| `SuperAdmin` | Full system access    | All modules   |
+| `Admin`      | Administrative access | Most modules  |
+| `Manager`    | Branch management     | POS + reports |
+| `Accountant` | Financial reporting   | Reports only  |
+| `Viewer`     | Read-only access      | View only     |
+| `Cashier`    | POS terminal only     | POS module    |
 
 Role permissions are defined in `types/auth.ts` as `ROLE_PERMISSIONS` matrix.
 
 ### Mock Users (Development)
 
-| Username | Password | Role |
-|----------|----------|------|
-| admin | admin123 | SuperAdmin |
-| manager | mgr123 | Manager |
-| cashier | cash123 | Cashier |
-| accountant | acc123 | Accountant |
+| Username   | Password | Role       |
+| ---------- | -------- | ---------- |
+| admin      | admin123 | SuperAdmin |
+| manager    | mgr123   | Manager    |
+| cashier    | cash123  | Cashier    |
+| accountant | acc123   | Accountant |
 
 ### Notes
 
@@ -109,34 +109,35 @@ function MyComponent() {
 
 ### Color Presets
 
-| Name | Primary Color | Description |
-|------|--------------|-------------|
-| Ocean | `#0EA5E9` | Blue theme |
-| Forest | `#22C55E` | Green theme |
-| Sunset | `#F97316` | Orange theme |
-| Amethyst | `#A855F7` | Purple theme |
-| Slate | `#64748B` | Gray theme |
+| Name     | Primary Color | Description  |
+| -------- | ------------- | ------------ |
+| Ocean    | `#0EA5E9`     | Blue theme   |
+| Forest   | `#22C55E`     | Green theme  |
+| Sunset   | `#F97316`     | Orange theme |
+| Amethyst | `#A855F7`     | Purple theme |
+| Slate    | `#64748B`     | Gray theme   |
 
 ### Branches
 
-| ID | Name | Timezone |
-|----|------|----------|
-| `hq` | HQ | UTC+2 |
-| `cairo` | Cairo | UTC+2 |
-| `dubai` | Dubai | UTC+4 |
-| `london` | London | UTC+0 |
+| ID       | Name   | Timezone |
+| -------- | ------ | -------- |
+| `hq`     | HQ     | UTC+2    |
+| `cairo`  | Cairo  | UTC+2    |
+| `dubai`  | Dubai  | UTC+4    |
+| `london` | London | UTC+0    |
 
 ### POS Display Styles
 
-| Style | Description |
-|-------|-------------|
-| `card` | Large product cards with image and full info |
-| `compact` | Medium cards, less whitespace |
-| `list` | Dense list view, maximum items visible |
+| Style     | Description                                  |
+| --------- | -------------------------------------------- |
+| `card`    | Large product cards with image and full info |
+| `compact` | Medium cards, less whitespace                |
+| `list`    | Dense list view, maximum items visible       |
 
 ### Persistence
 
 Settings are persisted to `localStorage` and restored on page load. Keys:
+
 - `app-theme` — light/dark
 - `app-color-preset` — selected preset name
 - `app-language` — en/ar

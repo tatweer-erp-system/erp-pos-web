@@ -10,10 +10,7 @@ import {
   Button,
   Space,
 } from "antd";
-import {
-  PrinterOutlined,
-  DownloadOutlined,
-} from "@ant-design/icons";
+import { PrinterOutlined, DownloadOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import {
   BarChart,
@@ -42,19 +39,42 @@ interface HourlyRow {
 function generateMockHourlyData(): HourlyRow[] {
   // Simulate a realistic restaurant/retail sales day pattern
   const baseData: [number, number][] = [
-    [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0],
-    [6, 2], [7, 5], [8, 12], [9, 18], [10, 22], [11, 35],
-    [12, 58], [13, 61], [14, 42], [15, 30], [16, 28], [17, 33],
-    [18, 55], [19, 72], [20, 65], [21, 48], [22, 30], [23, 10],
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+    [4, 0],
+    [5, 0],
+    [6, 2],
+    [7, 5],
+    [8, 12],
+    [9, 18],
+    [10, 22],
+    [11, 35],
+    [12, 58],
+    [13, 61],
+    [14, 42],
+    [15, 30],
+    [16, 28],
+    [17, 33],
+    [18, 55],
+    [19, 72],
+    [20, 65],
+    [21, 48],
+    [22, 30],
+    [23, 10],
   ];
   return baseData.map(([hour, txCount]) => {
     const avgTx = txCount > 0 ? 18 + Math.random() * 30 : 0;
     const total = txCount * avgTx;
     const label =
-      hour === 0 ? "12 AM" :
-      hour < 12 ? `${hour} AM` :
-      hour === 12 ? "12 PM" :
-      `${hour - 12} PM`;
+      hour === 0
+        ? "12 AM"
+        : hour < 12
+          ? `${hour} AM`
+          : hour === 12
+            ? "12 PM"
+            : `${hour - 12} PM`;
     return {
       hour,
       label,
@@ -65,8 +85,19 @@ function generateMockHourlyData(): HourlyRow[] {
   });
 }
 
-const MOCK_CASHIERS = ["All Cashiers", "Sarah M.", "John D.", "Ali K.", "Fatima H."];
-const MOCK_TERMINALS = ["All Terminals", "Terminal 1", "Terminal 2", "Terminal 3"];
+const MOCK_CASHIERS = [
+  "All Cashiers",
+  "Sarah M.",
+  "John D.",
+  "Ali K.",
+  "Fatima H.",
+];
+const MOCK_TERMINALS = [
+  "All Terminals",
+  "Terminal 1",
+  "Terminal 2",
+  "Terminal 3",
+];
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -79,13 +110,15 @@ export default function HourlySalesReport() {
   const data = useMemo(() => generateMockHourlyData(), []);
 
   // Determine peak hours (top 3 by totalAmount)
-  const sortedByRevenue = [...data].sort((a, b) => b.totalAmount - a.totalAmount);
-  const peakHourSet = new Set(sortedByRevenue.slice(0, 3).map((r) => r.hour));
+  const sortedByRevenue = [...data].sort(
+    (a, b) => b.totalAmount - a.totalAmount
+  );
+  const peakHourSet = new Set(sortedByRevenue.slice(0, 3).map(r => r.hour));
 
   // Summary stats
   const busiestHour = sortedByRevenue[0];
   const slowestHour = [...data]
-    .filter((r) => r.transactionCount > 0)
+    .filter(r => r.transactionCount > 0)
     .sort((a, b) => a.totalAmount - b.totalAmount)[0];
   const peakRevenueHour = busiestHour;
   const totalRevenue = data.reduce((s, r) => s + r.totalAmount, 0);
@@ -107,7 +140,9 @@ export default function HourlySalesReport() {
       width: 130,
       sorter: (a, b) => a.transactionCount - b.transactionCount,
       render: (v: number) => (
-        <span style={{ color: v === 0 ? token.colorTextTertiary : token.colorText }}>
+        <span
+          style={{ color: v === 0 ? token.colorTextTertiary : token.colorText }}
+        >
           {v === 0 ? "—" : v}
         </span>
       ),
@@ -122,7 +157,9 @@ export default function HourlySalesReport() {
         <span
           style={{
             fontWeight: 700,
-            color: peakHourSet.has(record.hour) ? token.colorPrimary : token.colorText,
+            color: peakHourSet.has(record.hour)
+              ? token.colorPrimary
+              : token.colorText,
           }}
         >
           {v === 0 ? "—" : `$${v.toFixed(2)}`}
@@ -136,7 +173,11 @@ export default function HourlySalesReport() {
       width: 150,
       sorter: (a, b) => a.avgTransactionValue - b.avgTransactionValue,
       render: (v: number) => (
-        <span style={{ color: v === 0 ? token.colorTextTertiary : token.colorTextSecondary }}>
+        <span
+          style={{
+            color: v === 0 ? token.colorTextTertiary : token.colorTextSecondary,
+          }}
+        >
           {v === 0 ? "—" : `$${v.toFixed(2)}`}
         </span>
       ),
@@ -148,7 +189,6 @@ export default function HourlySalesReport() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-
       {/* Summary cards + Export buttons */}
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
         <Row gutter={[16, 16]} style={{ flex: 1 }}>
@@ -177,7 +217,7 @@ export default function HourlySalesReport() {
               sub: `${data.reduce((s, r) => s + r.transactionCount, 0)} transactions`,
               color: "#A855F7",
             },
-          ].map((s) => (
+          ].map(s => (
             <Col xs={12} sm={12} md={6} key={s.title}>
               <Card
                 style={{
@@ -187,13 +227,32 @@ export default function HourlySalesReport() {
                 }}
                 styles={{ body: { padding: "16px 20px" } }}
               >
-                <div style={{ fontSize: 12, color: token.colorTextSecondary, marginBottom: 6 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: token.colorTextSecondary,
+                    marginBottom: 6,
+                  }}
+                >
                   {s.title}
                 </div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: s.color, lineHeight: 1 }}>
+                <div
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 800,
+                    color: s.color,
+                    lineHeight: 1,
+                  }}
+                >
                   {s.value}
                 </div>
-                <div style={{ fontSize: 11, color: token.colorTextTertiary, marginTop: 4 }}>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: token.colorTextTertiary,
+                    marginTop: 4,
+                  }}
+                >
                   {s.sub}
                 </div>
               </Card>
@@ -220,8 +279,19 @@ export default function HourlySalesReport() {
         }}
         styles={{ body: { padding: "14px 20px" } }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: token.colorText }}>Filters:</span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            flexWrap: "wrap",
+          }}
+        >
+          <span
+            style={{ fontSize: 13, fontWeight: 600, color: token.colorText }}
+          >
+            Filters:
+          </span>
           <DatePicker
             defaultValue={dayjs()}
             style={{ borderRadius: 8 }}
@@ -232,8 +302,10 @@ export default function HourlySalesReport() {
             onChange={setCashierFilter}
             style={{ width: 160, borderRadius: 8 }}
           >
-            {MOCK_CASHIERS.map((c) => (
-              <Option key={c} value={c}>{c}</Option>
+            {MOCK_CASHIERS.map(c => (
+              <Option key={c} value={c}>
+                {c}
+              </Option>
             ))}
           </Select>
           <Select
@@ -241,25 +313,45 @@ export default function HourlySalesReport() {
             onChange={setTerminalFilter}
             style={{ width: 160, borderRadius: 8 }}
           >
-            {MOCK_TERMINALS.map((t) => (
-              <Option key={t} value={t}>{t}</Option>
+            {MOCK_TERMINALS.map(t => (
+              <Option key={t} value={t}>
+                {t}
+              </Option>
             ))}
           </Select>
-          <div style={{ marginInlineStart: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+          <div
+            style={{
+              marginInlineStart: "auto",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
             <span
               style={{
-                display: "inline-block", width: 12, height: 12, borderRadius: 3,
+                display: "inline-block",
+                width: 12,
+                height: 12,
+                borderRadius: 3,
                 background: PEAK_COLOR,
               }}
             />
-            <span style={{ fontSize: 12, color: token.colorTextSecondary }}>Peak hours</span>
+            <span style={{ fontSize: 12, color: token.colorTextSecondary }}>
+              Peak hours
+            </span>
             <span
               style={{
-                display: "inline-block", width: 12, height: 12, borderRadius: 3,
-                background: NORMAL_COLOR, marginInlineStart: 8,
+                display: "inline-block",
+                width: 12,
+                height: 12,
+                borderRadius: 3,
+                background: NORMAL_COLOR,
+                marginInlineStart: 8,
               }}
             />
-            <span style={{ fontSize: 12, color: token.colorTextSecondary }}>Regular hours</span>
+            <span style={{ fontSize: 12, color: token.colorTextSecondary }}>
+              Regular hours
+            </span>
           </div>
         </div>
       </Card>
@@ -273,8 +365,14 @@ export default function HourlySalesReport() {
         }}
       >
         <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke={token.colorBorderSecondary} />
+          <BarChart
+            data={data}
+            margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke={token.colorBorderSecondary}
+            />
             <XAxis
               dataKey="label"
               tick={{ fontSize: 11, fill: token.colorTextTertiary }}
@@ -285,7 +383,7 @@ export default function HourlySalesReport() {
             />
             <YAxis
               tick={{ fontSize: 11, fill: token.colorTextTertiary }}
-              tickFormatter={(v) => `$${v}`}
+              tickFormatter={v => `$${v}`}
             />
             <Tooltip
               formatter={(value: number) => [`$${value.toFixed(2)}`, "Revenue"]}
@@ -296,7 +394,7 @@ export default function HourlySalesReport() {
               }}
             />
             <Bar dataKey="totalAmount" radius={[4, 4, 0, 0]}>
-              {data.map((entry) => (
+              {data.map(entry => (
                 <Cell
                   key={`cell-${entry.hour}`}
                   fill={peakHourSet.has(entry.hour) ? PEAK_COLOR : NORMAL_COLOR}
@@ -315,11 +413,14 @@ export default function HourlySalesReport() {
         }}
         styles={{ body: { padding: 0 } }}
       >
-        <div style={{
-          padding: "14px 20px",
-          borderBottom: `1px solid ${token.colorBorderSecondary}`,
-          fontWeight: 700, fontSize: 14,
-        }}>
+        <div
+          style={{
+            padding: "14px 20px",
+            borderBottom: `1px solid ${token.colorBorderSecondary}`,
+            fontWeight: 700,
+            fontSize: 14,
+          }}
+        >
           Hourly Breakdown
         </div>
         <Table<HourlyRow>
@@ -327,10 +428,8 @@ export default function HourlySalesReport() {
           columns={columns}
           rowKey="hour"
           scroll={{ x: "max-content" }}
-          rowClassName={(record) =>
-            peakHourSet.has(record.hour) ? "" : ""
-          }
-          onRow={(record) => ({
+          rowClassName={record => (peakHourSet.has(record.hour) ? "" : "")}
+          onRow={record => ({
             style: {
               background: peakHourSet.has(record.hour)
                 ? `${token.colorPrimary}08`

@@ -1,6 +1,17 @@
 import { useRef, useEffect } from "react";
-import { Input, Spin, Empty, theme as antTheme, message, type InputRef } from "antd";
-import { SearchOutlined, BarcodeOutlined, DisconnectOutlined } from "@ant-design/icons";
+import {
+  Input,
+  Spin,
+  Empty,
+  theme as antTheme,
+  message,
+  type InputRef,
+} from "antd";
+import {
+  SearchOutlined,
+  BarcodeOutlined,
+  DisconnectOutlined,
+} from "@ant-design/icons";
 import { ProductCard } from "./ProductCard";
 import { useProducts } from "../hooks/useProducts";
 import { getProductByBarcode } from "../services/posService";
@@ -67,7 +78,9 @@ export function ProductGrid({ onAdd, isMobile }: ProductGridProps) {
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       const active = document.activeElement;
-      const isInput = active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement;
+      const isInput =
+        active instanceof HTMLInputElement ||
+        active instanceof HTMLTextAreaElement;
       if (isInput) return; // let normal inputs handle it
       if (e.key === "Enter") {
         if (barcodeBuffer.current) {
@@ -89,21 +102,32 @@ export function ProductGrid({ onAdd, isMobile }: ProductGridProps) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", gap: 12 }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        gap: 12,
+      }}
+    >
       {/* Search + Barcode row */}
       <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
         <Input
           placeholder={t.searchProducts}
-          prefix={<SearchOutlined style={{ color: token.colorTextPlaceholder }} />}
+          prefix={
+            <SearchOutlined style={{ color: token.colorTextPlaceholder }} />
+          }
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
           allowClear
           style={{ flex: 1, height: 44, borderRadius: 10 }}
         />
         <Input
           ref={barcodeRef}
           placeholder={t.scanBarcode}
-          prefix={<BarcodeOutlined style={{ color: token.colorTextPlaceholder }} />}
+          prefix={
+            <BarcodeOutlined style={{ color: token.colorTextPlaceholder }} />
+          }
           onKeyDown={handleBarcodeKeyDown}
           style={{ width: isMobile ? 120 : 160, height: 44, borderRadius: 10 }}
         />
@@ -111,34 +135,38 @@ export function ProductGrid({ onAdd, isMobile }: ProductGridProps) {
 
       {/* Offline cache notice */}
       {isFromCache && (
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          padding: "6px 12px",
-          background: "#FEF2F2",
-          border: "1px solid #FECACA",
-          borderRadius: 8,
-          fontSize: 12,
-          color: "#EF4444",
-          fontWeight: 500,
-          flexShrink: 0,
-        }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "6px 12px",
+            background: "#FEF2F2",
+            border: "1px solid #FECACA",
+            borderRadius: 8,
+            fontSize: 12,
+            color: "#EF4444",
+            fontWeight: 500,
+            flexShrink: 0,
+          }}
+        >
           <DisconnectOutlined />
           {t.offlineShowingCache}
         </div>
       )}
 
       {/* Category filter pills */}
-      <div style={{
-        display: "flex",
-        gap: 6,
-        overflowX: "auto",
-        flexShrink: 0,
-        paddingBottom: 2,
-        scrollbarWidth: "none",
-      }}>
-        {categories.map((cat) => (
+      <div
+        style={{
+          display: "flex",
+          gap: 6,
+          overflowX: "auto",
+          flexShrink: 0,
+          paddingBottom: 2,
+          scrollbarWidth: "none",
+        }}
+      >
+        {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
@@ -147,7 +175,8 @@ export function ProductGrid({ onAdd, isMobile }: ProductGridProps) {
               padding: "6px 14px",
               borderRadius: 20,
               border: `1.5px solid ${activeCategory === cat ? token.colorPrimary : token.colorBorderSecondary}`,
-              background: activeCategory === cat ? token.colorPrimary : "transparent",
+              background:
+                activeCategory === cat ? token.colorPrimary : "transparent",
               color: activeCategory === cat ? "#fff" : token.colorTextSecondary,
               fontSize: 12,
               fontWeight: activeCategory === cat ? 700 : 500,
@@ -165,18 +194,29 @@ export function ProductGrid({ onAdd, isMobile }: ProductGridProps) {
       {/* Product grid */}
       <div style={{ flex: 1, overflowY: "auto", paddingInlineEnd: 2 }}>
         {isLoading ? (
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 200 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: 200,
+            }}
+          >
             <Spin size="large" />
           </div>
         ) : products.length === 0 ? (
           <Empty description={t.noProductsFound} style={{ marginTop: 60 }} />
         ) : (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isList ? "1fr" : `repeat(${posGridCols}, 1fr)`,
-            gap: isList ? 6 : 10,
-          }}>
-            {products.map((product) => (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isList
+                ? "1fr"
+                : `repeat(${posGridCols}, 1fr)`,
+              gap: isList ? 6 : 10,
+            }}
+          >
+            {products.map(product => (
               <ProductCard key={product.id} product={product} onAdd={onAdd} />
             ))}
           </div>

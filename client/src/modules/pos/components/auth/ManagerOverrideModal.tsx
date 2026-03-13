@@ -5,7 +5,11 @@ import {
   WarningOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import { getManagers, apiValidatePIN, getCashier } from "../../services/cashierAuthService";
+import {
+  getManagers,
+  apiValidatePIN,
+  getCashier,
+} from "../../services/cashierAuthService";
 import { usePOSStore } from "../../store/posStore";
 import { PINPad } from "./PINPad";
 
@@ -23,25 +27,27 @@ interface Props {
 
 export function ManagerOverrideModal({ request, onClose }: Props) {
   const { token } = antTheme.useToken();
-  const addOverrideLog  = usePOSStore((s) => s.addOverrideLog);
-  const posSettings     = usePOSStore((s) => s.posSessionSettings);
-  const cashierSession  = usePOSStore((s) => s.cashierSession);
+  const addOverrideLog = usePOSStore(s => s.addOverrideLog);
+  const posSettings = usePOSStore(s => s.posSessionSettings);
+  const cashierSession = usePOSStore(s => s.cashierSession);
 
   const managers = getManagers();
 
-  const [selectedManagerId, setSelectedManagerId] = useState<string | null>(null);
-  const [pinError,    setPinError]    = useState<string | null>(null);
+  const [selectedManagerId, setSelectedManagerId] = useState<string | null>(
+    null
+  );
+  const [pinError, setPinError] = useState<string | null>(null);
   const [pinResetKey, setPinResetKey] = useState(0);
-  const [attempts,    setAttempts]    = useState(0);
-  const [approved,    setApproved]    = useState(false);
-  const [validating,  setValidating]  = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [approved, setApproved] = useState(false);
+  const [validating, setValidating] = useState(false);
 
   // Reset when opening
   useEffect(() => {
     if (request) {
       setSelectedManagerId(managers.length === 1 ? managers[0].id : null);
       setPinError(null);
-      setPinResetKey((k) => k + 1);
+      setPinResetKey(k => k + 1);
       setAttempts(0);
       setApproved(false);
     }
@@ -80,14 +86,24 @@ export function ManagerOverrideModal({ request, onClose }: Props) {
             onClose();
           }, 1500);
         } else {
-          setPinError(`Incorrect PIN. ${posSettings.maxPINAttempts - next} attempt${posSettings.maxPINAttempts - next !== 1 ? "s" : ""} left.`);
+          setPinError(
+            `Incorrect PIN. ${posSettings.maxPINAttempts - next} attempt${posSettings.maxPINAttempts - next !== 1 ? "s" : ""} left.`
+          );
         }
-        setPinResetKey((k) => k + 1);
+        setPinResetKey(k => k + 1);
       }
 
       setValidating(false);
     },
-    [selectedManagerId, request, attempts, validating, posSettings.maxPINAttempts, addOverrideLog, onClose]
+    [
+      selectedManagerId,
+      request,
+      attempts,
+      validating,
+      posSettings.maxPINAttempts,
+      addOverrideLog,
+      onClose,
+    ]
   );
 
   function handleClose() {
@@ -107,19 +123,25 @@ export function ManagerOverrideModal({ request, onClose }: Props) {
       style={{ padding: 0 }}
     >
       {/* Header */}
-      <div style={{
-        position: "relative",
-        background: `linear-gradient(135deg, #F59E0B, #F59E0Bcc)`,
-        padding: "20px 24px 16px",
-        borderRadius: "8px 8px 0 0",
-        color: "#fff",
-        display: "flex",
-        alignItems: "flex-start",
-        gap: 12,
-      }}>
-        <WarningOutlined style={{ fontSize: 26, flexShrink: 0, marginTop: 2 }} />
+      <div
+        style={{
+          position: "relative",
+          background: `linear-gradient(135deg, #F59E0B, #F59E0Bcc)`,
+          padding: "20px 24px 16px",
+          borderRadius: "8px 8px 0 0",
+          color: "#fff",
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 12,
+        }}
+      >
+        <WarningOutlined
+          style={{ fontSize: 26, flexShrink: 0, marginTop: 2 }}
+        />
         <div>
-          <div style={{ fontSize: 16, fontWeight: 800 }}>Manager Override Required</div>
+          <div style={{ fontSize: 16, fontWeight: 800 }}>
+            Manager Override Required
+          </div>
           <div style={{ fontSize: 12, opacity: 0.9, marginTop: 2 }}>
             This action requires manager authorization
           </div>
@@ -145,31 +167,52 @@ export function ManagerOverrideModal({ request, onClose }: Props) {
             transition: "background 0.15s",
             padding: 0,
           }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.35)"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.2)"; }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLButtonElement).style.background =
+              "rgba(255,255,255,0.35)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.background =
+              "rgba(255,255,255,0.2)";
+          }}
         >
           ✕
         </button>
       </div>
 
       <div style={{ padding: "20px 24px 24px" }}>
-
         {/* Reason */}
-        <div style={{
-          padding: "12px 14px",
-          borderRadius: 10,
-          background: "#F59E0B08",
-          border: "1px solid #F59E0B30",
-          marginBottom: 20,
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#92400E", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
+        <div
+          style={{
+            padding: "12px 14px",
+            borderRadius: 10,
+            background: "#F59E0B08",
+            border: "1px solid #F59E0B30",
+            marginBottom: 20,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: "#92400E",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              marginBottom: 6,
+            }}
+          >
             Reason
           </div>
-          <div style={{ fontSize: 13, color: token.colorText, lineHeight: 1.5 }}>
+          <div
+            style={{ fontSize: 13, color: token.colorText, lineHeight: 1.5 }}
+          >
             {request?.reason}
           </div>
           <div style={{ marginTop: 8 }}>
-            <Tag color="warning" style={{ borderRadius: 6, fontSize: 10, fontWeight: 700 }}>
+            <Tag
+              color="warning"
+              style={{ borderRadius: 6, fontSize: 10, fontWeight: 700 }}
+            >
               {request?.action}
             </Tag>
           </div>
@@ -178,14 +221,26 @@ export function ManagerOverrideModal({ request, onClose }: Props) {
         {/* Manager select (if multiple managers) */}
         {managers.length > 1 && (
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: token.colorTextSecondary, marginBottom: 8 }}>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: token.colorTextSecondary,
+                marginBottom: 8,
+              }}
+            >
               Select Manager
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {managers.map((m) => (
+              {managers.map(m => (
                 <div
                   key={m.id}
-                  onClick={() => { setSelectedManagerId(m.id); setPinError(null); setPinResetKey(k => k+1); setAttempts(0); }}
+                  onClick={() => {
+                    setSelectedManagerId(m.id);
+                    setPinError(null);
+                    setPinResetKey(k => k + 1);
+                    setAttempts(0);
+                  }}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -193,20 +248,39 @@ export function ManagerOverrideModal({ request, onClose }: Props) {
                     padding: "8px 12px",
                     borderRadius: 10,
                     border: `1.5px solid ${selectedManagerId === m.id ? token.colorPrimary : token.colorBorderSecondary}`,
-                    background: selectedManagerId === m.id ? `${token.colorPrimary}08` : token.colorBgContainer,
+                    background:
+                      selectedManagerId === m.id
+                        ? `${token.colorPrimary}08`
+                        : token.colorBgContainer,
                     cursor: "pointer",
                     transition: "all 0.15s",
                   }}
                 >
-                  <div style={{
-                    width: 28, height: 28, borderRadius: "50%",
-                    background: m.color,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "#fff", fontSize: 11, fontWeight: 800,
-                  }}>
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      background: m.color,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#fff",
+                      fontSize: 11,
+                      fontWeight: 800,
+                    }}
+                  >
                     {m.initials}
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: token.colorText }}>{m.name}</span>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: token.colorText,
+                    }}
+                  >
+                    {m.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -215,14 +289,16 @@ export function ManagerOverrideModal({ request, onClose }: Props) {
 
         {/* Approved state */}
         {approved ? (
-          <div style={{
-            textAlign: "center",
-            padding: "24px 0",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 10,
-          }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "24px 0",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
             <CheckCircleOutlined style={{ fontSize: 40, color: "#10B981" }} />
             <div style={{ fontSize: 15, fontWeight: 700, color: "#10B981" }}>
               Override Approved
@@ -231,7 +307,14 @@ export function ManagerOverrideModal({ request, onClose }: Props) {
         ) : (
           selectedManagerId && (
             <>
-              <div style={{ fontSize: 13, color: token.colorTextSecondary, textAlign: "center", marginBottom: 16 }}>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: token.colorTextSecondary,
+                  textAlign: "center",
+                  marginBottom: 16,
+                }}
+              >
                 Manager PIN required
               </div>
               <PINPad
@@ -245,25 +328,39 @@ export function ManagerOverrideModal({ request, onClose }: Props) {
         )}
 
         {!selectedManagerId && !approved && (
-          <div style={{ textAlign: "center", fontSize: 12, color: token.colorTextTertiary, padding: "12px 0" }}>
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: 12,
+              color: token.colorTextTertiary,
+              padding: "12px 0",
+            }}
+          >
             Select a manager above to continue
           </div>
         )}
 
         {/* Cashier info */}
         {cashierSession && (
-          <div style={{
-            marginTop: 20,
-            paddingTop: 14,
-            borderTop: `1px solid ${token.colorBorderSecondary}`,
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            fontSize: 11,
-            color: token.colorTextTertiary,
-          }}>
+          <div
+            style={{
+              marginTop: 20,
+              paddingTop: 14,
+              borderTop: `1px solid ${token.colorBorderSecondary}`,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 11,
+              color: token.colorTextTertiary,
+            }}
+          >
             <SafetyOutlined />
-            <span>Requested by: <strong style={{ color: token.colorTextSecondary }}>{cashierSession.cashierName}</strong></span>
+            <span>
+              Requested by:{" "}
+              <strong style={{ color: token.colorTextSecondary }}>
+                {cashierSession.cashierName}
+              </strong>
+            </span>
           </div>
         )}
       </div>

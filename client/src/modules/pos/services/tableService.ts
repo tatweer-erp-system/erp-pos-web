@@ -1,4 +1,8 @@
-import type { RestaurantTable, RestaurantSection, CourseType } from "../data/mockRestaurant";
+import type {
+  RestaurantTable,
+  RestaurantSection,
+  CourseType,
+} from "../data/mockRestaurant";
 import { mockTables, mockSections, mockCourses } from "../data/mockRestaurant";
 
 // ── In-memory state ───────────────────────────────────────────────────────────
@@ -8,7 +12,7 @@ let sections: RestaurantSection[] = [...mockSections];
 let courses: CourseType[] = [...mockCourses];
 
 function delay(ms = 250): Promise<void> {
-  return new Promise((res) => setTimeout(res, ms));
+  return new Promise(res => setTimeout(res, ms));
 }
 
 // ── Tables ────────────────────────────────────────────────────────────────────
@@ -20,7 +24,7 @@ export async function getTables(): Promise<RestaurantTable[]> {
 
 export async function getTable(id: string): Promise<RestaurantTable | null> {
   await delay(100);
-  return tables.find((t) => t.id === id) ?? null;
+  return tables.find(t => t.id === id) ?? null;
 }
 
 export async function occupyTable(
@@ -28,7 +32,7 @@ export async function occupyTable(
   guestCount: number
 ): Promise<RestaurantTable> {
   await delay(200);
-  tables = tables.map((t) =>
+  tables = tables.map(t =>
     t.id === id
       ? {
           ...t,
@@ -39,21 +43,28 @@ export async function occupyTable(
         }
       : t
   );
-  return tables.find((t) => t.id === id)!;
+  return tables.find(t => t.id === id)!;
 }
 
-export async function updateTableTotal(id: string, total: number): Promise<void> {
+export async function updateTableTotal(
+  id: string,
+  total: number
+): Promise<void> {
   await delay(100);
-  tables = tables.map((t) =>
-    t.id === id ? { ...t, orderTotal: total } : t
-  );
+  tables = tables.map(t => (t.id === id ? { ...t, orderTotal: total } : t));
 }
 
 export async function releaseTable(id: string): Promise<void> {
   await delay(200);
-  tables = tables.map((t) =>
+  tables = tables.map(t =>
     t.id === id
-      ? { ...t, status: "available", seatedAt: undefined, guestCount: undefined, orderTotal: undefined }
+      ? {
+          ...t,
+          status: "available",
+          seatedAt: undefined,
+          guestCount: undefined,
+          orderTotal: undefined,
+        }
       : t
   );
 }
@@ -65,12 +76,24 @@ export async function transferTable(
   orderTotal: number
 ): Promise<void> {
   await delay(200);
-  tables = tables.map((t) => {
+  tables = tables.map(t => {
     if (t.id === fromId) {
-      return { ...t, status: "available", seatedAt: undefined, guestCount: undefined, orderTotal: undefined };
+      return {
+        ...t,
+        status: "available",
+        seatedAt: undefined,
+        guestCount: undefined,
+        orderTotal: undefined,
+      };
     }
     if (t.id === toId) {
-      return { ...t, status: "occupied", seatedAt: new Date().toISOString(), guestCount, orderTotal };
+      return {
+        ...t,
+        status: "occupied",
+        seatedAt: new Date().toISOString(),
+        guestCount,
+        orderTotal,
+      };
     }
     return t;
   });
@@ -94,13 +117,13 @@ export async function updateTable(
   payload: Partial<Omit<RestaurantTable, "id">>
 ): Promise<RestaurantTable> {
   await delay(250);
-  tables = tables.map((t) => (t.id === id ? { ...t, ...payload } : t));
-  return tables.find((t) => t.id === id)!;
+  tables = tables.map(t => (t.id === id ? { ...t, ...payload } : t));
+  return tables.find(t => t.id === id)!;
 }
 
 export async function deleteTable(id: string): Promise<void> {
   await delay(200);
-  tables = tables.filter((t) => t.id !== id);
+  tables = tables.filter(t => t.id !== id);
 }
 
 // ── Sections ──────────────────────────────────────────────────────────────────
@@ -124,13 +147,13 @@ export async function updateSection(
   payload: Partial<Omit<RestaurantSection, "id">>
 ): Promise<RestaurantSection> {
   await delay(200);
-  sections = sections.map((s) => (s.id === id ? { ...s, ...payload } : s));
-  return sections.find((s) => s.id === id)!;
+  sections = sections.map(s => (s.id === id ? { ...s, ...payload } : s));
+  return sections.find(s => s.id === id)!;
 }
 
 export async function deleteSection(id: string): Promise<void> {
   await delay(200);
-  sections = sections.filter((s) => s.id !== id);
+  sections = sections.filter(s => s.id !== id);
 }
 
 // ── Courses ───────────────────────────────────────────────────────────────────
@@ -154,11 +177,11 @@ export async function updateCourse(
   payload: Partial<Omit<CourseType, "id">>
 ): Promise<CourseType> {
   await delay(200);
-  courses = courses.map((c) => (c.id === id ? { ...c, ...payload } : c));
-  return courses.find((c) => c.id === id)!;
+  courses = courses.map(c => (c.id === id ? { ...c, ...payload } : c));
+  return courses.find(c => c.id === id)!;
 }
 
 export async function deleteCourse(id: string): Promise<void> {
   await delay(200);
-  courses = courses.filter((c) => c.id !== id);
+  courses = courses.filter(c => c.id !== id);
 }

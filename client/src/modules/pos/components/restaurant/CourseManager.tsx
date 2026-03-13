@@ -16,8 +16,8 @@ export function CourseManager({ items }: CourseManagerProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
-  const setItemCourse = usePOSStore((s) => s.setItemCourse);
-  const setItemNote   = usePOSStore((s) => s.setItemNote);
+  const setItemCourse = usePOSStore(s => s.setItemCourse);
+  const setItemNote = usePOSStore(s => s.setItemNote);
   const [courses, setCourses] = useState<CourseType[]>([]);
 
   useEffect(() => {
@@ -28,29 +28,33 @@ export function CourseManager({ items }: CourseManagerProps) {
 
   const courseOptions = [
     { value: "", label: t.noCourse },
-    ...courses.map((c) => ({ value: c.id, label: c.name })),
+    ...courses.map(c => ({ value: c.id, label: c.name })),
   ];
 
   return (
-    <div style={{
-      border: `1px solid ${token.colorBorderSecondary}`,
-      borderRadius: 10,
-      overflow: "hidden",
-    }}>
+    <div
+      style={{
+        border: `1px solid ${token.colorBorderSecondary}`,
+        borderRadius: 10,
+        overflow: "hidden",
+      }}
+    >
       {/* Header */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 6,
-        padding: "8px 12px",
-        background: token.colorFillAlter,
-        borderBottom: `1px solid ${token.colorBorderSecondary}`,
-        fontSize: 11,
-        fontWeight: 700,
-        color: token.colorTextSecondary,
-        textTransform: "uppercase",
-        letterSpacing: "0.04em",
-      }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "8px 12px",
+          background: token.colorFillAlter,
+          borderBottom: `1px solid ${token.colorBorderSecondary}`,
+          fontSize: 11,
+          fontWeight: 700,
+          color: token.colorTextSecondary,
+          textTransform: "uppercase",
+          letterSpacing: "0.04em",
+        }}
+      >
         <BookOutlined style={{ fontSize: 10 }} />
         {t.assignCourse} / {t.kitchenNote}
       </div>
@@ -63,28 +67,43 @@ export function CourseManager({ items }: CourseManagerProps) {
             alignItems: "center",
             gap: 8,
             padding: "8px 12px",
-            borderBottom: idx < items.length - 1 ? `1px solid ${token.colorBorderSecondary}` : "none",
+            borderBottom:
+              idx < items.length - 1
+                ? `1px solid ${token.colorBorderSecondary}`
+                : "none",
           }}
         >
           {/* Item color dot */}
-          <div style={{
-            width: 8, height: 8, borderRadius: "50%",
-            background: item.product.color, flexShrink: 0,
-          }} />
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: item.product.color,
+              flexShrink: 0,
+            }}
+          />
 
           {/* Item name */}
-          <span style={{
-            fontSize: 11, fontWeight: 600, color: token.colorText,
-            flex: "0 0 auto", maxWidth: 100,
-            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-          }}>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: token.colorText,
+              flex: "0 0 auto",
+              maxWidth: 100,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
             {item.quantity}× {item.product.name}
           </span>
 
           {/* Course select */}
           <Select
             value={item.course ?? ""}
-            onChange={(v) => setItemCourse(item.product.id, v)}
+            onChange={v => setItemCourse(item.product.id, v)}
             options={courseOptions}
             size="small"
             style={{ width: 110, flexShrink: 0 }}
@@ -94,7 +113,7 @@ export function CourseManager({ items }: CourseManagerProps) {
           {/* Note input */}
           <Input
             value={item.note ?? ""}
-            onChange={(e) => setItemNote(item.product.id, e.target.value)}
+            onChange={e => setItemNote(item.product.id, e.target.value)}
             placeholder={t.kitchenNote}
             size="small"
             style={{ flex: 1, borderRadius: 6 }}

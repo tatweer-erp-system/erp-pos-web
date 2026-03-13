@@ -19,7 +19,7 @@ export interface KitchenTicketData {
 let printers: KitchenPrinter[] = [...mockKitchenPrinters];
 
 function delay(ms = 200): Promise<void> {
-  return new Promise((res) => setTimeout(res, ms));
+  return new Promise(res => setTimeout(res, ms));
 }
 
 // ── Printer CRUD ──────────────────────────────────────────────────────────────
@@ -43,13 +43,13 @@ export async function updateKitchenPrinter(
   payload: Partial<Omit<KitchenPrinter, "id">>
 ): Promise<KitchenPrinter> {
   await delay(200);
-  printers = printers.map((p) => (p.id === id ? { ...p, ...payload } : p));
-  return printers.find((p) => p.id === id)!;
+  printers = printers.map(p => (p.id === id ? { ...p, ...payload } : p));
+  return printers.find(p => p.id === id)!;
 }
 
 export async function deleteKitchenPrinter(id: string): Promise<void> {
   await delay(200);
-  printers = printers.filter((p) => p.id !== id);
+  printers = printers.filter(p => p.id !== id);
 }
 
 // ── Kitchen ticket printing ───────────────────────────────────────────────────
@@ -59,27 +59,38 @@ export async function deleteKitchenPrinter(id: string): Promise<void> {
  * Uses a hidden iframe so the main window styles are not affected.
  */
 export function printKitchenTicket(data: KitchenTicketData): void {
-  const { orderNumber, tableName, guestCount, timestamp, cashierName, items, notes } = data;
+  const {
+    orderNumber,
+    tableName,
+    guestCount,
+    timestamp,
+    cashierName,
+    items,
+    notes,
+  } = data;
 
-  const groupedByCourse = items.reduce<Record<string, CartItem[]>>((acc, item) => {
-    const course = item.course ?? "no-course";
-    if (!acc[course]) acc[course] = [];
-    acc[course].push(item);
-    return acc;
-  }, {});
+  const groupedByCourse = items.reduce<Record<string, CartItem[]>>(
+    (acc, item) => {
+      const course = item.course ?? "no-course";
+      if (!acc[course]) acc[course] = [];
+      acc[course].push(item);
+      return acc;
+    },
+    {}
+  );
 
   const courseLabel: Record<string, string> = {
     "course-starter": "STARTER",
-    "course-main":    "MAIN",
+    "course-main": "MAIN",
     "course-dessert": "DESSERT",
-    "no-course":      "ALL ITEMS",
+    "no-course": "ALL ITEMS",
   };
 
   const courseRows = Object.entries(groupedByCourse)
     .map(([courseId, courseItems]) => {
       const rows = courseItems
         .map(
-          (item) => `
+          item => `
           <tr>
             <td style="font-size:22px;font-weight:900;padding:4px 8px;">${item.quantity}×</td>
             <td style="font-size:18px;padding:4px 8px;">${item.product.name}${item.note ? `<br/><span style="font-size:14px;font-style:italic;">↳ ${item.note}</span>` : ""}</td>
@@ -132,7 +143,8 @@ export function printKitchenTicket(data: KitchenTicketData): void {
 
   // Print via a hidden iframe
   const iframe = document.createElement("iframe");
-  iframe.style.cssText = "position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;";
+  iframe.style.cssText =
+    "position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;";
   document.body.appendChild(iframe);
   iframe.contentDocument!.open();
   iframe.contentDocument!.write(html);
@@ -143,7 +155,9 @@ export function printKitchenTicket(data: KitchenTicketData): void {
 }
 
 /** Returns mock "sent to kitchen" confirmation */
-export async function sendToKitchen(data: KitchenTicketData): Promise<{ sentAt: string }> {
+export async function sendToKitchen(
+  data: KitchenTicketData
+): Promise<{ sentAt: string }> {
   await delay(300);
   return { sentAt: new Date().toISOString() };
 }

@@ -30,7 +30,7 @@ export function VoucherInput() {
     removeGiftCard,
   } = useCart();
 
-  const giftCardDiscount = usePOSStore((s) => s.giftCardDiscount);
+  const giftCardDiscount = usePOSStore(s => s.giftCardDiscount);
 
   const [inputCode, setInputCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,7 +41,7 @@ export function VoucherInput() {
     if (!code) return;
 
     // Prevent applying same gift card twice
-    if (appliedGiftCards.some((gc) => gc.code === code)) {
+    if (appliedGiftCards.some(gc => gc.code === code)) {
       setError("This gift card is already applied");
       return;
     }
@@ -72,7 +72,10 @@ export function VoucherInput() {
           return;
         }
         // Use up to the remaining grandTotal amount
-        const amountUsed = Math.min(gc.remainingBalance, grandTotal - giftCardDiscount());
+        const amountUsed = Math.min(
+          gc.remainingBalance,
+          grandTotal - giftCardDiscount()
+        );
         const applied: AppliedGiftCard = {
           code: gc.code,
           availableBalance: gc.remainingBalance,
@@ -121,7 +124,10 @@ export function VoucherInput() {
           setLoading(false);
           return;
         }
-        const amountUsed = Math.min(gc.remainingBalance, grandTotal - giftCardDiscount());
+        const amountUsed = Math.min(
+          gc.remainingBalance,
+          grandTotal - giftCardDiscount()
+        );
         const applied: AppliedGiftCard = {
           code: gc.code,
           availableBalance: gc.remainingBalance,
@@ -148,12 +154,16 @@ export function VoucherInput() {
         <Input
           placeholder={t.voucherCodePlaceholder}
           value={inputCode}
-          onChange={(e) => {
+          onChange={e => {
             setInputCode(e.target.value.toUpperCase());
             setError(null);
           }}
           onPressEnter={handleApply}
-          prefix={<TagOutlined style={{ color: token.colorTextTertiary, fontSize: 12 }} />}
+          prefix={
+            <TagOutlined
+              style={{ color: token.colorTextTertiary, fontSize: 12 }}
+            />
+          }
           size="small"
           style={{ flex: 1, borderRadius: 8, fontSize: 12 }}
           status={error ? "error" : undefined}
@@ -175,7 +185,15 @@ export function VoucherInput() {
 
       {/* Error message */}
       {error && (
-        <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: token.colorError }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            fontSize: 11,
+            color: token.colorError,
+          }}
+        >
           <CloseCircleOutlined style={{ fontSize: 11 }} />
           {error}
         </div>
@@ -183,21 +201,30 @@ export function VoucherInput() {
 
       {/* Applied voucher pill */}
       {appliedVoucher && (
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "5px 8px",
-          borderRadius: 8,
-          background: "#10B98110",
-          border: "1px solid #10B98130",
-        }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "5px 8px",
+            borderRadius: 8,
+            background: "#10B98110",
+            border: "1px solid #10B98130",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <CheckCircleOutlined style={{ color: "#10B981", fontSize: 11 }} />
             <span style={{ fontSize: 11, fontWeight: 700, color: "#10B981" }}>
               {appliedVoucher.code}
             </span>
-            <Tag style={{ fontSize: 10, lineHeight: "16px", padding: "0 5px", margin: 0 }}>
+            <Tag
+              style={{
+                fontSize: 10,
+                lineHeight: "16px",
+                padding: "0 5px",
+                margin: 0,
+              }}
+            >
               {appliedVoucher.description}
             </Tag>
           </div>
@@ -206,22 +233,30 @@ export function VoucherInput() {
             size="small"
             icon={<CloseOutlined style={{ fontSize: 10 }} />}
             onClick={() => setAppliedVoucher(null)}
-            style={{ width: 20, height: 20, padding: 0, color: token.colorTextTertiary }}
+            style={{
+              width: 20,
+              height: 20,
+              padding: 0,
+              color: token.colorTextTertiary,
+            }}
           />
         </div>
       )}
 
       {/* Applied gift cards */}
-      {appliedGiftCards.map((gc) => (
-        <div key={gc.code} style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "5px 8px",
-          borderRadius: 8,
-          background: "#A855F710",
-          border: "1px solid #A855F730",
-        }}>
+      {appliedGiftCards.map(gc => (
+        <div
+          key={gc.code}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "5px 8px",
+            borderRadius: 8,
+            background: "#A855F710",
+            border: "1px solid #A855F730",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <GiftOutlined style={{ color: "#A855F7", fontSize: 11 }} />
             <span style={{ fontSize: 11, fontWeight: 700, color: "#A855F7" }}>
@@ -236,7 +271,12 @@ export function VoucherInput() {
             size="small"
             icon={<CloseOutlined style={{ fontSize: 10 }} />}
             onClick={() => removeGiftCard(gc.code)}
-            style={{ width: 20, height: 20, padding: 0, color: token.colorTextTertiary }}
+            style={{
+              width: 20,
+              height: 20,
+              padding: 0,
+              color: token.colorTextTertiary,
+            }}
           />
         </div>
       ))}

@@ -24,8 +24,19 @@ import dayjs from "dayjs";
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const MOCK_CASHIERS = ["All Cashiers", "Sarah M.", "John D.", "Ali K.", "Fatima H."];
-const MOCK_TERMINALS = ["All Terminals", "Terminal 1", "Terminal 2", "Terminal 3"];
+const MOCK_CASHIERS = [
+  "All Cashiers",
+  "Sarah M.",
+  "John D.",
+  "Ali K.",
+  "Fatima H.",
+];
+const MOCK_TERMINALS = [
+  "All Terminals",
+  "Terminal 1",
+  "Terminal 2",
+  "Terminal 3",
+];
 
 // ── Mock fallback data (shown when store has no movements) ────────────────────
 
@@ -96,11 +107,12 @@ export default function CashMovementsReport() {
   const [typeFilter, setTypeFilter] = useState<"all" | "in" | "out">("all");
 
   // Use real store movements if any, else fall back to mock data
-  const storeMovements = usePOSStore((s) => s.cashMovements);
-  const rawMovements = storeMovements.length > 0 ? storeMovements : MOCK_MOVEMENTS;
+  const storeMovements = usePOSStore(s => s.cashMovements);
+  const rawMovements =
+    storeMovements.length > 0 ? storeMovements : MOCK_MOVEMENTS;
 
   const filtered = useMemo(() => {
-    return rawMovements.filter((m) => {
+    return rawMovements.filter(m => {
       const matchType = typeFilter === "all" || m.type === typeFilter;
       const matchCashier =
         cashierFilter === "All Cashiers" || m.cashierName === cashierFilter;
@@ -109,8 +121,12 @@ export default function CashMovementsReport() {
   }, [rawMovements, typeFilter, cashierFilter]);
 
   // Summary stats
-  const totalIn  = filtered.filter((m) => m.type === "in" ).reduce((s, m) => s + m.amount, 0);
-  const totalOut = filtered.filter((m) => m.type === "out").reduce((s, m) => s + m.amount, 0);
+  const totalIn = filtered
+    .filter(m => m.type === "in")
+    .reduce((s, m) => s + m.amount, 0);
+  const totalOut = filtered
+    .filter(m => m.type === "out")
+    .reduce((s, m) => s + m.amount, 0);
   const netMovement = totalIn - totalOut;
 
   const columns: ColumnsType<CashMovement> = [
@@ -136,10 +152,15 @@ export default function CashMovementsReport() {
         type === "in" ? (
           <Tag
             style={{
-              background: "#10B98110", color: "#10B981",
-              border: "1px solid #10B98140", borderRadius: 6,
-              fontWeight: 700, fontSize: 11,
-              display: "inline-flex", alignItems: "center", gap: 4,
+              background: "#10B98110",
+              color: "#10B981",
+              border: "1px solid #10B98140",
+              borderRadius: 6,
+              fontWeight: 700,
+              fontSize: 11,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
             }}
           >
             <ArrowDownOutlined /> Cash In
@@ -147,10 +168,15 @@ export default function CashMovementsReport() {
         ) : (
           <Tag
             style={{
-              background: "#EF444410", color: "#EF4444",
-              border: "1px solid #EF444440", borderRadius: 6,
-              fontWeight: 700, fontSize: 11,
-              display: "inline-flex", alignItems: "center", gap: 4,
+              background: "#EF444410",
+              color: "#EF4444",
+              border: "1px solid #EF444440",
+              borderRadius: 6,
+              fontWeight: 700,
+              fontSize: 11,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
             }}
           >
             <ArrowUpOutlined /> Cash Out
@@ -206,14 +232,15 @@ export default function CashMovementsReport() {
       key: "terminal",
       width: 120,
       render: () => (
-        <span style={{ color: token.colorTextSecondary, fontSize: 12 }}>Terminal 1</span>
+        <span style={{ color: token.colorTextSecondary, fontSize: 12 }}>
+          Terminal 1
+        </span>
       ),
     },
   ];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-
       {/* Summary cards + Export */}
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
         <Row gutter={[16, 16]} style={{ flex: 1 }}>
@@ -222,13 +249,13 @@ export default function CashMovementsReport() {
               title: "Total Cash In",
               value: `$${totalIn.toFixed(2)}`,
               color: "#10B981",
-              suffix: `${filtered.filter((m) => m.type === "in").length} movements`,
+              suffix: `${filtered.filter(m => m.type === "in").length} movements`,
             },
             {
               title: "Total Cash Out",
               value: `$${totalOut.toFixed(2)}`,
               color: "#EF4444",
-              suffix: `${filtered.filter((m) => m.type === "out").length} movements`,
+              suffix: `${filtered.filter(m => m.type === "out").length} movements`,
             },
             {
               title: "Net Cash Movement",
@@ -236,7 +263,7 @@ export default function CashMovementsReport() {
               color: netMovement >= 0 ? token.colorPrimary : "#EF4444",
               suffix: netMovement >= 0 ? "net inflow" : "net outflow",
             },
-          ].map((s) => (
+          ].map(s => (
             <Col xs={12} sm={12} md={8} key={s.title}>
               <Card
                 style={{
@@ -246,13 +273,32 @@ export default function CashMovementsReport() {
                 }}
                 styles={{ body: { padding: "16px 20px" } }}
               >
-                <div style={{ fontSize: 12, color: token.colorTextSecondary, marginBottom: 6 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: token.colorTextSecondary,
+                    marginBottom: 6,
+                  }}
+                >
                   {s.title}
                 </div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: s.color, lineHeight: 1 }}>
+                <div
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 800,
+                    color: s.color,
+                    lineHeight: 1,
+                  }}
+                >
                   {s.value}
                 </div>
-                <div style={{ fontSize: 11, color: token.colorTextTertiary, marginTop: 4 }}>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: token.colorTextTertiary,
+                    marginTop: 4,
+                  }}
+                >
                   {s.suffix}
                 </div>
               </Card>
@@ -261,37 +307,75 @@ export default function CashMovementsReport() {
         </Row>
 
         <Space style={{ flexShrink: 0 }}>
-          <Button icon={<PrinterOutlined />} onClick={() => window.print()}>Print</Button>
-          <Button icon={<DownloadOutlined />} type="primary">Export Excel</Button>
+          <Button icon={<PrinterOutlined />} onClick={() => window.print()}>
+            Print
+          </Button>
+          <Button icon={<DownloadOutlined />} type="primary">
+            Export Excel
+          </Button>
         </Space>
       </div>
 
       {/* Table with filters */}
       <Card
-        style={{ border: `1px solid ${token.colorBorderSecondary}`, borderRadius: token.borderRadiusLG }}
+        style={{
+          border: `1px solid ${token.colorBorderSecondary}`,
+          borderRadius: token.borderRadiusLG,
+        }}
         styles={{ body: { padding: 0 } }}
       >
-        <div style={{
-          display: "flex", alignItems: "center", gap: 12,
-          padding: "16px 20px", borderBottom: `1px solid ${token.colorBorderSecondary}`, flexWrap: "wrap",
-        }}>
-          <RangePicker style={{ borderRadius: 8 }} placeholder={["From date", "To date"]} />
-          <Select value={cashierFilter} onChange={setCashierFilter} style={{ width: 160, borderRadius: 8 }}>
-            {MOCK_CASHIERS.map((c) => <Option key={c} value={c}>{c}</Option>)}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "16px 20px",
+            borderBottom: `1px solid ${token.colorBorderSecondary}`,
+            flexWrap: "wrap",
+          }}
+        >
+          <RangePicker
+            style={{ borderRadius: 8 }}
+            placeholder={["From date", "To date"]}
+          />
+          <Select
+            value={cashierFilter}
+            onChange={setCashierFilter}
+            style={{ width: 160, borderRadius: 8 }}
+          >
+            {MOCK_CASHIERS.map(c => (
+              <Option key={c} value={c}>
+                {c}
+              </Option>
+            ))}
           </Select>
-          <Select value={terminalFilter} onChange={setTerminalFilter} style={{ width: 160, borderRadius: 8 }}>
-            {MOCK_TERMINALS.map((t) => <Option key={t} value={t}>{t}</Option>)}
+          <Select
+            value={terminalFilter}
+            onChange={setTerminalFilter}
+            style={{ width: 160, borderRadius: 8 }}
+          >
+            {MOCK_TERMINALS.map(t => (
+              <Option key={t} value={t}>
+                {t}
+              </Option>
+            ))}
           </Select>
           <Select
             value={typeFilter}
-            onChange={(v) => setTypeFilter(v as "all" | "in" | "out")}
+            onChange={v => setTypeFilter(v as "all" | "in" | "out")}
             style={{ width: 140, borderRadius: 8 }}
           >
             <Option value="all">All Types</Option>
             <Option value="in">Cash In</Option>
             <Option value="out">Cash Out</Option>
           </Select>
-          <span style={{ marginInlineStart: "auto", fontSize: 12, color: token.colorTextSecondary }}>
+          <span
+            style={{
+              marginInlineStart: "auto",
+              fontSize: 12,
+              color: token.colorTextSecondary,
+            }}
+          >
             {filtered.length} of {rawMovements.length} movements
           </span>
         </div>

@@ -1,6 +1,28 @@
 import { useState, useRef, useEffect } from "react";
-import { Select, InputNumber, Button, Empty, Badge, Divider, theme as antTheme, Popconfirm, Tooltip, Tag, Input } from "antd";
-import { ShoppingCartOutlined, ClearOutlined, PauseCircleOutlined, ReloadOutlined, WarningOutlined, SafetyOutlined, ScissorOutlined, FileTextOutlined, GiftOutlined } from "@ant-design/icons";
+import {
+  Select,
+  InputNumber,
+  Button,
+  Empty,
+  Badge,
+  Divider,
+  theme as antTheme,
+  Popconfirm,
+  Tooltip,
+  Tag,
+  Input,
+} from "antd";
+import {
+  ShoppingCartOutlined,
+  ClearOutlined,
+  PauseCircleOutlined,
+  ReloadOutlined,
+  WarningOutlined,
+  SafetyOutlined,
+  ScissorOutlined,
+  FileTextOutlined,
+  GiftOutlined,
+} from "@ant-design/icons";
 import { CartItem } from "./CartItem";
 import { PaymentSection } from "./PaymentSection";
 import { CustomerSearch } from "./cart/CustomerSearch";
@@ -51,19 +73,21 @@ export function CartPanel({ isMobile }: CartPanelProps) {
     appliedGiftCards,
   } = useCart();
 
-  const redeemPoints            = usePOSStore((s) => s.redeemPoints);
-  const posSettings             = usePOSStore((s) => s.posSessionSettings);
-  const discountOverrideGranted = usePOSStore((s) => s.discountOverrideGranted);
-  const setDiscountOverrideGranted = usePOSStore((s) => s.setDiscountOverrideGranted);
-  const setItemDiscount         = usePOSStore((s) => s.setItemDiscount);
-  const setItemNote             = usePOSStore((s) => s.setItemNote);
-  const orderNote               = usePOSStore((s) => s.orderNote);
-  const setOrderNote            = usePOSStore((s) => s.setOrderNote);
-  const tipAmount               = usePOSStore((s) => s.tipAmount);
-  const setTip                  = usePOSStore((s) => s.setTip);
-  const finalTotal              = usePOSStore((s) => s.finalTotal);
-  const deliveryFee             = usePOSStore((s) => s.deliveryFee);
-  const orderType               = usePOSStore((s) => s.orderType);
+  const redeemPoints = usePOSStore(s => s.redeemPoints);
+  const posSettings = usePOSStore(s => s.posSessionSettings);
+  const discountOverrideGranted = usePOSStore(s => s.discountOverrideGranted);
+  const setDiscountOverrideGranted = usePOSStore(
+    s => s.setDiscountOverrideGranted
+  );
+  const setItemDiscount = usePOSStore(s => s.setItemDiscount);
+  const setItemNote = usePOSStore(s => s.setItemNote);
+  const orderNote = usePOSStore(s => s.orderNote);
+  const setOrderNote = usePOSStore(s => s.setOrderNote);
+  const tipAmount = usePOSStore(s => s.tipAmount);
+  const setTip = usePOSStore(s => s.setTip);
+  const finalTotal = usePOSStore(s => s.finalTotal);
+  const deliveryFee = usePOSStore(s => s.deliveryFee);
+  const orderType = usePOSStore(s => s.orderType);
   const { requestManagerOverride } = usePOSContext();
   const { charge, isCharging } = useCheckout();
   const restaurantMode = useRestaurantMode();
@@ -84,13 +108,16 @@ export function CartPanel({ isMobile }: CartPanelProps) {
 
   const TIP_PRESETS = [0, 10, 15, 18, 20, 25];
 
-  function handleSetDiscount(productId: string, discount: LineDiscount | undefined) {
+  function handleSetDiscount(
+    productId: string,
+    discount: LineDiscount | undefined
+  ) {
     setItemDiscount(productId, discount);
   }
 
   function handleTipPreset(pct: number) {
     setCustomTip(null);
-    setTip(amountDue * pct / 100);
+    setTip((amountDue * pct) / 100);
   }
 
   function handleCustomTip(v: number | null) {
@@ -117,32 +144,47 @@ export function CartPanel({ isMobile }: CartPanelProps) {
   }
 
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      flex: 1,
-      minHeight: 0,
-      background: token.colorBgContainer,
-      borderRadius: 0,
-      overflow: "hidden",
-    }}>
-
-      {/* Header */}
-      <div style={{
-        padding: "12px 14px",
-        borderBottom: `1px solid ${token.colorBorderSecondary}`,
+    <div
+      style={{
         display: "flex",
         flexDirection: "column",
-        gap: 10,
-        flexShrink: 0,
-        background: token.colorFillAlter,
-      }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        flex: 1,
+        minHeight: 0,
+        background: token.colorBgContainer,
+        borderRadius: 0,
+        overflow: "hidden",
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          padding: "12px 14px",
+          borderBottom: `1px solid ${token.colorBorderSecondary}`,
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+          flexShrink: 0,
+          background: token.colorFillAlter,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <Badge count={itemCount} color={token.colorPrimary} size="small">
-              <ShoppingCartOutlined style={{ fontSize: 18, color: token.colorPrimary }} />
+              <ShoppingCartOutlined
+                style={{ fontSize: 18, color: token.colorPrimary }}
+              />
             </Badge>
-            <span style={{ fontSize: 14, fontWeight: 700, color: token.colorText }}>{t.cart}</span>
+            <span
+              style={{ fontSize: 14, fontWeight: 700, color: token.colorText }}
+            >
+              {t.cart}
+            </span>
           </div>
           <div style={{ display: "flex", gap: 6 }}>
             {/* Restaurant: Split Bill */}
@@ -152,7 +194,13 @@ export function CartPanel({ isMobile }: CartPanelProps) {
                   size="small"
                   icon={<ScissorOutlined />}
                   onClick={() => setSplitBillOpen(true)}
-                  style={{ borderRadius: 8, height: 32, fontSize: 11, color: "#6366F1", borderColor: "#6366F140" }}
+                  style={{
+                    borderRadius: 8,
+                    height: 32,
+                    fontSize: 11,
+                    color: "#6366F1",
+                    borderColor: "#6366F140",
+                  }}
                 >
                   {t.splitBill}
                 </Button>
@@ -163,7 +211,9 @@ export function CartPanel({ isMobile }: CartPanelProps) {
                 <Button
                   size="small"
                   icon={<ReloadOutlined />}
-                  onClick={() => resumeOrder(heldOrders[heldOrders.length - 1].id)}
+                  onClick={() =>
+                    resumeOrder(heldOrders[heldOrders.length - 1].id)
+                  }
                   style={{ borderRadius: 8, height: 32, fontSize: 11 }}
                 >
                   {t.resumeN(heldOrders.length)}
@@ -215,11 +265,17 @@ export function CartPanel({ isMobile }: CartPanelProps) {
         {isEmpty ? (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={<span style={{ fontSize: 13, color: token.colorTextSecondary }}>{t.emptyCart}<br />{t.emptyCartSub}</span>}
+            description={
+              <span style={{ fontSize: 13, color: token.colorTextSecondary }}>
+                {t.emptyCart}
+                <br />
+                {t.emptyCartSub}
+              </span>
+            }
             style={{ marginTop: 40 }}
           />
         ) : (
-          cartItems.map((item) => (
+          cartItems.map(item => (
             <CartItem
               key={item.product.id}
               item={item}
@@ -235,27 +291,38 @@ export function CartPanel({ isMobile }: CartPanelProps) {
 
       {/* Summary & Payment */}
       {!isEmpty && (
-        <div style={{
-          borderTop: `1px solid ${token.colorBorderSecondary}`,
-          padding: "8px 12px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-          flexShrink: 0,
-          overflowY: "auto",
-          maxHeight: "50%",
-          background: token.colorFillAlter,
-          scrollbarWidth: "thin" as const,
-        }}>
+        <div
+          style={{
+            borderTop: `1px solid ${token.colorBorderSecondary}`,
+            padding: "8px 12px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 6,
+            flexShrink: 0,
+            overflowY: "auto",
+            maxHeight: "50%",
+            background: token.colorFillAlter,
+            scrollbarWidth: "thin" as const,
+          }}
+        >
           <LoyaltyRedemption />
           <VoucherInput />
 
           {/* Order Note — always-visible input */}
           <Input
-            prefix={<FileTextOutlined style={{ color: orderNote ? token.colorPrimary : token.colorTextPlaceholder, fontSize: 12 }} />}
+            prefix={
+              <FileTextOutlined
+                style={{
+                  color: orderNote
+                    ? token.colorPrimary
+                    : token.colorTextPlaceholder,
+                  fontSize: 12,
+                }}
+              />
+            }
             placeholder={t.orderNotePlaceholder}
             value={orderNote}
-            onChange={(e) => setOrderNote(e.target.value)}
+            onChange={e => setOrderNote(e.target.value)}
             allowClear
             size="small"
             style={{ borderRadius: 8, fontSize: 12 }}
@@ -263,20 +330,37 @@ export function CartPanel({ isMobile }: CartPanelProps) {
 
           {/* Manual discount */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 12, color: token.colorTextSecondary, flexShrink: 0, width: 68 }}>{t.discount}</span>
+            <span
+              style={{
+                fontSize: 12,
+                color: token.colorTextSecondary,
+                flexShrink: 0,
+                width: 68,
+              }}
+            >
+              {t.discount}
+            </span>
             <Select
               size="small"
               value={discount.type}
-              onChange={(v: DiscountType) => setDiscount({ ...discount, type: v })}
+              onChange={(v: DiscountType) =>
+                setDiscount({ ...discount, type: v })
+              }
               style={{ width: 80, borderRadius: 8 }}
-              options={[{ value: "percent", label: "%" }, { value: "fixed", label: "$" }]}
+              options={[
+                { value: "percent", label: "%" },
+                { value: "fixed", label: "$" },
+              ]}
             />
             <InputNumber
               size="small"
               min={0}
               max={discount.type === "percent" ? 100 : subtotal}
               value={discount.value}
-              onChange={(v) => { setDiscount({ ...discount, value: v ?? 0 }); setDiscountOverrideGranted(false); }}
+              onChange={v => {
+                setDiscount({ ...discount, value: v ?? 0 });
+                setDiscountOverrideGranted(false);
+              }}
               precision={2}
               style={{ flex: 1, borderRadius: 8 }}
               placeholder="0.00"
@@ -285,26 +369,44 @@ export function CartPanel({ isMobile }: CartPanelProps) {
 
           {/* Manager override warning for high discounts */}
           {needsOverride && (
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 8,
-              padding: "8px 10px",
-              borderRadius: 8,
-              background: "#F59E0B10",
-              border: "1px solid #F59E0B40",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#92400E" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+                padding: "8px 10px",
+                borderRadius: 8,
+                background: "#F59E0B10",
+                border: "1px solid #F59E0B40",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 11,
+                  color: "#92400E",
+                }}
+              >
                 <WarningOutlined style={{ color: "#F59E0B" }} />
-                <span>{t.managerOverrideMsg(discount.value, discountThreshold)}</span>
+                <span>
+                  {t.managerOverrideMsg(discount.value, discountThreshold)}
+                </span>
               </div>
               <Button
                 size="small"
                 icon={<SafetyOutlined />}
                 loading={requestingOverride}
                 onClick={handleRequestOverride}
-                style={{ borderRadius: 6, height: 26, fontSize: 11, borderColor: "#F59E0B60", color: "#92400E" }}
+                style={{
+                  borderRadius: 6,
+                  height: 26,
+                  fontSize: 11,
+                  borderColor: "#F59E0B60",
+                  color: "#92400E",
+                }}
               >
                 {t.requestOverride}
               </Button>
@@ -312,7 +414,11 @@ export function CartPanel({ isMobile }: CartPanelProps) {
           )}
 
           {discountOverrideGranted && discount.value > discountThreshold && (
-            <Tag color="success" icon={<SafetyOutlined />} style={{ borderRadius: 6, fontSize: 11 }}>
+            <Tag
+              color="success"
+              icon={<SafetyOutlined />}
+              style={{ borderRadius: 6, fontSize: 11 }}
+            >
               {t.overrideGranted}
             </Tag>
           )}
@@ -322,41 +428,80 @@ export function CartPanel({ isMobile }: CartPanelProps) {
           {/* Totals breakdown */}
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 12, color: token.colorTextSecondary }}>{t.subtotal}</span>
-              <span style={{ fontSize: 12, fontWeight: 500 }}>${subtotal.toFixed(2)}</span>
+              <span style={{ fontSize: 12, color: token.colorTextSecondary }}>
+                {t.subtotal}
+              </span>
+              <span style={{ fontSize: 12, fontWeight: 500 }}>
+                ${subtotal.toFixed(2)}
+              </span>
             </div>
             {discountAmount > 0 && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: "#10B981" }}>{t.discount}{discount.type === "percent" ? ` (${discount.value}%)` : ""}</span>
-                <span style={{ fontSize: 12, color: "#10B981", fontWeight: 500 }}>−${discountAmount.toFixed(2)}</span>
+                <span style={{ fontSize: 12, color: "#10B981" }}>
+                  {t.discount}
+                  {discount.type === "percent" ? ` (${discount.value}%)` : ""}
+                </span>
+                <span
+                  style={{ fontSize: 12, color: "#10B981", fontWeight: 500 }}
+                >
+                  −${discountAmount.toFixed(2)}
+                </span>
               </div>
             )}
             {redemptionDiscount > 0 && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: "#F59E0B" }}>{t.pointsRedeemed(redeemPoints)}</span>
-                <span style={{ fontSize: 12, color: "#F59E0B", fontWeight: 600 }}>−${redemptionDiscount.toFixed(2)}</span>
+                <span style={{ fontSize: 12, color: "#F59E0B" }}>
+                  {t.pointsRedeemed(redeemPoints)}
+                </span>
+                <span
+                  style={{ fontSize: 12, color: "#F59E0B", fontWeight: 600 }}
+                >
+                  −${redemptionDiscount.toFixed(2)}
+                </span>
               </div>
             )}
             {voucherDiscount > 0 && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: "#10B981" }}>{t.voucher}</span>
-                <span style={{ fontSize: 12, color: "#10B981", fontWeight: 600 }}>−${voucherDiscount.toFixed(2)}</span>
+                <span style={{ fontSize: 12, color: "#10B981" }}>
+                  {t.voucher}
+                </span>
+                <span
+                  style={{ fontSize: 12, color: "#10B981", fontWeight: 600 }}
+                >
+                  −${voucherDiscount.toFixed(2)}
+                </span>
               </div>
             )}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 12, color: token.colorTextSecondary }}>{t.tax} ({(TAX_RATE * 100).toFixed(0)}%)</span>
-              <span style={{ fontSize: 12, fontWeight: 500 }}>${taxAmount.toFixed(2)}</span>
+              <span style={{ fontSize: 12, color: token.colorTextSecondary }}>
+                {t.tax} ({(TAX_RATE * 100).toFixed(0)}%)
+              </span>
+              <span style={{ fontSize: 12, fontWeight: 500 }}>
+                ${taxAmount.toFixed(2)}
+              </span>
             </div>
             {orderType === "delivery" && deliveryFee > 0 && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: "#6366F1" }}>{t.deliveryFee}</span>
-                <span style={{ fontSize: 12, color: "#6366F1", fontWeight: 600 }}>+${deliveryFee.toFixed(2)}</span>
+                <span style={{ fontSize: 12, color: "#6366F1" }}>
+                  {t.deliveryFee}
+                </span>
+                <span
+                  style={{ fontSize: 12, color: "#6366F1", fontWeight: 600 }}
+                >
+                  +${deliveryFee.toFixed(2)}
+                </span>
               </div>
             )}
             {giftCardDiscount > 0 && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: "#A855F7" }}>{t.giftCardLabel(appliedGiftCards.length)}</span>
-                <span style={{ fontSize: 12, color: "#A855F7", fontWeight: 600 }}>−${giftCardDiscount.toFixed(2)}</span>
+                <span style={{ fontSize: 12, color: "#A855F7" }}>
+                  {t.giftCardLabel(appliedGiftCards.length)}
+                </span>
+                <span
+                  style={{ fontSize: 12, color: "#A855F7", fontWeight: 600 }}
+                >
+                  −${giftCardDiscount.toFixed(2)}
+                </span>
               </div>
             )}
           </div>
@@ -367,9 +512,10 @@ export function CartPanel({ isMobile }: CartPanelProps) {
               type="text"
               size="small"
               icon={<GiftOutlined />}
-              onClick={() => setShowTip((v) => !v)}
+              onClick={() => setShowTip(v => !v)}
               style={{
-                color: tipAmount > 0 ? token.colorSuccess : token.colorTextSecondary,
+                color:
+                  tipAmount > 0 ? token.colorSuccess : token.colorTextSecondary,
                 fontWeight: tipAmount > 0 ? 600 : 400,
                 fontSize: 12,
                 padding: "0 4px",
@@ -379,14 +525,31 @@ export function CartPanel({ isMobile }: CartPanelProps) {
               {tipAmount > 0 ? `${t.tip}: $${tipAmount.toFixed(2)}` : t.tip}
             </Button>
             {showTip && (
-              <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 5 }}>
-                {TIP_PRESETS.map((pct) => (
+              <div
+                style={{
+                  marginTop: 6,
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 5,
+                }}
+              >
+                {TIP_PRESETS.map(pct => (
                   <Button
                     key={pct}
                     size="small"
-                    type={tipAmount === amountDue * pct / 100 && customTip === null ? "primary" : "default"}
+                    type={
+                      tipAmount === (amountDue * pct) / 100 &&
+                      customTip === null
+                        ? "primary"
+                        : "default"
+                    }
                     onClick={() => handleTipPreset(pct)}
-                    style={{ borderRadius: 8, fontSize: 11, height: 28, flex: "0 0 auto" }}
+                    style={{
+                      borderRadius: 8,
+                      fontSize: 11,
+                      height: 28,
+                      flex: "0 0 auto",
+                    }}
                   >
                     {pct === 0 ? t.noTip : `${pct}%`}
                   </Button>
@@ -399,42 +562,88 @@ export function CartPanel({ isMobile }: CartPanelProps) {
                   placeholder={t.customTip}
                   prefix="$"
                   precision={2}
-                  style={{ flex: 1, minWidth: 80, borderRadius: 8, fontSize: 11 }}
+                  style={{
+                    flex: 1,
+                    minWidth: 80,
+                    borderRadius: 8,
+                    fontSize: 11,
+                  }}
                 />
               </div>
             )}
             {tipAmount > 0 && (
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-                <span style={{ fontSize: 12, color: token.colorSuccess }}>{t.tip}</span>
-                <span style={{ fontSize: 12, color: token.colorSuccess, fontWeight: 600 }}>+${tipAmount.toFixed(2)}</span>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: 4,
+                }}
+              >
+                <span style={{ fontSize: 12, color: token.colorSuccess }}>
+                  {t.tip}
+                </span>
+                <span
+                  style={{
+                    fontSize: 12,
+                    color: token.colorSuccess,
+                    fontWeight: 600,
+                  }}
+                >
+                  +${tipAmount.toFixed(2)}
+                </span>
               </div>
             )}
           </div>
 
           {/* Strikethrough grand total when gift cards applied */}
           {giftCardDiscount > 0 && (
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 12, color: token.colorTextSecondary }}>{t.orderTotal}</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: token.colorTextSecondary, textDecoration: "line-through" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <span style={{ fontSize: 12, color: token.colorTextSecondary }}>
+                {t.orderTotal}
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: token.colorTextSecondary,
+                  textDecoration: "line-through",
+                }}
+              >
                 ${grandTotal.toFixed(2)}
               </span>
             </div>
           )}
 
           {/* Amount Due */}
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "6px 10px",
-            borderRadius: 8,
-            background: `linear-gradient(135deg, ${token.colorPrimary}12, ${token.colorPrimary}20)`,
-            border: `1.5px solid ${token.colorPrimary}30`,
-          }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: token.colorText }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "6px 10px",
+              borderRadius: 8,
+              background: `linear-gradient(135deg, ${token.colorPrimary}12, ${token.colorPrimary}20)`,
+              border: `1.5px solid ${token.colorPrimary}30`,
+            }}
+          >
+            <span
+              style={{ fontSize: 13, fontWeight: 700, color: token.colorText }}
+            >
               {giftCardDiscount > 0 ? t.amountDue : t.grandTotal}
             </span>
-            <span style={{ fontSize: 18, fontWeight: 900, color: token.colorPrimary }}>
+            <span
+              style={{
+                fontSize: 18,
+                fontWeight: 900,
+                color: token.colorPrimary,
+              }}
+            >
               ${finalTotal().toFixed(2)}
             </span>
           </div>
@@ -442,19 +651,22 @@ export function CartPanel({ isMobile }: CartPanelProps) {
           <PaymentSection grandTotal={finalTotal()} isMobile={isMobile} />
 
           {/* Restaurant: Course Management */}
-          {restaurantMode.isRestaurant && restaurantMode.courseManagementEnabled && (
-            <CourseManager items={cartItems} />
-          )}
+          {restaurantMode.isRestaurant &&
+            restaurantMode.courseManagementEnabled && (
+              <CourseManager items={cartItems} />
+            )}
 
           {/* Restaurant: Fire Course buttons */}
-          {restaurantMode.isRestaurant && restaurantMode.courseManagementEnabled && (
-            <FireCourseButton items={cartItems} />
-          )}
+          {restaurantMode.isRestaurant &&
+            restaurantMode.courseManagementEnabled && (
+              <FireCourseButton items={cartItems} />
+            )}
 
           {/* Restaurant: Send to Kitchen */}
-          {restaurantMode.isRestaurant && restaurantMode.kitchenPrintingEnabled && (
-            <KitchenTicket items={cartItems} />
-          )}
+          {restaurantMode.isRestaurant &&
+            restaurantMode.kitchenPrintingEnabled && (
+              <KitchenTicket items={cartItems} />
+            )}
 
           <Button
             type="primary"
@@ -472,7 +684,9 @@ export function CartPanel({ isMobile }: CartPanelProps) {
               letterSpacing: "0.02em",
             }}
           >
-            {isCharging ? t.processing : `${t.chargeButton} $${finalTotal().toFixed(2)}`}
+            {isCharging
+              ? t.processing
+              : `${t.chargeButton} $${finalTotal().toFixed(2)}`}
           </Button>
         </div>
       )}

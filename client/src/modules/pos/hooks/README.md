@@ -25,6 +25,7 @@ const {
 ```
 
 **Key behaviors**:
+
 - Adding an existing product increments quantity instead of duplicating
 - Quantity set to 0 automatically removes the item
 - Line-item discounts are per-item overrides (not the order-level discount)
@@ -43,6 +44,7 @@ await checkout();
 ```
 
 **Flow**:
+
 1. Validates cart is not empty and payment is complete
 2. Builds `OrderPayload` from posStore state
 3. If online: calls `posService.submitOrder()` → sets `completedOrder`
@@ -69,6 +71,7 @@ const {
 ```
 
 **Features**:
+
 - Loads products from `posService.getProducts()` on mount
 - Falls back to `offlineService.getCachedProducts()` when offline
 - Client-side filtering by category and search query
@@ -86,6 +89,7 @@ useOfflineSync();
 ```
 
 **Behavior**:
+
 - Listens to `window` online/offline events
 - Updates `posStore.isOnline` accordingly
 - When `isOnline` transitions from false → true: triggers `syncService.syncPendingTransactions()`

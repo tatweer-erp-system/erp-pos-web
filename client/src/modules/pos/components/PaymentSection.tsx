@@ -18,33 +18,37 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
 
-  const PAYMENT_METHODS: { value: PaymentMethod; label: string; icon: React.ReactNode }[] = [
-    { value: "cash",  label: t.cash,  icon: <DollarOutlined /> },
-    { value: "card",  label: t.card,  icon: <BankOutlined /> },
+  const PAYMENT_METHODS: {
+    value: PaymentMethod;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+    { value: "cash", label: t.cash, icon: <DollarOutlined /> },
+    { value: "card", label: t.card, icon: <BankOutlined /> },
     { value: "split", label: t.split, icon: <SplitCellsOutlined /> },
   ];
-  const paymentMethod  = usePOSStore((s) => s.paymentMethod);
-  const setPaymentMethod = usePOSStore((s) => s.setPaymentMethod);
-  const cashGiven      = usePOSStore((s) => s.cashGiven);
-  const setCashGiven   = usePOSStore((s) => s.setCashGiven);
-  const cardRef        = usePOSStore((s) => s.cardRef);
-  const setCardRef     = usePOSStore((s) => s.setCardRef);
-  const splitCash      = usePOSStore((s) => s.splitCash);
-  const setSplitCash   = usePOSStore((s) => s.setSplitCash);
-  const splitCard      = usePOSStore((s) => s.splitCard);
-  const setSplitCard   = usePOSStore((s) => s.setSplitCard);
-  const splitCardRef   = usePOSStore((s) => s.splitCardRef);
-  const setSplitCardRef = usePOSStore((s) => s.setSplitCardRef);
+  const paymentMethod = usePOSStore(s => s.paymentMethod);
+  const setPaymentMethod = usePOSStore(s => s.setPaymentMethod);
+  const cashGiven = usePOSStore(s => s.cashGiven);
+  const setCashGiven = usePOSStore(s => s.setCashGiven);
+  const cardRef = usePOSStore(s => s.cardRef);
+  const setCardRef = usePOSStore(s => s.setCardRef);
+  const splitCash = usePOSStore(s => s.splitCash);
+  const setSplitCash = usePOSStore(s => s.setSplitCash);
+  const splitCard = usePOSStore(s => s.splitCard);
+  const setSplitCard = usePOSStore(s => s.setSplitCard);
+  const splitCardRef = usePOSStore(s => s.splitCardRef);
+  const setSplitCardRef = usePOSStore(s => s.setSplitCardRef);
 
-  const change = paymentMethod === "cash"
-    ? Math.max(0, cashGiven - grandTotal)
-    : paymentMethod === "split"
-    ? Math.max(0, splitCash - (grandTotal - splitCard))
-    : 0;
+  const change =
+    paymentMethod === "cash"
+      ? Math.max(0, cashGiven - grandTotal)
+      : paymentMethod === "split"
+        ? Math.max(0, splitCash - (grandTotal - splitCard))
+        : 0;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-
       {/* Method selector */}
       <div style={{ display: "flex", gap: 4 }}>
         {PAYMENT_METHODS.map(({ value, label, icon }) => {
@@ -82,7 +86,14 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
       {paymentMethod === "cash" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 11, color: token.colorTextSecondary, width: 80, flexShrink: 0 }}>
+            <span
+              style={{
+                fontSize: 11,
+                color: token.colorTextSecondary,
+                width: 80,
+                flexShrink: 0,
+              }}
+            >
               {t.amountGiven}
             </span>
             <InputNumber
@@ -90,27 +101,33 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
               min={0}
               precision={2}
               value={cashGiven || undefined}
-              onChange={(v) => setCashGiven(v ?? 0)}
+              onChange={v => setCashGiven(v ?? 0)}
               prefix="$"
               placeholder="0.00"
               size="small"
             />
           </div>
           {cashGiven > 0 && (
-            <div style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "4px 10px",
-              borderRadius: 6,
-              background: change >= 0 ? "#10B98112" : "#EF444412",
-              border: `1px solid ${change >= 0 ? "#10B98130" : "#EF444430"}`,
-            }}>
-              <span style={{ fontSize: 11, color: token.colorTextSecondary }}>{t.change}</span>
-              <span style={{
-                fontSize: 13,
-                fontWeight: 800,
-                color: change >= 0 ? "#10B981" : "#EF4444",
-              }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "4px 10px",
+                borderRadius: 6,
+                background: change >= 0 ? "#10B98112" : "#EF444412",
+                border: `1px solid ${change >= 0 ? "#10B98130" : "#EF444430"}`,
+              }}
+            >
+              <span style={{ fontSize: 11, color: token.colorTextSecondary }}>
+                {t.change}
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 800,
+                  color: change >= 0 ? "#10B981" : "#EF4444",
+                }}
+              >
                 ${change.toFixed(2)}
               </span>
             </div>
@@ -121,13 +138,20 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
       {/* Card fields */}
       {paymentMethod === "card" && (
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ fontSize: 11, color: token.colorTextSecondary, width: 80, flexShrink: 0 }}>
+          <span
+            style={{
+              fontSize: 11,
+              color: token.colorTextSecondary,
+              width: 80,
+              flexShrink: 0,
+            }}
+          >
             {t.refTxnId}
           </span>
           <Input
             style={{ flex: 1, borderRadius: 6 }}
             value={cardRef}
-            onChange={(e) => setCardRef(e.target.value)}
+            onChange={e => setCardRef(e.target.value)}
             placeholder="Transaction ID"
             size="small"
           />
@@ -138,7 +162,14 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
       {paymentMethod === "split" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 12, color: token.colorTextSecondary, width: 90, flexShrink: 0 }}>
+            <span
+              style={{
+                fontSize: 12,
+                color: token.colorTextSecondary,
+                width: 90,
+                flexShrink: 0,
+              }}
+            >
               {t.cashAmount}
             </span>
             <InputNumber
@@ -147,10 +178,12 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
               max={grandTotal}
               precision={2}
               value={splitCash || undefined}
-              onChange={(v) => {
+              onChange={v => {
                 const cash = v ?? 0;
                 setSplitCash(cash);
-                setSplitCard(Math.max(0, parseFloat((grandTotal - cash).toFixed(2))));
+                setSplitCard(
+                  Math.max(0, parseFloat((grandTotal - cash).toFixed(2)))
+                );
               }}
               prefix="$"
               placeholder="0.00"
@@ -158,7 +191,14 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 12, color: token.colorTextSecondary, width: 90, flexShrink: 0 }}>
+            <span
+              style={{
+                fontSize: 12,
+                color: token.colorTextSecondary,
+                width: 90,
+                flexShrink: 0,
+              }}
+            >
               {t.cardAmount}
             </span>
             <InputNumber
@@ -167,10 +207,12 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
               max={grandTotal}
               precision={2}
               value={splitCard || undefined}
-              onChange={(v) => {
+              onChange={v => {
                 const card = v ?? 0;
                 setSplitCard(card);
-                setSplitCash(Math.max(0, parseFloat((grandTotal - card).toFixed(2))));
+                setSplitCash(
+                  Math.max(0, parseFloat((grandTotal - card).toFixed(2)))
+                );
               }}
               prefix="$"
               placeholder="0.00"
@@ -178,39 +220,49 @@ export function PaymentSection({ grandTotal, isMobile }: PaymentSectionProps) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 12, color: token.colorTextSecondary, width: 90, flexShrink: 0 }}>
+            <span
+              style={{
+                fontSize: 12,
+                color: token.colorTextSecondary,
+                width: 90,
+                flexShrink: 0,
+              }}
+            >
               {t.cardRef}
             </span>
             <Input
               style={{ flex: 1, borderRadius: 8 }}
               value={splitCardRef}
-              onChange={(e) => setSplitCardRef(e.target.value)}
+              onChange={e => setSplitCardRef(e.target.value)}
               placeholder="Transaction ID"
             />
           </div>
 
           {/* Split balance check */}
-          {(splitCash > 0 || splitCard > 0) && (() => {
-            const diff = Math.abs(splitCash + splitCard - grandTotal);
-            if (diff > 0.01) {
+          {(splitCash > 0 || splitCard > 0) &&
+            (() => {
+              const diff = Math.abs(splitCash + splitCard - grandTotal);
+              if (diff > 0.01) {
+                return (
+                  <Alert
+                    type={
+                      splitCash + splitCard < grandTotal ? "warning" : "error"
+                    }
+                    message={`${t.splitRemaining}: $${(grandTotal - splitCash - splitCard).toFixed(2)}`}
+                    banner
+                    style={{ borderRadius: 8, fontSize: 11 }}
+                  />
+                );
+              }
               return (
                 <Alert
-                  type={splitCash + splitCard < grandTotal ? "warning" : "error"}
-                  message={`${t.splitRemaining}: $${(grandTotal - splitCash - splitCard).toFixed(2)}`}
+                  type="success"
+                  message={t.splitMatch}
                   banner
                   style={{ borderRadius: 8, fontSize: 11 }}
                 />
               );
-            }
-            return (
-              <Alert
-                type="success"
-                message={t.splitMatch}
-                banner
-                style={{ borderRadius: 8, fontSize: 11 }}
-              />
-            );
-          })()}
+            })()}
         </div>
       )}
     </div>

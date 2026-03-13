@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Button, InputNumber, Modal, Popconfirm, Tooltip, message, theme as antTheme } from "antd";
+import {
+  Button,
+  InputNumber,
+  Modal,
+  Popconfirm,
+  Tooltip,
+  message,
+  theme as antTheme,
+} from "antd";
 import {
   TeamOutlined,
   SwapOutlined,
@@ -8,7 +16,12 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import type { RestaurantTable } from "../../data/mockRestaurant";
-import { occupyTable, releaseTable, updateTable, transferTable } from "../../services/tableService";
+import {
+  occupyTable,
+  releaseTable,
+  updateTable,
+  transferTable,
+} from "../../services/tableService";
 import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../../i18n/translations";
 
@@ -19,7 +32,11 @@ interface TableActionsProps {
   availableTables?: RestaurantTable[];
 }
 
-export function TableActions({ table, onUpdated, availableTables }: TableActionsProps) {
+export function TableActions({
+  table,
+  onUpdated,
+  availableTables,
+}: TableActionsProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
@@ -85,7 +102,12 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
   async function handleTransfer(toTable: RestaurantTable) {
     setLoading(true);
     try {
-      await transferTable(table.id, toTable.id, table.guestCount ?? 1, table.orderTotal ?? 0);
+      await transferTable(
+        table.id,
+        toTable.id,
+        table.guestCount ?? 1,
+        table.orderTotal ?? 0
+      );
       message.success(`Transferred to ${toTable.name}`);
       setTransferOpen(false);
       onUpdated();
@@ -100,7 +122,7 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
     <>
       <div
         style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 8 }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         {/* Occupied table actions */}
         {table.status === "occupied" && (
@@ -109,7 +131,10 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
               <Button
                 size="small"
                 icon={<EditOutlined />}
-                onClick={() => { setGuestCount(table.guestCount ?? 1); setEditGuestsOpen(true); }}
+                onClick={() => {
+                  setGuestCount(table.guestCount ?? 1);
+                  setEditGuestsOpen(true);
+                }}
                 style={{ borderRadius: 6, fontSize: 10, height: 26, flex: 1 }}
               >
                 {t.editGuests}
@@ -121,7 +146,14 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
                   size="small"
                   icon={<SwapOutlined />}
                   onClick={() => setTransferOpen(true)}
-                  style={{ borderRadius: 6, fontSize: 10, height: 26, color: "#F59E0B", borderColor: "#F59E0B40", flex: 1 }}
+                  style={{
+                    borderRadius: 6,
+                    fontSize: 10,
+                    height: 26,
+                    color: "#F59E0B",
+                    borderColor: "#F59E0B40",
+                    flex: 1,
+                  }}
                 >
                   {t.transferTable}
                 </Button>
@@ -154,7 +186,14 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
               icon={<LockOutlined />}
               onClick={handleReserve}
               loading={loading}
-              style={{ borderRadius: 6, fontSize: 10, height: 26, color: "#6366F1", borderColor: "#6366F140", flex: 1 }}
+              style={{
+                borderRadius: 6,
+                fontSize: 10,
+                height: 26,
+                color: "#6366F1",
+                borderColor: "#6366F140",
+                flex: 1,
+              }}
             >
               {t.reserveTable}
             </Button>
@@ -168,7 +207,14 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
             icon={<UnlockOutlined />}
             onClick={handleCancelReservation}
             loading={loading}
-            style={{ borderRadius: 6, fontSize: 10, height: 26, color: "#EF4444", borderColor: "#EF444440", flex: 1 }}
+            style={{
+              borderRadius: 6,
+              fontSize: 10,
+              height: 26,
+              color: "#EF4444",
+              borderColor: "#EF444440",
+              flex: 1,
+            }}
           >
             {t.cancelReservation}
           </Button>
@@ -182,14 +228,19 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
         title={
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <TeamOutlined style={{ color: token.colorPrimary }} />
-            <span>{t.editGuests} — {table.name}</span>
+            <span>
+              {t.editGuests} — {table.name}
+            </span>
           </div>
         }
         width={340}
         centered
         footer={
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <Button onClick={() => setEditGuestsOpen(false)} style={{ borderRadius: 8 }}>
+            <Button
+              onClick={() => setEditGuestsOpen(false)}
+              style={{ borderRadius: 8 }}
+            >
               {t.cancel}
             </Button>
             <Button
@@ -204,18 +255,32 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
         }
       >
         <div style={{ padding: "16px 0" }}>
-          <label style={{ fontSize: 13, fontWeight: 600, color: token.colorText, display: "block", marginBottom: 8 }}>
+          <label
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              color: token.colorText,
+              display: "block",
+              marginBottom: 8,
+            }}
+          >
             {t.numberOfGuests}
           </label>
           <InputNumber
             min={1}
             max={table.capacity}
             value={guestCount}
-            onChange={(v) => setGuestCount(v ?? 1)}
+            onChange={v => setGuestCount(v ?? 1)}
             style={{ width: "100%", borderRadius: 8 }}
             size="large"
           />
-          <div style={{ marginTop: 6, fontSize: 11, color: token.colorTextSecondary }}>
+          <div
+            style={{
+              marginTop: 6,
+              fontSize: 11,
+              color: token.colorTextSecondary,
+            }}
+          >
             {t.tableCapacity(table.capacity)}
           </div>
         </div>
@@ -228,15 +293,26 @@ export function TableActions({ table, onUpdated, availableTables }: TableActions
         title={
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <SwapOutlined style={{ color: "#F59E0B" }} />
-            <span>{t.transferTable} — {table.name}</span>
+            <span>
+              {t.transferTable} — {table.name}
+            </span>
           </div>
         }
         width={400}
         centered
         footer={null}
       >
-        <div style={{ padding: "8px 0", display: "flex", flexDirection: "column", gap: 6, maxHeight: 300, overflowY: "auto" }}>
-          {availableTables?.map((tbl) => (
+        <div
+          style={{
+            padding: "8px 0",
+            display: "flex",
+            flexDirection: "column",
+            gap: 6,
+            maxHeight: 300,
+            overflowY: "auto",
+          }}
+        >
+          {availableTables?.map(tbl => (
             <Button
               key={tbl.id}
               onClick={() => handleTransfer(tbl)}

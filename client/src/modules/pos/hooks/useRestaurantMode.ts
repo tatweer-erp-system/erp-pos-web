@@ -16,16 +16,16 @@ export interface RestaurantModeState {
  * Wrap restaurant-only UI with `if (!mode.isRestaurant) return null;`
  */
 export function useRestaurantMode(): RestaurantModeState {
-  const restaurantMode          = usePOSStore((s) => s.restaurantMode);
-  const tableManagementEnabled  = usePOSStore((s) => s.tableManagementEnabled);
-  const courseManagementEnabled = usePOSStore((s) => s.courseManagementEnabled);
-  const kitchenPrintingEnabled  = usePOSStore((s) => s.kitchenPrintingEnabled);
-  const autoSendKitchen         = usePOSStore((s) => s.autoSendKitchen);
-  const allowTakeAway           = usePOSStore((s) => s.allowTakeAway);
-  const defaultGuests           = usePOSStore((s) => s.defaultGuests);
+  const restaurantMode = usePOSStore(s => s.restaurantMode);
+  const tableManagementEnabled = usePOSStore(s => s.tableManagementEnabled);
+  const courseManagementEnabled = usePOSStore(s => s.courseManagementEnabled);
+  const kitchenPrintingEnabled = usePOSStore(s => s.kitchenPrintingEnabled);
+  const autoSendKitchen = usePOSStore(s => s.autoSendKitchen);
+  const allowTakeAway = usePOSStore(s => s.allowTakeAway);
+  const defaultGuests = usePOSStore(s => s.defaultGuests);
 
   return {
-    isRestaurant:           restaurantMode,
+    isRestaurant: restaurantMode,
     tableManagementEnabled,
     courseManagementEnabled,
     kitchenPrintingEnabled,

@@ -6,17 +6,17 @@ Data access layer for the POS module. All services are currently **mocked** with
 
 ## Services Overview
 
-| File | Domain | Key Functions |
-|------|--------|---------------|
-| `posService.ts` | Core orders & products | `submitOrder`, `getProducts`, `getProductByBarcode` |
-| `customerService.ts` | Customer CRM | `searchCustomers`, `createCustomer`, `updateLoyaltyPoints` |
-| `voucherService.ts` | Promotional discounts | `validateVoucher`, `redeemVoucher` |
-| `giftCardService.ts` | Gift card lifecycle | `checkBalance`, `issueGiftCard`, `redeemGiftCard` |
-| `cashierAuthService.ts` | Terminal access | `validatePIN`, `getCashiers`, `recordLogin` |
-| `tableService.ts` | Restaurant tables | `getTables`, `occupyTable`, `releaseTable`, `updateTableTotal` |
-| `kitchenService.ts` | Kitchen tickets | `sendToKitchen`, `getActiveTickets`, `markTicketComplete` |
-| `offlineService.ts` | IndexedDB persistence | `cacheProducts`, `queueTransaction`, `getQueuedTransactions` |
-| `syncService.ts` | Offline → Online sync | `syncPendingTransactions`, `getSyncStatus` |
+| File                    | Domain                 | Key Functions                                                  |
+| ----------------------- | ---------------------- | -------------------------------------------------------------- |
+| `posService.ts`         | Core orders & products | `submitOrder`, `getProducts`, `getProductByBarcode`            |
+| `customerService.ts`    | Customer CRM           | `searchCustomers`, `createCustomer`, `updateLoyaltyPoints`     |
+| `voucherService.ts`     | Promotional discounts  | `validateVoucher`, `redeemVoucher`                             |
+| `giftCardService.ts`    | Gift card lifecycle    | `checkBalance`, `issueGiftCard`, `redeemGiftCard`              |
+| `cashierAuthService.ts` | Terminal access        | `validatePIN`, `getCashiers`, `recordLogin`                    |
+| `tableService.ts`       | Restaurant tables      | `getTables`, `occupyTable`, `releaseTable`, `updateTableTotal` |
+| `kitchenService.ts`     | Kitchen tickets        | `sendToKitchen`, `getActiveTickets`, `markTicketComplete`      |
+| `offlineService.ts`     | IndexedDB persistence  | `cacheProducts`, `queueTransaction`, `getQueuedTransactions`   |
+| `syncService.ts`        | Offline → Online sync  | `syncPendingTransactions`, `getSyncStatus`                     |
 
 ---
 
@@ -56,12 +56,12 @@ updateLoyaltyPoints(customerId: string, points: number): Promise<void>
 
 **Loyalty Tiers** (from `mockCustomers.ts`):
 
-| Tier | Points Range | Earn Ratio | Redeem Ratio |
-|------|-------------|------------|--------------|
-| Bronze | 0 – 500 | 0.10 pts/$ | $0.10/pt |
-| Silver | 501 – 2,000 | 0.15 pts/$ | $0.12/pt |
-| Gold | 2,001 – 5,000 | 0.20 pts/$ | $0.15/pt |
-| Platinum | 5,001+ | 0.25 pts/$ | $0.20/pt |
+| Tier     | Points Range  | Earn Ratio | Redeem Ratio |
+| -------- | ------------- | ---------- | ------------ |
+| Bronze   | 0 – 500       | 0.10 pts/$ | $0.10/pt     |
+| Silver   | 501 – 2,000   | 0.15 pts/$ | $0.12/pt     |
+| Gold     | 2,001 – 5,000 | 0.20 pts/$ | $0.15/pt     |
+| Platinum | 5,001+        | 0.25 pts/$ | $0.20/pt     |
 
 ---
 
@@ -78,6 +78,7 @@ redeemVoucher(code: string, orderId: string): Promise<void>
 ```
 
 **Voucher types**:
+
 - `percent` — Percentage discount (e.g., 10% off)
 - `fixed` — Fixed dollar amount (e.g., $15 off)
 - Vouchers may have expiry dates and usage limits
@@ -106,6 +107,7 @@ redeemGiftCard(code: string, amount: number): Promise<RedeemResult>
 **Mock denominations**: $10, $25, $50, $100 (configurable active/inactive status)
 
 **GiftCard shape**:
+
 ```ts
 {
   code: string;           // Generated unique code (e.g., "GC-A1B2C3D4")
@@ -135,6 +137,7 @@ recordLogin(cashierId: string): Promise<void>
 ```
 
 **Cashier roles**:
+
 - `cashier` — Standard POS operations
 - `senior_cashier` — Can apply higher discounts
 - `manager` — Can approve overrides, access reports
@@ -202,6 +205,7 @@ dequeueTransaction(queueId: string): Promise<void>
 ```
 
 **IndexedDB stores**:
+
 - `products` — Cached product catalog
 - `transactions` — Pending orders queue
 - `metadata` — Last sync timestamps, version info
@@ -221,6 +225,7 @@ getSyncStatus(): { pending: number; failed: number; lastSync: string | null }
 ```
 
 **Sync flow**:
+
 1. `navigator.onLine` returns true
 2. `useOfflineSync` hook triggers `syncPendingTransactions()`
 3. Each queued transaction is submitted via `posService.submitOrder()`
@@ -235,6 +240,7 @@ getSyncStatus(): { pending: number; failed: number; lastSync: string | null }
 When the backend is ready:
 
 1. Replace mock data in each service with actual HTTP calls:
+
    ```ts
    // Before (mock)
    await new Promise(resolve => setTimeout(resolve, 200));

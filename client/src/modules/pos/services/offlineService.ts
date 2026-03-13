@@ -102,7 +102,12 @@ export async function resetFailedToRetry(): Promise<void> {
   const tx = db.transaction("transactions", "readwrite");
   for (const t of all) {
     if (t.status === "failed") {
-      await tx.store.put({ ...t, status: "pending", retries: 0, errorMessage: undefined });
+      await tx.store.put({
+        ...t,
+        status: "pending",
+        retries: 0,
+        errorMessage: undefined,
+      });
     }
   }
   await tx.done;

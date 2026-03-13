@@ -1,6 +1,7 @@
 # erp-pos-web — Tatweer POS Web Client
 
 ## Quick Reference
+
 - **Package manager:** pnpm
 - **Dev server:** `pnpm dev` (Vite, port 4201)
 - **Build:** `pnpm build`
@@ -9,6 +10,7 @@
 - **Format:** `pnpm format`
 
 ## Git Branching
+
 - **Main branch:** `prod` (protected — never push directly)
 - **Branch prefixes:** `feat/`, `fix/`, `hotfix/`, `chore/`, `refactor/`
 - Branch names: lowercase, kebab-case (e.g., `feat/split-payment`)
@@ -17,6 +19,7 @@
 - Delete branches after merge
 
 ## Tech Stack
+
 - React 19 + TypeScript 5.6 + Vite 7
 - UI: Ant Design 6 + shadcn/ui (Radix UI) + Tailwind CSS 4
 - State: Zustand (POS store) + React Context (Auth, AppSettings) + TanStack React Query 5
@@ -30,6 +33,7 @@
 - i18n: Custom `usePOSTranslations(lang)` — English + Arabic (RTL)
 
 ## Project Structure
+
 ```
 client/src/
 ├── components/ui/        # 52 shadcn/ui primitive components
@@ -43,7 +47,8 @@ client/src/
 ```
 
 ## Key Conventions
-- **Naming:** Components → PascalCase, hooks → use*, constants → SCREAMING_SNAKE_CASE
+
+- **Naming:** Components → PascalCase, hooks → use\*, constants → SCREAMING_SNAKE_CASE
 - **Path alias:** `@/` maps to `client/src/`
 - **API calls:** Always through service layer, never directly in components
 - **Styling:** Tailwind utilities + Ant Design themed via AntProvider bridge
@@ -53,11 +58,13 @@ client/src/
 - **RTL:** Use CSS logical properties (`insetInlineEnd`, `textAlign: "end"`) and `dir` attribute
 
 ## Auth & Roles
+
 - 6 roles: SuperAdmin, Admin, Manager, Accountant, Viewer, Cashier
 - Mock auth with localStorage persistence (backend-ready service layer)
 - PIN-based session lock for POS cashiers
 
 ## Theme
+
 - 5 presets (Ocean, Forest, Sunset, Amethyst, Slate) × light/dark modes
 - CSS variables on `:root` drive Tailwind + Ant Design theming
 - Settings persisted via AppSettingsContext

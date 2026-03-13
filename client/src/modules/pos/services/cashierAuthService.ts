@@ -13,19 +13,63 @@ export interface Cashier {
 
 // ─── Mock cashier roster ──────────────────────────────────────────────────────
 const CASHIERS: Cashier[] = [
-  { id: "c1",  name: "Alex Johnson",       role: "cashier",        roleLabel: "Cashier",        initials: "AJ", color: "#0066CC", pinSet: true, lastLogin: "Today, 09:15 AM" },
-  { id: "c2",  name: "Sara Ahmed",         role: "cashier",        roleLabel: "Cashier",        initials: "SA", color: "#10B981", pinSet: true, lastLogin: "Today, 08:30 AM" },
-  { id: "c3",  name: "Mohammed Al-Rashid", role: "senior_cashier", roleLabel: "Senior Cashier", initials: "MR", color: "#F59E0B", pinSet: true, lastLogin: "Yesterday" },
-  { id: "c4",  name: "Layla Hassan",       role: "cashier",        roleLabel: "Cashier",        initials: "LH", color: "#EC4899", pinSet: true },
-  { id: "mgr", name: "Omar Al-Manager",    role: "manager",        roleLabel: "Manager",        initials: "OM", color: "#A855F7", pinSet: true, lastLogin: "Today, 07:00 AM" },
+  {
+    id: "c1",
+    name: "Alex Johnson",
+    role: "cashier",
+    roleLabel: "Cashier",
+    initials: "AJ",
+    color: "#0066CC",
+    pinSet: true,
+    lastLogin: "Today, 09:15 AM",
+  },
+  {
+    id: "c2",
+    name: "Sara Ahmed",
+    role: "cashier",
+    roleLabel: "Cashier",
+    initials: "SA",
+    color: "#10B981",
+    pinSet: true,
+    lastLogin: "Today, 08:30 AM",
+  },
+  {
+    id: "c3",
+    name: "Mohammed Al-Rashid",
+    role: "senior_cashier",
+    roleLabel: "Senior Cashier",
+    initials: "MR",
+    color: "#F59E0B",
+    pinSet: true,
+    lastLogin: "Yesterday",
+  },
+  {
+    id: "c4",
+    name: "Layla Hassan",
+    role: "cashier",
+    roleLabel: "Cashier",
+    initials: "LH",
+    color: "#EC4899",
+    pinSet: true,
+  },
+  {
+    id: "mgr",
+    name: "Omar Al-Manager",
+    role: "manager",
+    roleLabel: "Manager",
+    initials: "OM",
+    color: "#A855F7",
+    pinSet: true,
+    lastLogin: "Today, 07:00 AM",
+  },
 ];
 
 // ─── PIN storage — all PINs default to "0000" ─────────────────────────────────
 const PIN_MAP: Record<string, string> = {
-  c1:  "0000",
-  c2:  "0000",
-  c3:  "0000",
-  c4:  "0000",
+  c1: "0000",
+  c2: "0000",
+  c3: "0000",
+  c4: "0000",
   mgr: "0000",
 };
 
@@ -33,7 +77,7 @@ const PIN_MAP: Record<string, string> = {
 const API_DELAY_MS = 600;
 
 function delay(ms = API_DELAY_MS): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // ─── Sync helpers (internal / non-network usage) ──────────────────────────────
@@ -43,11 +87,11 @@ export function getCashiers(): Cashier[] {
 }
 
 export function getCashier(id: string): Cashier | undefined {
-  return CASHIERS.find((c) => c.id === id);
+  return CASHIERS.find(c => c.id === id);
 }
 
 export function getManagers(): Cashier[] {
-  return CASHIERS.filter((c) => c.role === "manager");
+  return CASHIERS.filter(c => c.role === "manager");
 }
 
 export function cashierHasPIN(cashierId: string): boolean {
@@ -66,7 +110,10 @@ export async function apiGetCashiers(): Promise<Cashier[]> {
  * Validate a PIN against the server (simulates POST /api/pos/auth/validate-pin).
  * Resolves to `true` on match, `false` on mismatch.
  */
-export async function apiValidatePIN(cashierId: string, pin: string): Promise<boolean> {
+export async function apiValidatePIN(
+  cashierId: string,
+  pin: string
+): Promise<boolean> {
   await delay();
   // Fall back to "0000" for any user not in the PIN map (e.g. ERP users)
   const stored = PIN_MAP[cashierId] ?? "0000";
@@ -79,7 +126,7 @@ export async function apiValidatePIN(cashierId: string, pin: string): Promise<bo
  */
 export async function apiRecordLogin(cashierId: string): Promise<void> {
   await delay(200);
-  const cashier = CASHIERS.find((c) => c.id === cashierId);
+  const cashier = CASHIERS.find(c => c.id === cashierId);
   if (cashier) {
     cashier.lastLogin = new Date().toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -101,26 +148,40 @@ export interface LoginResult {
  * Full login request (simulates POST /api/pos/auth/login).
  * Validates PIN and records login on success.
  */
-export async function apiLogin(cashierId: string, pin: string, maxAttempts = 3): Promise<LoginResult> {
+export async function apiLogin(
+  cashierId: string,
+  pin: string,
+  maxAttempts = 3
+): Promise<LoginResult> {
   await delay();
-  const cashier = CASHIERS.find((c) => c.id === cashierId);
+  const cashier = CASHIERS.find(c => c.id === cashierId);
   if (!cashier) return { success: false, error: "Cashier not found." };
 
   const ok = PIN_MAP[cashierId] === pin;
   if (ok) {
-    cashier.lastLogin = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+    cashier.lastLogin = new Date().toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     return { success: true, cashier };
   }
-  return { success: false, error: "Incorrect PIN.", attemptsLeft: maxAttempts - 1 };
+  return {
+    success: false,
+    error: "Incorrect PIN.",
+    attemptsLeft: maxAttempts - 1,
+  };
 }
 
 /**
  * Reset a cashier's PIN (simulates PUT /api/pos/cashiers/:id/pin).
  */
-export async function apiSetPIN(cashierId: string, newPin: string): Promise<void> {
+export async function apiSetPIN(
+  cashierId: string,
+  newPin: string
+): Promise<void> {
   await delay();
   PIN_MAP[cashierId] = newPin;
-  const cashier = CASHIERS.find((c) => c.id === cashierId);
+  const cashier = CASHIERS.find(c => c.id === cashierId);
   if (cashier) cashier.pinSet = true;
 }
 
@@ -133,7 +194,7 @@ export function validatePIN(cashierId: string, pin: string): boolean {
 
 /** @deprecated Use apiRecordLogin instead */
 export function recordLogin(cashierId: string): void {
-  const cashier = CASHIERS.find((c) => c.id === cashierId);
+  const cashier = CASHIERS.find(c => c.id === cashierId);
   if (cashier) {
     cashier.lastLogin = new Date().toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -145,6 +206,6 @@ export function recordLogin(cashierId: string): void {
 /** @deprecated Use apiSetPIN instead */
 export function setPIN(cashierId: string, newPin: string): void {
   PIN_MAP[cashierId] = newPin;
-  const cashier = CASHIERS.find((c) => c.id === cashierId);
+  const cashier = CASHIERS.find(c => c.id === cashierId);
   if (cashier) cashier.pinSet = true;
 }

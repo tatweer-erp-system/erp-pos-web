@@ -11,19 +11,23 @@ const MAX_RETRIES = 3;
 
 export async function getPendingCount(): Promise<number> {
   const all = await getAllTransactions();
-  return all.filter((t) => t.status === "pending" || t.status === "failed").length;
+  return all.filter(t => t.status === "pending" || t.status === "failed")
+    .length;
 }
 
 export async function getFailedCount(): Promise<number> {
   const all = await getAllTransactions();
-  return all.filter((t) => t.status === "failed" && t.retries >= MAX_RETRIES).length;
+  return all.filter(t => t.status === "failed" && t.retries >= MAX_RETRIES)
+    .length;
 }
 
 export async function syncAllPending(
   onProgress?: (done: number, total: number) => void
 ): Promise<{ synced: number; failed: number }> {
   const all = await getAllTransactions();
-  const pending = all.filter((t) => t.status === "pending" || t.status === "syncing");
+  const pending = all.filter(
+    t => t.status === "pending" || t.status === "syncing"
+  );
   let synced = 0;
   let failed = 0;
 

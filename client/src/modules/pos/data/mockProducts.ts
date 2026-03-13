@@ -29,7 +29,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567890",
     unit: "pcs",
     color: "#0066CC",
-    image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P002",
@@ -40,7 +41,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567891",
     unit: "pcs",
     color: "#6366F1",
-    image: "https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P003",
@@ -51,7 +53,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567892",
     unit: "pcs",
     color: "#8B5CF6",
-    image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P004",
@@ -62,7 +65,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567893",
     unit: "bottle",
     color: "#06B6D4",
-    image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P005",
@@ -73,7 +77,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567894",
     unit: "pack",
     color: "#92400E",
-    image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P006",
@@ -84,7 +89,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567895",
     unit: "can",
     color: "#10B981",
-    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P007",
@@ -95,7 +101,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567896",
     unit: "ream",
     color: "#F59E0B",
-    image: "https://images.unsplash.com/photo-1568667256549-094345857637?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1568667256549-094345857637?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P008",
@@ -106,7 +113,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567897",
     unit: "pack",
     color: "#EF4444",
-    image: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P009",
@@ -127,7 +135,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567899",
     unit: "pcs",
     color: "#0EA5E9",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P011",
@@ -138,7 +147,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567900",
     unit: "pcs",
     color: "#475569",
-    image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P012",
@@ -159,7 +169,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567902",
     unit: "bottle",
     color: "#22C55E",
-    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P014",
@@ -170,7 +181,8 @@ export const mockProducts: Product[] = [
     barcode: "4901234567903",
     unit: "box",
     color: "#A855F7",
-    image: "https://images.unsplash.com/photo-1584634428259-b1749803b3c2?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1584634428259-b1749803b3c2?w=200&h=200&fit=crop&auto=format",
   },
   {
     id: "P015",
@@ -181,6 +193,7 @@ export const mockProducts: Product[] = [
     barcode: "4901234567904",
     unit: "bottle",
     color: "#EC4899",
-    image: "https://images.unsplash.com/photo-1556227834-09f1de7a7d14?w=200&h=200&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1556227834-09f1de7a7d14?w=200&h=200&fit=crop&auto=format",
   },
 ];

@@ -8,7 +8,7 @@ import { usePOSStore } from "../store/posStore";
 export function useProducts() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const isOnline = usePOSStore((s) => s.isOnline);
+  const isOnline = usePOSStore(s => s.isOnline);
 
   const { data: allProducts = [], isLoading } = useQuery({
     queryKey: ["pos-products", isOnline],
@@ -25,14 +25,12 @@ export function useProducts() {
   const filtered = useMemo(() => {
     let list = allProducts;
     if (activeCategory !== "All") {
-      list = list.filter((p) => p.category === activeCategory);
+      list = list.filter(p => p.category === activeCategory);
     }
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.barcode.includes(q)
+        p => p.name.toLowerCase().includes(q) || p.barcode.includes(q)
       );
     }
     return list;

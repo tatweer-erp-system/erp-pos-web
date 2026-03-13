@@ -1,5 +1,14 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Input, Spin, Button, Modal, Form, message, theme as antTheme, Tooltip } from "antd";
+import {
+  Input,
+  Spin,
+  Button,
+  Modal,
+  Form,
+  message,
+  theme as antTheme,
+  Tooltip,
+} from "antd";
 import {
   UserOutlined,
   PhoneOutlined,
@@ -8,7 +17,10 @@ import {
   SearchOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
-import { searchCustomers, createCustomer } from "../../services/customerService";
+import {
+  searchCustomers,
+  createCustomer,
+} from "../../services/customerService";
 import { usePOSStore } from "../../store/posStore";
 import type { Customer } from "../../data/mockCustomers";
 import { getTier, WALK_IN_CUSTOMER } from "../../data/mockCustomers";
@@ -23,8 +35,8 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
-  const attachedCustomer = usePOSStore((s) => s.attachedCustomer);
-  const setAttachedCustomer = usePOSStore((s) => s.setAttachedCustomer);
+  const attachedCustomer = usePOSStore(s => s.attachedCustomer);
+  const setAttachedCustomer = usePOSStore(s => s.setAttachedCustomer);
 
   const isWalkIn = attachedCustomer?.id === WALK_IN_CUSTOMER.id;
 
@@ -40,7 +52,11 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const doSearch = useCallback(async (q: string) => {
-    if (!q.trim()) { setResults([]); setShowDropdown(false); return; }
+    if (!q.trim()) {
+      setResults([]);
+      setShowDropdown(false);
+      return;
+    }
     setIsSearching(true);
     try {
       const found = await searchCustomers(q);
@@ -85,7 +101,10 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
   // Close dropdown on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setShowDropdown(false);
       }
     }
@@ -105,9 +124,11 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
           <Input
             placeholder={t.searchCustomerPlaceholder}
             prefix={
-              isSearching
-                ? <Spin size="small" />
-                : <UserOutlined style={{ color: token.colorTextPlaceholder }} />
+              isSearching ? (
+                <Spin size="small" />
+              ) : (
+                <UserOutlined style={{ color: token.colorTextPlaceholder }} />
+              )
             }
             suffix={
               <Tooltip title={t.quickAddCustomer}>
@@ -125,7 +146,11 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
             onFocus={() => query && setShowDropdown(true)}
             style={{ borderRadius: 10, height: 40, flex: 1 }}
             allowClear
-            onClear={() => { setQuery(""); setResults([]); setShowDropdown(false); }}
+            onClear={() => {
+              setQuery("");
+              setResults([]);
+              setShowDropdown(false);
+            }}
           />
           {isWalkIn ? (
             <Button
@@ -168,22 +193,32 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
 
         {/* Results dropdown */}
         {showDropdown && (
-          <div style={{
-            position: "absolute",
-            top: "calc(100% + 4px)",
-            left: 0,
-            right: 0,
-            zIndex: 1000,
-            background: token.colorBgContainer,
-            border: `1px solid ${token.colorBorderSecondary}`,
-            borderRadius: 10,
-            boxShadow: `0 8px 24px rgba(0,0,0,0.12)`,
-            overflow: "hidden",
-            maxHeight: 280,
-            overflowY: "auto",
-          }}>
+          <div
+            style={{
+              position: "absolute",
+              top: "calc(100% + 4px)",
+              left: 0,
+              right: 0,
+              zIndex: 1000,
+              background: token.colorBgContainer,
+              border: `1px solid ${token.colorBorderSecondary}`,
+              borderRadius: 10,
+              boxShadow: `0 8px 24px rgba(0,0,0,0.12)`,
+              overflow: "hidden",
+              maxHeight: 280,
+              overflowY: "auto",
+            }}
+          >
             {results.length === 0 ? (
-              <div style={{ padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+              <div
+                style={{
+                  padding: "14px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 10,
+                }}
+              >
                 <span style={{ fontSize: 12, color: token.colorTextSecondary }}>
                   {t.noCustomerFound}
                 </span>
@@ -191,14 +226,18 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
                   size="small"
                   type="primary"
                   icon={<PlusOutlined />}
-                  onClick={() => { setShowDropdown(false); setAddModalOpen(true); addForm.setFieldValue("phone", query); }}
+                  onClick={() => {
+                    setShowDropdown(false);
+                    setAddModalOpen(true);
+                    addForm.setFieldValue("phone", query);
+                  }}
                   style={{ borderRadius: 8, fontSize: 11 }}
                 >
                   {t.quickAddCustomer}
                 </Button>
               </div>
             ) : (
-              results.map((c) => {
+              results.map(c => {
                 const tier = getTier(c.loyaltyPoints);
                 return (
                   <div
@@ -213,53 +252,87 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
                       gap: 10,
                       transition: "background 0.12s",
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = token.colorFillAlter; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = token.colorFillAlter;
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = "transparent";
+                    }}
                   >
                     {/* Avatar */}
-                    <div style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: "50%",
-                      background: `linear-gradient(135deg, ${tier.color}44, ${tier.color}88)`,
-                      border: `2px solid ${tier.color}`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 13,
-                      fontWeight: 800,
-                      color: token.colorText,
-                      flexShrink: 0,
-                    }}>
+                    <div
+                      style={{
+                        width: 34,
+                        height: 34,
+                        borderRadius: "50%",
+                        background: `linear-gradient(135deg, ${tier.color}44, ${tier.color}88)`,
+                        border: `2px solid ${tier.color}`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 13,
+                        fontWeight: 800,
+                        color: token.colorText,
+                        flexShrink: 0,
+                      }}
+                    >
                       {c.name.charAt(0).toUpperCase()}
                     </div>
 
                     {/* Info */}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: token.colorText, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: token.colorText,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {c.name}
                       </div>
-                      <div style={{ fontSize: 11, color: token.colorTextSecondary, display: "flex", alignItems: "center", gap: 6, marginTop: 1 }}>
-                        <PhoneOutlined style={{ fontSize: 9 }} />{c.phone}
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: token.colorTextSecondary,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                          marginTop: 1,
+                        }}
+                      >
+                        <PhoneOutlined style={{ fontSize: 9 }} />
+                        {c.phone}
                       </div>
                     </div>
 
                     {/* Tier + points */}
                     <div style={{ textAlign: "end", flexShrink: 0 }}>
-                      <div style={{
-                        fontSize: 10, fontWeight: 700,
-                        color: tier.color,
-                        background: `${tier.color}18`,
-                        border: `1px solid ${tier.color}40`,
-                        borderRadius: 6,
-                        padding: "1px 6px",
-                        display: "inline-block",
-                        letterSpacing: "0.04em",
-                        textTransform: "uppercase",
-                      }}>
+                      <div
+                        style={{
+                          fontSize: 10,
+                          fontWeight: 700,
+                          color: tier.color,
+                          background: `${tier.color}18`,
+                          border: `1px solid ${tier.color}40`,
+                          borderRadius: 6,
+                          padding: "1px 6px",
+                          display: "inline-block",
+                          letterSpacing: "0.04em",
+                          textTransform: "uppercase",
+                        }}
+                      >
                         {tier.name}
                       </div>
-                      <div style={{ fontSize: 11, color: token.colorTextSecondary, marginTop: 2 }}>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: token.colorTextSecondary,
+                          marginTop: 2,
+                        }}
+                      >
                         {c.loyaltyPoints.toLocaleString()} pts
                       </div>
                     </div>
@@ -274,31 +347,52 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
       {/* Quick Add Customer Modal */}
       <Modal
         open={addModalOpen}
-        onCancel={() => { setAddModalOpen(false); addForm.resetFields(); }}
+        onCancel={() => {
+          setAddModalOpen(false);
+          addForm.resetFields();
+        }}
         title={
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{
-              width: 28, height: 28, borderRadius: 8,
-              background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimary}cc)`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimary}cc)`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <UserOutlined style={{ color: "#fff", fontSize: 13 }} />
             </div>
-            <span style={{ fontSize: 14, fontWeight: 700 }}>{t.quickAddCustomer}</span>
+            <span style={{ fontSize: 14, fontWeight: 700 }}>
+              {t.quickAddCustomer}
+            </span>
           </div>
         }
         width={isMobile ? "95vw" : 420}
         centered
         footer={
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-            <Button onClick={() => { setAddModalOpen(false); addForm.resetFields(); }} style={{ borderRadius: 8 }}>
+            <Button
+              onClick={() => {
+                setAddModalOpen(false);
+                addForm.resetFields();
+              }}
+              style={{ borderRadius: 8 }}
+            >
               {t.cancel}
             </Button>
             <Button
               type="primary"
               loading={addLoading}
               onClick={handleQuickAdd}
-              style={{ borderRadius: 8, background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryHover})`, border: "none" }}
+              style={{
+                borderRadius: 8,
+                background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryHover})`,
+                border: "none",
+              }}
             >
               {t.addAndAttach}
             </Button>
@@ -312,7 +406,9 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
             rules={[{ required: true, message: "Name is required" }]}
           >
             <Input
-              prefix={<UserOutlined style={{ color: token.colorTextPlaceholder }} />}
+              prefix={
+                <UserOutlined style={{ color: token.colorTextPlaceholder }} />
+              }
               placeholder="Customer full name"
               style={{ borderRadius: 8 }}
             />
@@ -323,14 +419,18 @@ export function CustomerSearch({ isMobile }: CustomerSearchProps) {
             rules={[{ required: true, message: "Phone is required" }]}
           >
             <Input
-              prefix={<PhoneOutlined style={{ color: token.colorTextPlaceholder }} />}
+              prefix={
+                <PhoneOutlined style={{ color: token.colorTextPlaceholder }} />
+              }
               placeholder="+1-555-0000"
               style={{ borderRadius: 8 }}
             />
           </Form.Item>
           <Form.Item name="email" label={t.email} style={{ marginBottom: 0 }}>
             <Input
-              prefix={<MailOutlined style={{ color: token.colorTextPlaceholder }} />}
+              prefix={
+                <MailOutlined style={{ color: token.colorTextPlaceholder }} />
+              }
               placeholder="customer@email.com"
               style={{ borderRadius: 8 }}
             />

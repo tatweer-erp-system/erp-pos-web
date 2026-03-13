@@ -13,14 +13,14 @@ import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../../i18n/translations";
 
 const ORDER_TYPE_ICON: Record<OrderType, React.ReactNode> = {
-  "dine-in":  <CoffeeOutlined />,
-  "takeaway": <ShoppingOutlined />,
-  "delivery": <CarOutlined />,
+  "dine-in": <CoffeeOutlined />,
+  takeaway: <ShoppingOutlined />,
+  delivery: <CarOutlined />,
 };
 const ORDER_TYPE_COLOR: Record<OrderType, string> = {
-  "dine-in":  "#3B82F6",
-  "takeaway": "#10B981",
-  "delivery": "#6366F1",
+  "dine-in": "#3B82F6",
+  takeaway: "#10B981",
+  delivery: "#6366F1",
 };
 
 interface OrderTabsBarProps {
@@ -33,14 +33,16 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
 
-  const orders          = usePOSStore((s) => s.orders);
-  const activeOrderIndex = usePOSStore((s) => s.activeOrderIndex);
-  const maxOrders       = usePOSStore((s) => s.maxOrders);
-  const addOrder        = usePOSStore((s) => s.addOrder);
-  const removeOrder     = usePOSStore((s) => s.removeOrder);
-  const switchOrder     = usePOSStore((s) => s.switchOrder);
+  const orders = usePOSStore(s => s.orders);
+  const activeOrderIndex = usePOSStore(s => s.activeOrderIndex);
+  const maxOrders = usePOSStore(s => s.maxOrders);
+  const addOrder = usePOSStore(s => s.addOrder);
+  const removeOrder = usePOSStore(s => s.removeOrder);
+  const switchOrder = usePOSStore(s => s.switchOrder);
 
-  const [confirmCloseIndex, setConfirmCloseIndex] = useState<number | null>(null);
+  const [confirmCloseIndex, setConfirmCloseIndex] = useState<number | null>(
+    null
+  );
 
   function handleCloseTab(index: number, e: React.MouseEvent) {
     e.stopPropagation();
@@ -63,18 +65,19 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
 
   return (
     <>
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 6,
-        padding: "5px 12px",
-        background: token.colorBgLayout,
-        borderBottom: `1px solid ${token.colorBorderSecondary}`,
-        overflowX: "auto",
-        flexShrink: 0,
-        scrollbarWidth: "none",
-      }}>
-
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "5px 12px",
+          background: token.colorBgLayout,
+          borderBottom: `1px solid ${token.colorBorderSecondary}`,
+          overflowX: "auto",
+          flexShrink: 0,
+          scrollbarWidth: "none",
+        }}
+      >
         {/* Order tabs */}
         {orders.map((order, i) => {
           const isActive = i === activeOrderIndex;
@@ -82,7 +85,10 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
             (sum, item) => sum + item.product.price * item.quantity,
             0
           );
-          const itemCount = order.cartItems.reduce((n, item) => n + item.quantity, 0);
+          const itemCount = order.cartItems.reduce(
+            (n, item) => n + item.quantity,
+            0
+          );
           const typeColor = ORDER_TYPE_COLOR[order.orderType];
 
           return (
@@ -97,9 +103,7 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
                 borderRadius: 10,
                 cursor: "pointer",
                 flexShrink: 0,
-                background: isActive
-                  ? token.colorBgContainer
-                  : "transparent",
+                background: isActive ? token.colorBgContainer : "transparent",
                 border: isActive
                   ? `1.5px solid ${typeColor}50`
                   : `1.5px solid transparent`,
@@ -107,82 +111,100 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
                 transition: "all 0.18s",
                 position: "relative",
               }}
-              onMouseEnter={(e) => {
+              onMouseEnter={e => {
                 if (!isActive) {
-                  (e.currentTarget as HTMLElement).style.background = `${token.colorFillAlter}`;
+                  (e.currentTarget as HTMLElement).style.background =
+                    `${token.colorFillAlter}`;
                 }
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={e => {
                 if (!isActive) {
-                  (e.currentTarget as HTMLElement).style.background = "transparent";
+                  (e.currentTarget as HTMLElement).style.background =
+                    "transparent";
                 }
               }}
             >
               {/* Active bottom accent */}
               {isActive && (
-                <div style={{
-                  position: "absolute",
-                  bottom: -1,
-                  left: 10,
-                  right: 10,
-                  height: 2.5,
-                  borderRadius: "2px 2px 0 0",
-                  background: `linear-gradient(90deg, ${typeColor}, ${typeColor}80)`,
-                }} />
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: -1,
+                    left: 10,
+                    right: 10,
+                    height: 2.5,
+                    borderRadius: "2px 2px 0 0",
+                    background: `linear-gradient(90deg, ${typeColor}, ${typeColor}80)`,
+                  }}
+                />
               )}
 
               {/* Order type icon with colored dot */}
-              <div style={{
-                width: 26,
-                height: 26,
-                borderRadius: 8,
-                background: isActive ? `${typeColor}15` : token.colorFillAlter,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 12,
-                color: isActive ? typeColor : token.colorTextTertiary,
-                transition: "all 0.18s",
-                flexShrink: 0,
-              }}>
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: 8,
+                  background: isActive
+                    ? `${typeColor}15`
+                    : token.colorFillAlter,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 12,
+                  color: isActive ? typeColor : token.colorTextTertiary,
+                  transition: "all 0.18s",
+                  flexShrink: 0,
+                }}
+              >
                 {ORDER_TYPE_ICON[order.orderType]}
               </div>
 
               {/* Label + total */}
               <div style={{ lineHeight: 1.2 }}>
-                <div style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  fontSize: 12,
-                  fontWeight: isActive ? 700 : 500,
-                  color: isActive ? token.colorText : token.colorTextSecondary,
-                  whiteSpace: "nowrap",
-                }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                    fontSize: 12,
+                    fontWeight: isActive ? 700 : 500,
+                    color: isActive
+                      ? token.colorText
+                      : token.colorTextSecondary,
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {t.order(i + 1)}
                   {itemCount > 0 && (
-                    <span style={{
-                      fontSize: 9,
-                      fontWeight: 800,
-                      color: "#fff",
-                      background: isActive ? typeColor : token.colorTextTertiary,
-                      borderRadius: 10,
-                      padding: "1px 5px",
-                      minWidth: 16,
-                      textAlign: "center",
-                      lineHeight: "14px",
-                    }}>
+                    <span
+                      style={{
+                        fontSize: 9,
+                        fontWeight: 800,
+                        color: "#fff",
+                        background: isActive
+                          ? typeColor
+                          : token.colorTextTertiary,
+                        borderRadius: 10,
+                        padding: "1px 5px",
+                        minWidth: 16,
+                        textAlign: "center",
+                        lineHeight: "14px",
+                      }}
+                    >
                       {itemCount}
                     </span>
                   )}
                 </div>
                 {!isMobile && (
-                  <div style={{
-                    fontSize: 11,
-                    color: isActive ? typeColor : token.colorTextQuaternary,
-                    fontWeight: isActive ? 600 : 400,
-                    marginTop: 1,
-                  }}>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: isActive ? typeColor : token.colorTextQuaternary,
+                      fontWeight: isActive ? 600 : 400,
+                      marginTop: 1,
+                    }}
+                  >
                     ${total.toFixed(2)}
                   </div>
                 )}
@@ -191,7 +213,7 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
               {/* Close button */}
               {orders.length > 1 && (
                 <div
-                  onClick={(e) => handleCloseTab(i, e)}
+                  onClick={e => handleCloseTab(i, e)}
                   style={{
                     width: 18,
                     height: 18,
@@ -204,13 +226,17 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
                     flexShrink: 0,
                     transition: "all 0.12s",
                   }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = `${token.colorError}15`;
-                    (e.currentTarget as HTMLElement).style.color = token.colorError;
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.background =
+                      `${token.colorError}15`;
+                    (e.currentTarget as HTMLElement).style.color =
+                      token.colorError;
                   }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
-                    (e.currentTarget as HTMLElement).style.color = token.colorTextQuaternary;
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.background =
+                      "transparent";
+                    (e.currentTarget as HTMLElement).style.color =
+                      token.colorTextQuaternary;
                   }}
                 >
                   <CloseOutlined style={{ fontSize: 8 }} />
@@ -271,7 +297,13 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
               size="small"
               icon={<MergeCellsOutlined />}
               onClick={onMergeClick}
-              style={{ borderRadius: 8, height: 28, width: 28, padding: 0, flexShrink: 0 }}
+              style={{
+                borderRadius: 8,
+                height: 28,
+                width: 28,
+                padding: 0,
+                flexShrink: 0,
+              }}
             />
           </Tooltip>
         )}
@@ -293,7 +325,10 @@ export function OrderTabsBar({ onMergeClick, isMobile }: OrderTabsBarProps) {
           {confirmCloseIndex !== null
             ? t.orderHasItems(
                 confirmCloseIndex + 1,
-                orders[confirmCloseIndex]?.cartItems.reduce((n, i) => n + i.quantity, 0) ?? 0
+                orders[confirmCloseIndex]?.cartItems.reduce(
+                  (n, i) => n + i.quantity,
+                  0
+                ) ?? 0
               )
             : ""}
         </div>

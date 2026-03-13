@@ -27,7 +27,13 @@ interface PINPadProps {
 
 const DIGITS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "back"];
 
-export function PINPad({ onComplete, error, loading, resetKey, maxLength = 4 }: PINPadProps) {
+export function PINPad({
+  onComplete,
+  error,
+  loading,
+  resetKey,
+  maxLength = 4,
+}: PINPadProps) {
   const { token } = antTheme.useToken();
   const [pin, setPin] = useState("");
   const [shaking, setShaking] = useState(false);
@@ -58,7 +64,7 @@ export function PINPad({ onComplete, error, loading, resetKey, maxLength = 4 }: 
   }
 
   function pressBack() {
-    setPin((p) => p.slice(0, -1));
+    setPin(p => p.slice(0, -1));
   }
 
   return (
@@ -66,13 +72,15 @@ export function PINPad({ onComplete, error, loading, resetKey, maxLength = 4 }: 
       <style>{shakeKeyframes}</style>
 
       {/* Dot indicators */}
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: 14,
-        marginBottom: 20,
-        animation: shaking ? "pin-shake 0.55s ease" : "none",
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 14,
+          marginBottom: 20,
+          animation: shaking ? "pin-shake 0.55s ease" : "none",
+        }}
+      >
         {Array.from({ length: maxLength }).map((_, i) => {
           const filled = i < pin.length;
           return (
@@ -93,27 +101,31 @@ export function PINPad({ onComplete, error, loading, resetKey, maxLength = 4 }: 
       </div>
 
       {/* Error message */}
-      <div style={{
-        height: 18,
-        textAlign: "center",
-        fontSize: 12,
-        color: "#EF4444",
-        fontWeight: 600,
-        marginBottom: 16,
-        opacity: error ? 1 : 0,
-        transition: "opacity 0.2s",
-      }}>
+      <div
+        style={{
+          height: 18,
+          textAlign: "center",
+          fontSize: 12,
+          color: "#EF4444",
+          fontWeight: 600,
+          marginBottom: 16,
+          opacity: error ? 1 : 0,
+          transition: "opacity 0.2s",
+        }}
+      >
         {error || " "}
       </div>
 
       {/* Digit grid */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: 10,
-        maxWidth: 240,
-        margin: "0 auto",
-      }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 10,
+          maxWidth: 240,
+          margin: "0 auto",
+        }}
+      >
         {DIGITS.map((d, i) => {
           if (d === "") return <div key={i} />;
 
@@ -127,12 +139,19 @@ export function PINPad({ onComplete, error, loading, resetKey, maxLength = 4 }: 
                 height: 56,
                 borderRadius: 12,
                 border: `1.5px solid ${token.colorBorderSecondary}`,
-                background: isBack ? token.colorFillAlter : token.colorBgContainer,
-                cursor: loading || (isBack && pin.length === 0) ? "default" : "pointer",
+                background: isBack
+                  ? token.colorFillAlter
+                  : token.colorBgContainer,
+                cursor:
+                  loading || (isBack && pin.length === 0)
+                    ? "default"
+                    : "pointer",
                 fontSize: isBack ? 18 : 22,
                 fontWeight: 700,
                 color: isBack
-                  ? (pin.length === 0 ? token.colorTextTertiary : token.colorTextSecondary)
+                  ? pin.length === 0
+                    ? token.colorTextTertiary
+                    : token.colorTextSecondary
                   : token.colorText,
                 display: "flex",
                 alignItems: "center",
@@ -141,14 +160,18 @@ export function PINPad({ onComplete, error, loading, resetKey, maxLength = 4 }: 
                 opacity: loading ? 0.5 : 1,
                 boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
               }}
-              onMouseDown={(e) => {
-                if (!loading) (e.currentTarget as HTMLButtonElement).style.transform = "scale(0.94)";
+              onMouseDown={e => {
+                if (!loading)
+                  (e.currentTarget as HTMLButtonElement).style.transform =
+                    "scale(0.94)";
               }}
-              onMouseUp={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+              onMouseUp={e => {
+                (e.currentTarget as HTMLButtonElement).style.transform =
+                  "scale(1)";
               }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLButtonElement).style.transform =
+                  "scale(1)";
               }}
             >
               {isBack ? <DeleteOutlined /> : d}

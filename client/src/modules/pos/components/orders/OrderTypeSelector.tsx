@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
 import { Select, Input, Button, theme as antTheme } from "antd";
-import { CoffeeOutlined, ShoppingOutlined, CarOutlined, TableOutlined, TeamOutlined, ClockCircleOutlined, EnvironmentOutlined, DollarOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  CoffeeOutlined,
+  ShoppingOutlined,
+  CarOutlined,
+  TableOutlined,
+  TeamOutlined,
+  ClockCircleOutlined,
+  EnvironmentOutlined,
+  DollarOutlined,
+  MinusOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { usePOSStore, type OrderType } from "../../store/posStore";
 import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../../i18n/translations";
@@ -10,10 +21,14 @@ import { WALK_IN_CUSTOMER } from "../../data/mockCustomers";
 import type { RestaurantTable } from "../../data/mockRestaurant";
 import { InputNumber } from "antd";
 
-const ORDER_TYPES: { key: OrderType; icon: React.ReactNode; labelKey: "dineIn" | "takeaway" | "delivery" }[] = [
-  { key: "dine-in",   icon: <CoffeeOutlined />,   labelKey: "dineIn" },
-  { key: "takeaway",  icon: <ShoppingOutlined />,  labelKey: "takeaway" },
-  { key: "delivery",  icon: <CarOutlined />,       labelKey: "delivery" },
+const ORDER_TYPES: {
+  key: OrderType;
+  icon: React.ReactNode;
+  labelKey: "dineIn" | "takeaway" | "delivery";
+}[] = [
+  { key: "dine-in", icon: <CoffeeOutlined />, labelKey: "dineIn" },
+  { key: "takeaway", icon: <ShoppingOutlined />, labelKey: "takeaway" },
+  { key: "delivery", icon: <CarOutlined />, labelKey: "delivery" },
 ];
 
 const DELIVERY_TIME_OPTIONS = [15, 30, 45, 60, 90];
@@ -27,21 +42,21 @@ export function OrderTypeSelector() {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
-  const orderType = usePOSStore((s) => s.orderType);
-  const setOrderType = usePOSStore((s) => s.setOrderType);
-  const attachedTable = usePOSStore((s) => s.attachedTable);
-  const setAttachedTable = usePOSStore((s) => s.setAttachedTable);
-  const guestCount = usePOSStore((s) => s.guestCount);
-  const setGuestCount = usePOSStore((s) => s.setGuestCount);
-  const defaultGuests = usePOSStore((s) => s.defaultGuests);
-  const attachedCustomer = usePOSStore((s) => s.attachedCustomer);
-  const setAttachedCustomer = usePOSStore((s) => s.setAttachedCustomer);
-  const deliveryAddress = usePOSStore((s) => s.deliveryAddress);
-  const setDeliveryAddress = usePOSStore((s) => s.setDeliveryAddress);
-  const deliveryFee = usePOSStore((s) => s.deliveryFee);
-  const setDeliveryFee = usePOSStore((s) => s.setDeliveryFee);
-  const deliveryTime = usePOSStore((s) => s.deliveryTime);
-  const setDeliveryTime = usePOSStore((s) => s.setDeliveryTime);
+  const orderType = usePOSStore(s => s.orderType);
+  const setOrderType = usePOSStore(s => s.setOrderType);
+  const attachedTable = usePOSStore(s => s.attachedTable);
+  const setAttachedTable = usePOSStore(s => s.setAttachedTable);
+  const guestCount = usePOSStore(s => s.guestCount);
+  const setGuestCount = usePOSStore(s => s.setGuestCount);
+  const defaultGuests = usePOSStore(s => s.defaultGuests);
+  const attachedCustomer = usePOSStore(s => s.attachedCustomer);
+  const setAttachedCustomer = usePOSStore(s => s.setAttachedCustomer);
+  const deliveryAddress = usePOSStore(s => s.deliveryAddress);
+  const setDeliveryAddress = usePOSStore(s => s.setDeliveryAddress);
+  const deliveryFee = usePOSStore(s => s.deliveryFee);
+  const setDeliveryFee = usePOSStore(s => s.setDeliveryFee);
+  const deliveryTime = usePOSStore(s => s.deliveryTime);
+  const setDeliveryTime = usePOSStore(s => s.setDeliveryTime);
   const restaurantMode = useRestaurantMode();
 
   const [tables, setTables] = useState<RestaurantTable[]>([]);
@@ -67,7 +82,7 @@ export function OrderTypeSelector() {
       setAttachedTable(null);
       return;
     }
-    const table = tables.find((tbl) => tbl.id === tableId);
+    const table = tables.find(tbl => tbl.id === tableId);
     if (table) {
       setAttachedTable(table);
       setGuestCount(table.guestCount ?? defaultGuests);
@@ -76,19 +91,26 @@ export function OrderTypeSelector() {
 
   const isDineIn = orderType === "dine-in";
   const isDelivery = orderType === "delivery";
-  const showTableSelect = isDineIn && restaurantMode.isRestaurant && restaurantMode.tableManagementEnabled;
-  const availableTables = tables.filter((tbl) => tbl.status === "available" || tbl.status === "occupied");
+  const showTableSelect =
+    isDineIn &&
+    restaurantMode.isRestaurant &&
+    restaurantMode.tableManagementEnabled;
+  const availableTables = tables.filter(
+    tbl => tbl.status === "available" || tbl.status === "occupied"
+  );
   const maxGuests = attachedTable?.capacity ?? 20;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {/* Order type segmented control */}
-      <div style={{
-        display: "flex",
-        borderRadius: 10,
-        padding: 0,
-        gap: 6,
-      }}>
+      <div
+        style={{
+          display: "flex",
+          borderRadius: 10,
+          padding: 0,
+          gap: 6,
+        }}
+      >
         {ORDER_TYPES.map(({ key, icon, labelKey }) => {
           const isActive = orderType === key;
           return (
@@ -114,7 +136,9 @@ export function OrderTypeSelector() {
                   ? `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimaryHover})`
                   : token.colorBgContainer,
                 color: isActive ? "#fff" : token.colorText,
-                boxShadow: isActive ? `0 2px 8px ${token.colorPrimary}40` : `0 1px 2px rgba(0,0,0,0.04)`,
+                boxShadow: isActive
+                  ? `0 2px 8px ${token.colorPrimary}40`
+                  : `0 1px 2px rgba(0,0,0,0.04)`,
                 whiteSpace: "nowrap",
               }}
             >
@@ -133,55 +157,81 @@ export function OrderTypeSelector() {
             onChange={handleTableSelect}
             style={{ flex: 1 }}
             size="small"
-            suffixIcon={<TableOutlined style={{ color: attachedTable ? "#F59E0B" : token.colorTextPlaceholder, fontSize: 11 }} />}
+            suffixIcon={
+              <TableOutlined
+                style={{
+                  color: attachedTable ? "#F59E0B" : token.colorTextPlaceholder,
+                  fontSize: 11,
+                }}
+              />
+            }
             popupMatchSelectWidth={240}
             options={[
               {
                 value: "__none__",
                 label: (
-                  <span style={{ color: token.colorTextSecondary, fontSize: 11 }}>
+                  <span
+                    style={{ color: token.colorTextSecondary, fontSize: 11 }}
+                  >
                     {t.selectTable}
                   </span>
                 ),
               },
-              ...availableTables.map((tbl) => ({
+              ...availableTables.map(tbl => ({
                 value: tbl.id,
                 label: (
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "2px 0" }}>
-                    {/* Status dot */}
-                    <span style={{
-                      width: 7,
-                      height: 7,
-                      borderRadius: "50%",
-                      background: STATUS_DOT[tbl.status] ?? "#ccc",
-                      flexShrink: 0,
-                    }} />
-                    {/* Table name */}
-                    <span style={{ fontWeight: 600, fontSize: 12, flex: 1 }}>{tbl.name}</span>
-                    {/* Capacity badge */}
-                    <span style={{
-                      fontSize: 10,
-                      color: token.colorTextSecondary,
+                  <div
+                    style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 3,
-                    }}>
+                      gap: 8,
+                      padding: "2px 0",
+                    }}
+                  >
+                    {/* Status dot */}
+                    <span
+                      style={{
+                        width: 7,
+                        height: 7,
+                        borderRadius: "50%",
+                        background: STATUS_DOT[tbl.status] ?? "#ccc",
+                        flexShrink: 0,
+                      }}
+                    />
+                    {/* Table name */}
+                    <span style={{ fontWeight: 600, fontSize: 12, flex: 1 }}>
+                      {tbl.name}
+                    </span>
+                    {/* Capacity badge */}
+                    <span
+                      style={{
+                        fontSize: 10,
+                        color: token.colorTextSecondary,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
                       <TeamOutlined style={{ fontSize: 9 }} />
                       {tbl.capacity}
                     </span>
                     {/* Status label */}
-                    <span style={{
-                      fontSize: 9,
-                      fontWeight: 700,
-                      color: STATUS_DOT[tbl.status],
-                      background: `${STATUS_DOT[tbl.status]}12`,
-                      border: `1px solid ${STATUS_DOT[tbl.status]}30`,
-                      borderRadius: 4,
-                      padding: "1px 5px",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.03em",
-                    }}>
-                      {tbl.status === "occupied" ? t.occupiedStatus : t.availableStatus}
+                    <span
+                      style={{
+                        fontSize: 9,
+                        fontWeight: 700,
+                        color: STATUS_DOT[tbl.status],
+                        background: `${STATUS_DOT[tbl.status]}12`,
+                        border: `1px solid ${STATUS_DOT[tbl.status]}30`,
+                        borderRadius: 4,
+                        padding: "1px 5px",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.03em",
+                      }}
+                    >
+                      {tbl.status === "occupied"
+                        ? t.occupiedStatus
+                        : t.availableStatus}
                     </span>
                   </div>
                 ),
@@ -191,16 +241,18 @@ export function OrderTypeSelector() {
 
           {/* Guest count stepper with +/- buttons */}
           {attachedTable && (
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 0,
-              background: token.colorFillAlter,
-              borderRadius: 8,
-              border: `1px solid ${token.colorBorderSecondary}`,
-              flexShrink: 0,
-              overflow: "hidden",
-            }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0,
+                background: token.colorFillAlter,
+                borderRadius: 8,
+                border: `1px solid ${token.colorBorderSecondary}`,
+                flexShrink: 0,
+                overflow: "hidden",
+              }}
+            >
               <button
                 onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
                 disabled={guestCount <= 1}
@@ -210,7 +262,10 @@ export function OrderTypeSelector() {
                   border: "none",
                   background: "transparent",
                   cursor: guestCount <= 1 ? "default" : "pointer",
-                  color: guestCount <= 1 ? token.colorTextQuaternary : token.colorText,
+                  color:
+                    guestCount <= 1
+                      ? token.colorTextQuaternary
+                      : token.colorText,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -220,21 +275,35 @@ export function OrderTypeSelector() {
               >
                 <MinusOutlined />
               </button>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-                padding: "0 4px",
-                borderInline: `1px solid ${token.colorBorderSecondary}`,
-                height: 28,
-                minWidth: 36,
-                justifyContent: "center",
-              }}>
-                <TeamOutlined style={{ fontSize: 10, color: token.colorTextSecondary }} />
-                <span style={{ fontSize: 12, fontWeight: 700, color: token.colorText }}>{guestCount}</span>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 3,
+                  padding: "0 4px",
+                  borderInline: `1px solid ${token.colorBorderSecondary}`,
+                  height: 28,
+                  minWidth: 36,
+                  justifyContent: "center",
+                }}
+              >
+                <TeamOutlined
+                  style={{ fontSize: 10, color: token.colorTextSecondary }}
+                />
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: token.colorText,
+                  }}
+                >
+                  {guestCount}
+                </span>
               </div>
               <button
-                onClick={() => setGuestCount(Math.min(maxGuests, guestCount + 1))}
+                onClick={() =>
+                  setGuestCount(Math.min(maxGuests, guestCount + 1))
+                }
                 disabled={guestCount >= maxGuests}
                 style={{
                   width: 26,
@@ -242,7 +311,10 @@ export function OrderTypeSelector() {
                   border: "none",
                   background: "transparent",
                   cursor: guestCount >= maxGuests ? "default" : "pointer",
-                  color: guestCount >= maxGuests ? token.colorTextQuaternary : token.colorText,
+                  color:
+                    guestCount >= maxGuests
+                      ? token.colorTextQuaternary
+                      : token.colorText,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -261,19 +333,23 @@ export function OrderTypeSelector() {
       {isDelivery && (
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <Input
-            prefix={<EnvironmentOutlined style={{ color: "#EF4444", fontSize: 11 }} />}
+            prefix={
+              <EnvironmentOutlined style={{ color: "#EF4444", fontSize: 11 }} />
+            }
             placeholder={t.deliveryAddressPlaceholder}
             value={deliveryAddress}
-            onChange={(e) => setDeliveryAddress(e.target.value)}
+            onChange={e => setDeliveryAddress(e.target.value)}
             style={{ borderRadius: 8 }}
             size="small"
           />
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <InputNumber
-              prefix={<DollarOutlined style={{ color: "#10B981", fontSize: 11 }} />}
+              prefix={
+                <DollarOutlined style={{ color: "#10B981", fontSize: 11 }} />
+              }
               placeholder={t.deliveryFee}
               value={deliveryFee || undefined}
-              onChange={(v) => setDeliveryFee(v ?? 0)}
+              onChange={v => setDeliveryFee(v ?? 0)}
               min={0}
               precision={2}
               style={{ flex: 1, borderRadius: 8 }}
@@ -281,14 +357,18 @@ export function OrderTypeSelector() {
             />
             <Select
               value={deliveryTime || undefined}
-              onChange={(v) => setDeliveryTime(v)}
+              onChange={v => setDeliveryTime(v)}
               placeholder={t.estimatedTime}
               size="small"
               style={{ flex: 1 }}
               allowClear
               onClear={() => setDeliveryTime("")}
-              suffixIcon={<ClockCircleOutlined style={{ color: "#6366F1", fontSize: 11 }} />}
-              options={DELIVERY_TIME_OPTIONS.map((mins) => ({
+              suffixIcon={
+                <ClockCircleOutlined
+                  style={{ color: "#6366F1", fontSize: 11 }}
+                />
+              }
+              options={DELIVERY_TIME_OPTIONS.map(mins => ({
                 value: String(mins),
                 label: `${mins} ${t.minutes}`,
               }))}

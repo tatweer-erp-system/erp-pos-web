@@ -13,5 +13,5 @@ export const DEFAULT_PAGE_SIZE = 25;
 export const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
 // Query cache times
-export const STALE_TIME_STANDARD = 5 * 60 * 1000;   // 5 minutes
-export const STALE_TIME_STATIC   = 30 * 60 * 1000;  // 30 minutes (rarely-changing data)
+export const STALE_TIME_STANDARD = 5 * 60 * 1000; // 5 minutes
+export const STALE_TIME_STATIC = 30 * 60 * 1000; // 30 minutes (rarely-changing data)

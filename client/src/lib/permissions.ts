@@ -7,7 +7,7 @@ import { useMemo } from "react";
  */
 export function hasPermission(
   userPermissions: readonly string[],
-  required: string,
+  required: string
 ): boolean {
   if (userPermissions.includes("*")) return true;
   if (userPermissions.includes(required)) return true;
@@ -22,9 +22,9 @@ export function hasPermission(
  */
 export function hasAllPermissions(
   userPermissions: readonly string[],
-  required: string[],
+  required: string[]
 ): boolean {
-  return required.every((p) => hasPermission(userPermissions, p));
+  return required.every(p => hasPermission(userPermissions, p));
 }
 
 /**
@@ -32,9 +32,9 @@ export function hasAllPermissions(
  */
 export function hasAnyPermission(
   userPermissions: readonly string[],
-  required: string[],
+  required: string[]
 ): boolean {
-  return required.some((p) => hasPermission(userPermissions, p));
+  return required.some(p => hasPermission(userPermissions, p));
 }
 
 /**
@@ -42,10 +42,10 @@ export function hasAnyPermission(
  */
 export function usePermission(
   userPermissions: readonly string[] | undefined,
-  required: string,
+  required: string
 ): boolean {
   return useMemo(
     () => (userPermissions ? hasPermission(userPermissions, required) : false),
-    [userPermissions, required],
+    [userPermissions, required]
   );
 }

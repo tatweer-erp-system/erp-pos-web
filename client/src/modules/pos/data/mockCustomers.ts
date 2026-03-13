@@ -41,8 +41,8 @@ export const LOYALTY_TIERS: LoyaltyTier[] = [
     name: "Bronze",
     minPoints: 0,
     maxPoints: 500,
-    earnRatio: 0.1,    // 1 point per $10
-    redeemRatio: 0.10, // $0.10 per point
+    earnRatio: 0.1, // 1 point per $10
+    redeemRatio: 0.1, // $0.10 per point
     color: "#CD7F32",
   },
   {
@@ -69,17 +69,17 @@ export const LOYALTY_TIERS: LoyaltyTier[] = [
     minPoints: 5001,
     maxPoints: 999999,
     earnRatio: 0.25,
-    redeemRatio: 0.20,
+    redeemRatio: 0.2,
     color: "#E5E4E2",
   },
 ];
 
-export const DEFAULT_EARN_RATIO  = 0.1;  // fallback: 1 pt per $10
-export const DEFAULT_REDEEM_RATIO = 0.10; // fallback: $0.10 per point
+export const DEFAULT_EARN_RATIO = 0.1; // fallback: 1 pt per $10
+export const DEFAULT_REDEEM_RATIO = 0.1; // fallback: $0.10 per point
 
 export function getTier(points: number): LoyaltyTier {
   return (
-    LOYALTY_TIERS.find((t) => points >= t.minPoints && points <= t.maxPoints) ??
+    LOYALTY_TIERS.find(t => points >= t.minPoints && points <= t.maxPoints) ??
     LOYALTY_TIERS[0]
   );
 }

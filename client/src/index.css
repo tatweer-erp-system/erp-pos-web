@@ -46,80 +46,80 @@
 }
 
 :root {
-  --primary: #3B82F6;
-  --primary-foreground: #FFFFFF;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --chart-1: #3B82F6;
-  --chart-2: #2563EB;
-  --chart-3: #60A5FA;
-  --chart-4: #93C5FD;
-  --chart-5: #BFDBFE;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --chart-1: #3b82f6;
+  --chart-2: #2563eb;
+  --chart-3: #60a5fa;
+  --chart-4: #93c5fd;
+  --chart-5: #bfdbfe;
   --radius: 0.5rem;
-  --background: #F8FAFC;
-  --foreground: #1E293B;
-  --card: #FFFFFF;
-  --card-foreground: #1E293B;
-  --popover: #FFFFFF;
-  --popover-foreground: #1E293B;
-  --secondary: #F1F5F9;
-  --secondary-foreground: #1E293B;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B;
-  --accent: #3B82F6;
-  --accent-foreground: #FFFFFF;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
-  --border: #E2E8F0;
-  --input: #FFFFFF;
-  --ring: #3B82F6;
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #1E293B;
-  --sidebar-accent: #F1F5F9;
-  --sidebar-accent-foreground: #3B82F6;
-  --sidebar-border: #E2E8F0;
-  --sidebar-ring: #3B82F6;
-  --form-border: #E2E8F0;
-  --form-text: #1E293B;
-  --form-bg: #FFFFFF;
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #1e293b;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --input: #ffffff;
+  --ring: #3b82f6;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1e293b;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #3b82f6;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #3b82f6;
+  --form-border: #e2e8f0;
+  --form-text: #1e293b;
+  --form-bg: #ffffff;
 }
 
 .dark {
-  --primary: #37D399;
-  --primary-foreground: #060D08;
-  --sidebar-primary: #37D399;
-  --sidebar-primary-foreground: #060D08;
-  --background: #060D08;
+  --primary: #37d399;
+  --primary-foreground: #060d08;
+  --sidebar-primary: #37d399;
+  --sidebar-primary-foreground: #060d08;
+  --background: #060d08;
   --foreground: #e8ede8;
-  --card: #2C2E2D;
+  --card: #2c2e2d;
   --card-foreground: #e8ede8;
-  --popover: #2C2E2D;
+  --popover: #2c2e2d;
   --popover-foreground: #e8ede8;
-  --secondary: #2C2E2D;
+  --secondary: #2c2e2d;
   --secondary-foreground: #e8ede8;
-  --muted: #0E120E;
+  --muted: #0e120e;
   --muted-foreground: #8a9a8a;
-  --accent: #37D399;
-  --accent-foreground: #060D08;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
+  --accent: #37d399;
+  --accent-foreground: #060d08;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
   --border: #1a201a;
-  --input: #0E120E;
-  --ring: #37D399;
-  --chart-1: #37D399;
+  --input: #0e120e;
+  --ring: #37d399;
+  --chart-1: #37d399;
   --chart-2: #2a8a52;
-  --chart-3: #37D399;
+  --chart-3: #37d399;
   --chart-4: #2a8a52;
   --chart-5: #1a3a28;
   --sidebar: #141714;
   --sidebar-foreground: #e8ede8;
-  --sidebar-accent: #0E120E;
-  --sidebar-accent-foreground: #37D399;
+  --sidebar-accent: #0e120e;
+  --sidebar-accent-foreground: #37d399;
   --sidebar-border: #1a201a;
-  --sidebar-ring: #37D399;
+  --sidebar-ring: #37d399;
   --form-border: #1a201a;
   --form-text: #e8ede8;
-  --form-bg: #0E120E;
+  --form-bg: #0e120e;
 }
 
 @layer base {
@@ -130,7 +130,12 @@
     @apply bg-background text-foreground font-sans text-sm;
     transition: all 0.5s ease-in-out;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display font-bold;
   }
   h1 {
@@ -162,8 +167,14 @@
 
 /* ── Direction change animation ──────────────────────────────────────────── */
 @keyframes dir-flip-in {
-  0%   { opacity: 0; transform: scaleX(0.97) translateX(12px); }
-  100% { opacity: 1; transform: scaleX(1)    translateX(0); }
+  0% {
+    opacity: 0;
+    transform: scaleX(0.97) translateX(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1) translateX(0);
+  }
 }
 
 .dir-animating {
@@ -171,11 +182,12 @@
 }
 
 /* Smooth all layout/border logical properties on the shell */
-.ltr, .rtl {
+.ltr,
+.rtl {
   transition:
-    padding        0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    margin         0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    border-radius  0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    margin 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @layer components {

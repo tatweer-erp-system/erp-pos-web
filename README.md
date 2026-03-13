@@ -6,36 +6,39 @@ A modern, feature-rich Point of Sale (POS) system built with React 19 and TypeSc
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 19 + TypeScript 5.6 |
-| Build | Vite 7 |
-| State | Zustand (POS), Context API (Auth, AppSettings) |
-| UI | Ant Design 6 + shadcn/ui (Radix UI) |
-| Forms | React Hook Form + Zod |
-| Data Fetching | TanStack Query + Axios |
-| Routing | Wouter |
-| Styling | Tailwind CSS 4 |
-| Animations | Framer Motion |
-| Charts | Recharts |
-| Tables | TanStack Table |
-| Offline | IndexedDB (idb) |
-| Package Manager | pnpm |
+| Layer           | Technology                                     |
+| --------------- | ---------------------------------------------- |
+| Framework       | React 19 + TypeScript 5.6                      |
+| Build           | Vite 7                                         |
+| State           | Zustand (POS), Context API (Auth, AppSettings) |
+| UI              | Ant Design 6 + shadcn/ui (Radix UI)            |
+| Forms           | React Hook Form + Zod                          |
+| Data Fetching   | TanStack Query + Axios                         |
+| Routing         | Wouter                                         |
+| Styling         | Tailwind CSS 4                                 |
+| Animations      | Framer Motion                                  |
+| Charts          | Recharts                                       |
+| Tables          | TanStack Table                                 |
+| Offline         | IndexedDB (idb)                                |
+| Package Manager | pnpm                                           |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (via nvm) — v23.7.0 recommended
 - pnpm
 
 ### Install dependencies
+
 ```bash
 pnpm install
 ```
 
 ### Run development server (port 4201)
+
 ```bash
 PATH="$HOME/.nvm/versions/node/v23.7.0/bin:$PATH" pnpm dev --port 4201
 ```
@@ -43,12 +46,15 @@ PATH="$HOME/.nvm/versions/node/v23.7.0/bin:$PATH" pnpm dev --port 4201
 App runs at: http://localhost:4201/
 
 ### Build for production
+
 ```bash
 pnpm build
 ```
 
 ### Environment Variables
+
 Copy `.env.example` to `.env` and configure:
+
 ```
 VITE_API_URL=http://your-backend-api
 ```
@@ -95,9 +101,11 @@ erp-pos-web/
 ## Modules
 
 ### POS (Point of Sale)
+
 The core module. See [`client/src/modules/pos/README.md`](client/src/modules/pos/README.md) for full documentation.
 
 **Features:**
+
 - Multi-order management (up to 10 concurrent orders)
 - Cash / Card / Split payment processing
 - Customer loyalty program (4 tiers)
@@ -114,11 +122,11 @@ The core module. See [`client/src/modules/pos/README.md`](client/src/modules/pos
 
 Mock user roster (development only):
 
-| Role | Credentials |
-|------|-------------|
-| SuperAdmin | admin / admin123 |
-| Manager | manager / mgr123 |
-| Cashier | cashier / cash123 |
+| Role       | Credentials         |
+| ---------- | ------------------- |
+| SuperAdmin | admin / admin123    |
+| Manager    | manager / mgr123    |
+| Cashier    | cashier / cash123   |
 | Accountant | accountant / acc123 |
 
 Roles: `SuperAdmin`, `Admin`, `Manager`, `Accountant`, `Viewer`, `Cashier`

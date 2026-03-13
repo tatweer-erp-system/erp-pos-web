@@ -72,7 +72,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 <ErrorBoundary>
   <MyFeature />
-</ErrorBoundary>
+</ErrorBoundary>;
 ```
 
 Used in `App.tsx` to wrap route-level components.
@@ -102,6 +102,7 @@ These are **unstyled, accessible primitives** built on Radix UI. They use Tailwi
 ### Key Components
 
 #### Forms
+
 - `Button` — Standard button with variants (default, destructive, outline, ghost, link)
 - `Input` — Text input field
 - `Textarea` — Multi-line text input
@@ -116,6 +117,7 @@ These are **unstyled, accessible primitives** built on Radix UI. They use Tailwi
 - `Label` — Accessible form label
 
 #### Layout & Navigation
+
 - `Tabs` — Tab panels
 - `Accordion` — Collapsible sections
 - `Collapsible` — Single collapsible section
@@ -126,6 +128,7 @@ These are **unstyled, accessible primitives** built on Radix UI. They use Tailwi
 - `Pagination` — Page number navigation
 
 #### Overlays & Dialogs
+
 - `Dialog` — Modal dialog (controlled)
 - `AlertDialog` — Confirmation dialog with cancel/confirm
 - `Sheet` — Side panel (drawer that slides in from edge)
@@ -135,6 +138,7 @@ These are **unstyled, accessible primitives** built on Radix UI. They use Tailwi
 - `HoverCard` — Rich hover preview card
 
 #### Data Display
+
 - `Table` — Accessible HTML table with head/body/row/cell components
 - `Card` — Content card with header, content, footer
 - `Badge` — Status badge / tag
@@ -145,12 +149,14 @@ These are **unstyled, accessible primitives** built on Radix UI. They use Tailwi
 - `Calendar` — Date picker calendar
 
 #### Menus
+
 - `DropdownMenu` — Click-triggered dropdown menu
 - `ContextMenu` — Right-click context menu
 - `Menubar` — Horizontal application menu bar
 - `Command` — Command palette with fuzzy search
 
 #### Feedback
+
 - `Sonner` — Toast notification system
 - `Skeleton` — Placeholder loading animation
 - `Progress` — Progress bar
@@ -158,6 +164,7 @@ These are **unstyled, accessible primitives** built on Radix UI. They use Tailwi
 - `Empty` — Empty state display
 
 #### Other
+
 - `Resizable` — Resizable panel layout (split pane)
 - `Kbd` — Keyboard shortcut display
 - `InputOTP` — OTP / PIN entry with segmented inputs
@@ -168,14 +175,14 @@ These are **unstyled, accessible primitives** built on Radix UI. They use Tailwi
 
 This project uses **both** Ant Design and shadcn/ui. Here's when to use each:
 
-| Use Ant Design | Use shadcn/ui |
-|----------------|---------------|
-| POS modals and forms | General app UI |
-| Data tables | Settings panels |
-| Date pickers in POS | Command palette |
-| Notifications (message.success) | Toasts (Sonner) |
-| Complex form validation in POS | React Hook Form + Zod |
-| When existing POS code uses it | New non-POS features |
+| Use Ant Design                  | Use shadcn/ui         |
+| ------------------------------- | --------------------- |
+| POS modals and forms            | General app UI        |
+| Data tables                     | Settings panels       |
+| Date pickers in POS             | Command palette       |
+| Notifications (message.success) | Toasts (Sonner)       |
+| Complex form validation in POS  | React Hook Form + Zod |
+| When existing POS code uses it  | New non-POS features  |
 
 The Ant Design `ConfigProvider` in `lib/antd-provider.tsx` applies the active theme preset and RTL direction globally to all Ant Design components.
 

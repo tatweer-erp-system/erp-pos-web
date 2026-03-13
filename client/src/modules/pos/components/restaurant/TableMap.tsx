@@ -14,7 +14,11 @@ interface TableMapProps {
   allowTakeAway: boolean;
 }
 
-export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapProps) {
+export function TableMap({
+  onSelectTable,
+  onTakeAway,
+  allowTakeAway,
+}: TableMapProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
@@ -25,11 +29,14 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
   const [search, setSearch] = useState("");
 
   function refreshTables() {
-    getTables().then((rows) => setTables(rows));
+    getTables().then(rows => setTables(rows));
   }
 
   useEffect(() => {
-    getTables().then((rows) => { setTables(rows); setLoading(false); });
+    getTables().then(rows => {
+      setTables(rows);
+      setLoading(false);
+    });
   }, []);
 
   function handleTableClick(table: RestaurantTable) {
@@ -37,9 +44,11 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
     onSelectTable(table);
   }
 
-  const filtered = tables.filter((t) => {
-    const sectionMatch = activeSection === "all" || t.sectionId === activeSection;
-    const searchMatch = !search.trim() || t.name.toLowerCase().includes(search.toLowerCase());
+  const filtered = tables.filter(t => {
+    const sectionMatch =
+      activeSection === "all" || t.sectionId === activeSection;
+    const searchMatch =
+      !search.trim() || t.name.toLowerCase().includes(search.toLowerCase());
     return sectionMatch && searchMatch;
   });
 
@@ -51,16 +60,18 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {/* Controls */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        padding: "12px 16px",
-        background: token.colorBgContainer,
-        borderBottom: `1px solid ${token.colorBorderSecondary}`,
-        flexShrink: 0,
-        flexWrap: "wrap",
-      }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "12px 16px",
+          background: token.colorBgContainer,
+          borderBottom: `1px solid ${token.colorBorderSecondary}`,
+          flexShrink: 0,
+          flexWrap: "wrap",
+        }}
+      >
         {/* Section filter */}
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", flex: 1 }}>
           {/* All button */}
@@ -69,9 +80,16 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
             style={{
               padding: "5px 14px",
               borderRadius: 20,
-              border: activeSection === "all" ? `1.5px solid ${token.colorPrimary}` : `1px solid ${token.colorBorderSecondary}`,
-              background: activeSection === "all" ? token.colorPrimaryBg : "transparent",
-              color: activeSection === "all" ? token.colorPrimary : token.colorTextSecondary,
+              border:
+                activeSection === "all"
+                  ? `1.5px solid ${token.colorPrimary}`
+                  : `1px solid ${token.colorBorderSecondary}`,
+              background:
+                activeSection === "all" ? token.colorPrimaryBg : "transparent",
+              color:
+                activeSection === "all"
+                  ? token.colorPrimary
+                  : token.colorTextSecondary,
               cursor: "pointer",
               fontSize: 12,
               fontWeight: activeSection === "all" ? 700 : 400,
@@ -80,7 +98,7 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
           >
             {t.allSections} ({tables.length})
           </button>
-          {mockSections.map((sec) => {
+          {mockSections.map(sec => {
             const isActive = activeSection === sec.id;
             return (
               <button
@@ -89,7 +107,9 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
                 style={{
                   padding: "5px 14px",
                   borderRadius: 20,
-                  border: isActive ? `1.5px solid ${sec.color}` : `1px solid ${token.colorBorderSecondary}`,
+                  border: isActive
+                    ? `1.5px solid ${sec.color}`
+                    : `1px solid ${token.colorBorderSecondary}`,
                   background: isActive ? `${sec.color}15` : "transparent",
                   color: isActive ? sec.color : token.colorTextSecondary,
                   cursor: "pointer",
@@ -101,7 +121,14 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
                   gap: 5,
                 }}
               >
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: sec.color }} />
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: sec.color,
+                  }}
+                />
                 {sec.name} ({sectionCounts[sec.id] ?? 0})
               </button>
             );
@@ -113,7 +140,7 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
           placeholder="Search table..."
           prefix={<SearchOutlined style={{ color: token.colorTextTertiary }} />}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={e => setSearch(e.target.value)}
           style={{ width: 160, borderRadius: 8 }}
           allowClear
         />
@@ -141,24 +168,45 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
       </div>
 
       {/* Stats bar */}
-      <div style={{
-        display: "flex",
-        gap: 16,
-        padding: "8px 16px",
-        background: token.colorBgLayout,
-        borderBottom: `1px solid ${token.colorBorderSecondary}`,
-        fontSize: 12,
-        color: token.colorTextSecondary,
-        flexShrink: 0,
-      }}>
-        {(["available", "occupied", "reserved"] as const).map((status) => {
-          const count = tables.filter((tbl) => tbl.status === status).length;
-          const colors = { available: "#10B981", occupied: "#F59E0B", reserved: "#6366F1" };
-          const labels = { available: t.availableStatus, occupied: t.occupiedStatus, reserved: t.reservedStatus };
+      <div
+        style={{
+          display: "flex",
+          gap: 16,
+          padding: "8px 16px",
+          background: token.colorBgLayout,
+          borderBottom: `1px solid ${token.colorBorderSecondary}`,
+          fontSize: 12,
+          color: token.colorTextSecondary,
+          flexShrink: 0,
+        }}
+      >
+        {(["available", "occupied", "reserved"] as const).map(status => {
+          const count = tables.filter(tbl => tbl.status === status).length;
+          const colors = {
+            available: "#10B981",
+            occupied: "#F59E0B",
+            reserved: "#6366F1",
+          };
+          const labels = {
+            available: t.availableStatus,
+            occupied: t.occupiedStatus,
+            reserved: t.reservedStatus,
+          };
           return (
-            <span key={status} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: colors[status] }} />
-              <strong style={{ color: colors[status] }}>{count}</strong> {labels[status]}
+            <span
+              key={status}
+              style={{ display: "flex", alignItems: "center", gap: 4 }}
+            >
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: colors[status],
+                }}
+              />
+              <strong style={{ color: colors[status] }}>{count}</strong>{" "}
+              {labels[status]}
             </span>
           );
         })}
@@ -167,26 +215,39 @@ export function TableMap({ onSelectTable, onTakeAway, allowTakeAway }: TableMapP
       {/* Table grid */}
       <div style={{ flex: 1, overflow: "auto", padding: 16 }}>
         {loading ? (
-          <div style={{ display: "flex", justifyContent: "center", padding: 60 }}>
+          <div
+            style={{ display: "flex", justifyContent: "center", padding: 60 }}
+          >
             <Spin size="large" />
           </div>
         ) : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: 60, color: token.colorTextSecondary, fontSize: 14 }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: 60,
+              color: token.colorTextSecondary,
+              fontSize: 14,
+            }}
+          >
             {t.noTablesFound}
           </div>
         ) : (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-            gap: 12,
-          }}>
-            {filtered.map((table) => (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+              gap: 12,
+            }}
+          >
+            {filtered.map(table => (
               <TableCard
                 key={table.id}
                 table={table}
                 onClick={handleTableClick}
                 onUpdated={refreshTables}
-                availableTables={tables.filter((t) => t.status === "available" && t.id !== table.id)}
+                availableTables={tables.filter(
+                  t => t.status === "available" && t.id !== table.id
+                )}
               />
             ))}
           </div>

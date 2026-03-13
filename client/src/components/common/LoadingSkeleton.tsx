@@ -8,7 +8,11 @@ function SkeletonCell({ width = "w-full" }: { width?: string }) {
   return <div className={`h-4 ${width} bg-muted rounded animate-pulse`} />;
 }
 
-export function LoadingSkeleton({ rows = 8, columns = 4, showHeader = true }: LoadingSkeletonProps) {
+export function LoadingSkeleton({
+  rows = 8,
+  columns = 4,
+  showHeader = true,
+}: LoadingSkeletonProps) {
   return (
     <div className="w-full">
       {showHeader && (
@@ -50,7 +54,9 @@ export function PageSkeleton() {
         <div className="h-9 w-28 bg-muted rounded animate-pulse" />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[1,2,3,4].map((i) => <CardSkeleton key={i} />)}
+        {[1, 2, 3, 4].map(i => (
+          <CardSkeleton key={i} />
+        ))}
       </div>
       <LoadingSkeleton rows={6} />
     </div>

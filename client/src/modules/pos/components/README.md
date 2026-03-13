@@ -62,6 +62,7 @@ components/
 ## Component Guidelines
 
 ### Modal Design Pattern
+
 All modals follow this consistent structure:
 
 ```tsx
@@ -76,13 +77,15 @@ All modals follow this consistent structure:
   styles={{ body: { padding: 0 } }}
 >
   {/* Gradient Header */}
-  <div style={{
-    position: "relative",
-    background: `linear-gradient(135deg, COLOR, COLORcc)`,
-    padding: "20px 24px 16px",
-    borderRadius: "8px 8px 0 0",
-    direction: isRTL ? "rtl" : "ltr",
-  }}>
+  <div
+    style={{
+      position: "relative",
+      background: `linear-gradient(135deg, COLOR, COLORcc)`,
+      padding: "20px 24px 16px",
+      borderRadius: "8px 8px 0 0",
+      direction: isRTL ? "rtl" : "ltr",
+    }}
+  >
     <IconComponent />
     <div>Title</div>
     <div>Subtitle</div>
@@ -98,6 +101,7 @@ All modals follow this consistent structure:
 ```
 
 **Color coding by feature:**
+
 - Gift cards: `#A855F7` (purple)
 - Cash in: `#10B981` (green)
 - Cash out / Refund: `#EF4444` (red)
@@ -105,6 +109,7 @@ All modals follow this consistent structure:
 - Neutral / Info: primary token color
 
 ### Localization Pattern
+
 Every component that renders text must support RTL:
 
 ```tsx
@@ -117,6 +122,7 @@ Use `dir={isRTL ? "rtl" : "ltr"}` on wrapper divs.
 Use `direction: isRTL ? "rtl" : "ltr"` on modal headers.
 
 ### Responsive Pattern
+
 For mobile-specific layout adjustments:
 
 ```tsx
@@ -128,11 +134,13 @@ const isMobile = !screens.sm;
 ```
 
 Then use `isMobile` to conditionally adjust:
+
 - `padding: isMobile ? "16px" : "24px"`
 - `flexWrap: isMobile ? "wrap" : "nowrap"`
 - `fontSize: isMobile ? 14 : 16`
 
 ### Space.Compact + RTL
+
 When using `Space.Compact` (e.g., InputNumber + Select together), do NOT hardcode `borderRadius` on child elements. Ant Design automatically adjusts border-radius based on RTL direction. Hardcoded values break this behavior.
 
 ---
@@ -140,23 +148,27 @@ When using `Space.Compact` (e.g., InputNumber + Select together), do NOT hardcod
 ## Auth Components
 
 ### CashierLoginScreen
+
 - Shows a roster of available cashiers
 - Each cashier selects their name then enters PIN via `PINPad`
 - Validates against `cashierAuthService`
 - On success: sets `cashierSession` in posStore
 
 ### LockScreen
+
 - Full-screen overlay when terminal is inactive
 - Requires PIN to unlock
 - Shows cashier name and lock reason
 - After N failed attempts, requires manager override
 
 ### ManagerOverrideModal
+
 - Triggered when an action requires elevated permissions (e.g., discount > threshold)
 - Manager enters their PIN or badge ID
 - Records override in `overrideLog` in posStore
 
 ### PINPad
+
 - Numeric 0-9 grid with delete and confirm buttons
 - Shows PIN as masked dots
 - Supports configurable max length
@@ -166,17 +178,20 @@ When using `Space.Compact` (e.g., InputNumber + Select together), do NOT hardcod
 ## Cart Components
 
 ### CustomerSearch
+
 - Debounced search by name or phone
 - Shows results as dropdown list
 - Can attach customer to current order
 - `isMobile` prop adjusts layout
 
 ### LoyaltyRedemption
+
 - Shows available points and redemption ratio
 - Slider or input to choose redemption amount
 - Calculates equivalent dollar discount
 
 ### VoucherInput
+
 - Text input for voucher code
 - Calls `voucherService.validateVoucher()`
 - On success: stores applied voucher in posStore
@@ -186,16 +201,19 @@ When using `Space.Compact` (e.g., InputNumber + Select together), do NOT hardcod
 ## Offline Components
 
 ### SyncStatusIndicator
+
 - Small badge shown in top bar
 - Colors: green (synced), orange (pending), red (failed)
 - Click opens `SyncStatusDrawer`
 
 ### SyncStatusDrawer
+
 - Full details: pending count, failed count, last sync time
 - Retry button for failed items
 - Link to `SyncErrorsModal` for error details
 
 ### OfflineSettingsTab
+
 - Toggle offline mode on/off
 - Set cache refresh interval
 - Manual "refresh cache now" button
@@ -205,21 +223,25 @@ When using `Space.Compact` (e.g., InputNumber + Select together), do NOT hardcod
 ## Restaurant Components
 
 ### TableMap
+
 - Grid of `TableCard` components organized by section
 - Section tabs: Main Hall, Terrace, Bar, VIP Room
 - Filter by: all tables / available / occupied / reserved
 
 ### TableCard
+
 - Shows table number, status badge, occupancy
 - Color: green (available), orange (occupied), gray (reserved)
 - Click to attach table to current order
 
 ### CourseManager
+
 - Groups cart items by course (Appetizer, Entrée, etc.)
 - Drag or assign each item to a course
 - Show "Fire" button to send course to kitchen
 
 ### SplitBillModal
+
 - Enter number of splits
 - Choose equal split or custom amounts per person
 - Generates individual receipts/payment requests

@@ -20,6 +20,7 @@ modules/pos/
 ```
 
 See sub-directory READMEs for details:
+
 - [components/README.md](components/README.md)
 - [store/README.md](store/README.md)
 - [services/README.md](services/README.md)
@@ -33,29 +34,32 @@ See sub-directory READMEs for details:
 
 The main POS terminal layout. It composes all major panel components:
 
-| Region | Component | Description |
-|--------|-----------|-------------|
-| Left sidebar | `ProductGrid` + `OrderTabsBar` | Browse/search products, switch orders |
-| Right panel | `CartPanel` + `PaymentSection` | Cart items, discounts, payment |
-| Modals | `ReceiptModal`, `RefundModal`, `ExchangeModal`, etc. | Contextual dialogs |
-| Navbar | Top action bar | Cash in/out, gift cards, reports, lock |
+| Region       | Component                                            | Description                            |
+| ------------ | ---------------------------------------------------- | -------------------------------------- |
+| Left sidebar | `ProductGrid` + `OrderTabsBar`                       | Browse/search products, switch orders  |
+| Right panel  | `CartPanel` + `PaymentSection`                       | Cart items, discounts, payment         |
+| Modals       | `ReceiptModal`, `RefundModal`, `ExchangeModal`, etc. | Contextual dialogs                     |
+| Navbar       | Top action bar                                       | Cash in/out, gift cards, reports, lock |
 
 ---
 
 ## Key Features
 
 ### Multi-Order Management
+
 - Up to 10 concurrent open orders (tabs)
 - Each order is a snapshot of cart items + customer + payment
 - Orders can be merged into one
 - Orders can be held and resumed
 
 ### Payment Processing
+
 - **Cash**: Enter amount given, auto-calculates change
 - **Card**: Reference number entry, no change
 - **Split**: Partial cash + partial card with dual entry
 
 ### Customer & Loyalty
+
 - Search customers by name/phone
 - Attach a customer to the order
 - Loyalty tier system: Bronze → Silver → Gold → Platinum
@@ -63,23 +67,27 @@ The main POS terminal layout. It composes all major panel components:
 - Loyalty report available in reports section
 
 ### Vouchers & Gift Cards
+
 - Validate and redeem voucher codes (percentage or fixed discounts)
 - Gift cards: check balance, issue new cards, redeem against order total
 - Multiple gift cards can be applied to a single order
 
 ### Cashier Authentication
+
 - PIN-based cashier login (separate from ERP user login)
 - Three cashier roles: Cashier, Senior Cashier, Manager
 - Terminal auto-locks on inactivity
 - Manager override required for certain actions (e.g., high discounts)
 
 ### Cash Drawer
+
 - Opening float recorded at session start
 - Cash in / cash out movements with reason and note
 - Live balance = opening float + all movements
 - Full cash movements report
 
 ### Restaurant Mode
+
 - Table-based ordering with floor map view
 - Guest count tracking per table
 - Course management (Appetizer, Entrée, Dessert, Beverages)
@@ -87,12 +95,14 @@ The main POS terminal layout. It composes all major panel components:
 - Split bill across multiple customers
 
 ### Offline Support
+
 - Products cached to IndexedDB on load
 - Transactions queued locally when offline
 - Auto-sync when connection restored
 - Sync status indicator with error details
 
 ### Reports
+
 - Cash Movements
 - Hourly Sales Breakdown
 - Payment Method Breakdown
@@ -114,6 +124,7 @@ User Action
 ```
 
 For offline scenarios:
+
 ```
 User Action (offline)
   → offlineService (IndexedDB queue)

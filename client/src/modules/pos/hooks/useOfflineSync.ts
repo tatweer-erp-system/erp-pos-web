@@ -2,24 +2,31 @@ import { useEffect, useRef, useCallback } from "react";
 import { message } from "antd";
 import { usePOSStore } from "../store/posStore";
 import { cacheProducts, getLastCacheTime } from "../services/offlineService";
-import { syncAllPending, getPendingCount, getFailedCount } from "../services/syncService";
+import {
+  syncAllPending,
+  getPendingCount,
+  getFailedCount,
+} from "../services/syncService";
 import { getProducts } from "../services/posService";
 
 export function useOfflineSync() {
-  const isOnline            = usePOSStore((s) => s.isOnline);
-  const setIsOnline         = usePOSStore((s) => s.setIsOnline);
-  const offlineModeEnabled  = usePOSStore((s) => s.offlineModeEnabled);
-  const cacheRefreshInterval = usePOSStore((s) => s.cacheRefreshInterval);
-  const setLastCacheSync    = usePOSStore((s) => s.setLastCacheSync);
-  const setPendingCount     = usePOSStore((s) => s.setPendingCount);
-  const setFailedCount      = usePOSStore((s) => s.setFailedCount);
-  const setIsSyncing        = usePOSStore((s) => s.setIsSyncing);
+  const isOnline = usePOSStore(s => s.isOnline);
+  const setIsOnline = usePOSStore(s => s.setIsOnline);
+  const offlineModeEnabled = usePOSStore(s => s.offlineModeEnabled);
+  const cacheRefreshInterval = usePOSStore(s => s.cacheRefreshInterval);
+  const setLastCacheSync = usePOSStore(s => s.setLastCacheSync);
+  const setPendingCount = usePOSStore(s => s.setPendingCount);
+  const setFailedCount = usePOSStore(s => s.setFailedCount);
+  const setIsSyncing = usePOSStore(s => s.setIsSyncing);
 
   const cacheTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Refresh counts ─────────────────────────────────────────────────────────
   const refreshCounts = useCallback(async () => {
-    const [pending, failed] = await Promise.all([getPendingCount(), getFailedCount()]);
+    const [pending, failed] = await Promise.all([
+      getPendingCount(),
+      getFailedCount(),
+    ]);
     setPendingCount(pending);
     setFailedCount(failed);
   }, [setPendingCount, setFailedCount]);
@@ -44,8 +51,14 @@ export function useOfflineSync() {
     setIsSyncing(true);
     try {
       const { synced, failed } = await syncAllPending();
-      if (synced > 0) message.success(`Synced ${synced} offline transaction${synced !== 1 ? "s" : ""}`);
-      if (failed > 0) message.warning(`${failed} transaction${failed !== 1 ? "s" : ""} failed to sync`);
+      if (synced > 0)
+        message.success(
+          `Synced ${synced} offline transaction${synced !== 1 ? "s" : ""}`
+        );
+      if (failed > 0)
+        message.warning(
+          `${failed} transaction${failed !== 1 ? "s" : ""} failed to sync`
+        );
     } catch {
       // handled per-transaction
     } finally {
@@ -79,7 +92,9 @@ export function useOfflineSync() {
     if (!offlineModeEnabled) return;
 
     // Restore last cache time from IndexedDB
-    getLastCacheTime().then((t) => { if (t) setLastCacheSync(t); });
+    getLastCacheTime().then(t => {
+      if (t) setLastCacheSync(t);
+    });
 
     // Initial cache refresh
     refreshCache();

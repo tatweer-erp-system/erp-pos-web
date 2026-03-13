@@ -1,9 +1,16 @@
 import { Button, theme as antTheme, message } from "antd";
-import { PrinterOutlined, SendOutlined, LoadingOutlined } from "@ant-design/icons";
+import {
+  PrinterOutlined,
+  SendOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import { useState } from "react";
 import type { CartItem } from "../../store/posStore";
 import { usePOSStore } from "../../store/posStore";
-import { printKitchenTicket, sendToKitchen } from "../../services/kitchenService";
+import {
+  printKitchenTicket,
+  sendToKitchen,
+} from "../../services/kitchenService";
 import { useAppSettings } from "@/contexts/AppSettingsContext";
 import { usePOSTranslations } from "../../i18n/translations";
 
@@ -14,25 +21,33 @@ interface KitchenTicketProps {
   compact?: boolean;
 }
 
-export function KitchenTicket({ items, orderNumber, compact = false }: KitchenTicketProps) {
+export function KitchenTicket({
+  items,
+  orderNumber,
+  compact = false,
+}: KitchenTicketProps) {
   const { token } = antTheme.useToken();
   const { language } = useAppSettings();
   const t = usePOSTranslations(language);
-  const cashierSession = usePOSStore((s) => s.cashierSession);
-  const attachedTable  = usePOSStore((s) => s.attachedTable);
-  const guestCount     = usePOSStore((s) => s.guestCount);
-  const orderType      = usePOSStore((s) => s.orderType);
+  const cashierSession = usePOSStore(s => s.cashierSession);
+  const attachedTable = usePOSStore(s => s.attachedTable);
+  const guestCount = usePOSStore(s => s.guestCount);
+  const orderType = usePOSStore(s => s.orderType);
 
   const [sending, setSending] = useState(false);
 
-  const orderTypeLabel = { "dine-in": t.dineIn, "takeaway": t.takeaway, "delivery": t.delivery }[orderType];
+  const orderTypeLabel = {
+    "dine-in": t.dineIn,
+    takeaway: t.takeaway,
+    delivery: t.delivery,
+  }[orderType];
 
   const ticketData = {
     orderNumber: orderNumber ?? `ORD-${Date.now().toString().slice(-5)}`,
-    orderType:   orderTypeLabel,
-    tableName:   attachedTable?.name,
+    orderType: orderTypeLabel,
+    tableName: attachedTable?.name,
     guestCount,
-    timestamp:   new Date().toISOString(),
+    timestamp: new Date().toISOString(),
     cashierName: cashierSession?.cashierName ?? "Cashier",
     items,
   };
@@ -74,9 +89,10 @@ export function KitchenTicket({ items, orderNumber, compact = false }: KitchenTi
           borderRadius: 10,
           fontWeight: 600,
           fontSize: 13,
-          background: items.length === 0
-            ? undefined
-            : `linear-gradient(135deg, #F59E0B, #D97706)`,
+          background:
+            items.length === 0
+              ? undefined
+              : `linear-gradient(135deg, #F59E0B, #D97706)`,
           border: "none",
           color: items.length === 0 ? undefined : "#fff",
         }}
@@ -87,10 +103,12 @@ export function KitchenTicket({ items, orderNumber, compact = false }: KitchenTi
   }
 
   return (
-    <div style={{
-      display: "flex",
-      gap: 6,
-    }}>
+    <div
+      style={{
+        display: "flex",
+        gap: 6,
+      }}
+    >
       <Button
         icon={sending ? <LoadingOutlined /> : <SendOutlined />}
         onClick={handleSend}
@@ -101,9 +119,10 @@ export function KitchenTicket({ items, orderNumber, compact = false }: KitchenTi
           borderRadius: 10,
           fontWeight: 600,
           fontSize: 12,
-          background: items.length === 0
-            ? undefined
-            : `linear-gradient(135deg, #F59E0B, #D97706)`,
+          background:
+            items.length === 0
+              ? undefined
+              : `linear-gradient(135deg, #F59E0B, #D97706)`,
           border: "none",
           color: items.length === 0 ? undefined : "#fff",
         }}
